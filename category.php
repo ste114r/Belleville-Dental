@@ -1,38 +1,20 @@
-<!--  Author Name: MH RONY.
-                        GigHub Link: https://github.com/dev-mhrony
-                        Facebook Link:https://www.facebook.com/dev.mhrony
-                        Youtube Link: https://www.youtube.com/channel/UChYhUxkwDNialcxj-OFRcDw
-                        for any PHP, Laravel, Python, Dart, Flutter work contact me at developer.mhrony@gmail.com  
-                        Visit My Website : developerrony.com --><?php 
+<?php
 session_start();
 error_reporting(0);
 include('includes/config.php');
 
-    ?>
+?>
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <!--  Author Name: MH RONY.
-                        GigHub Link: https://github.com/dev-mhrony
-                        Facebook Link:https://www.facebook.com/dev.mhrony
-                        Youtube Link: https://www.youtube.com/channel/UChYhUxkwDNialcxj-OFRcDw
-                        for any PHP, Laravel, Python, Dart, Flutter work contact me at developer.mhrony@gmail.com  
-                        Visit My Website : developerrony.com -->
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
-    <title>Live News Portal | Category Page</title>
-    <!--  Author Name: MH RONY.
-                        GigHub Link: https://github.com/dev-mhrony
-                        Facebook Link:https://www.facebook.com/dev.mhrony
-                        Youtube Link: https://www.youtube.com/channel/UChYhUxkwDNialcxj-OFRcDw
-                        for any PHP, Laravel, Python, Dart, Flutter work contact me at developer.mhrony@gmail.com  
-                        Visit My Website : developerrony.com -->
+    <title>Belleville Dental | Category Page</title>
     <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
@@ -44,7 +26,7 @@ include('includes/config.php');
 <body>
 
     <!-- Navigation -->
-    <?php include('includes/header.php');?>
+    <?php include('includes/header.php'); ?>
 
     <!-- Page Content -->
     <div class="container-fluid">
@@ -60,13 +42,12 @@ include('includes/config.php');
                         <div class="row">
                             <div class="col-lg-12">
                                 <ul class="list-unstyled mb-0">
-                                    <?php $query=mysqli_query($con,"select id,CategoryName from tblcategory");
-                                 while($row=mysqli_fetch_array($query))
-                                 {
-                                 ?>
-                                    <li class=" mb-2">
-                                        <a href="category.php?catid=<?php echo htmlentities($row['id'])?>" class="text-secondary"><?php echo htmlentities($row['CategoryName']);?></a>
-                                    </li>
+                                    <?php $query = mysqli_query($con, "select category_id,name from ARTICLE_CATEGORIES");
+                                    while ($row = mysqli_fetch_array($query)) {
+                                    ?>
+                                        <li class=" mb-2">
+                                            <a href="category.php?catid=<?php echo htmlentities($row['category_id']) ?>" class="text-secondary"><?php echo htmlentities($row['name']); ?></a>
+                                        </li>
                                     <?php } ?>
                                 </ul>
                             </div>
@@ -78,70 +59,72 @@ include('includes/config.php');
             <div class="col-md-6">
 
                 <!-- Blog Post -->
-                <?php 
-        if($_GET['catid']!=''){
-$_SESSION['catid']=intval($_GET['catid']);
-}
-             
+                <?php
+                if ($_GET['catid'] != '') {
+                    $_SESSION['catid'] = intval($_GET['catid']);
+                }
+                if (isset($_GET['pageno'])) {
+                    $pageno = $_GET['pageno'];
+                } else {
+                    $pageno = 1;
+                }
+                $no_of_records_per_page = 8;
+                $offset = ($pageno - 1) * $no_of_records_per_page;
 
 
+                $total_pages_sql = "SELECT COUNT(*) FROM ARTICLES";
+                $result = mysqli_query($con, $total_pages_sql);
+                $total_rows = mysqli_fetch_array($result)[0];
+                $total_pages = ceil($total_rows / $no_of_records_per_page);
 
 
+                $query = mysqli_query($con, "select ARTICLES.article_id as pid,ARTICLES.title as posttitle,ARTICLES.cover_image_url as PostImage,ARTICLE_CATEGORIES.name as category,ARTICLES.content as postdetails,ARTICLES.created_at as postingdate,ARTICLES.slug as url from ARTICLES left join ARTICLE_CATEGORIES on ARTICLE_CATEGORIES.category_id=ARTICLES.category_id where ARTICLES.category_id='" . $_SESSION['catid'] . "' and ARTICLES.is_active=1 order by ARTICLES.article_id desc LIMIT $offset, $no_of_records_per_page");
+                $rowcount = mysqli_num_rows($query);
+                if ($rowcount == 0) {
+                    echo "No record found";
+                } else {
+                    while ($row = mysqli_fetch_array($query)) {
 
 
-     if (isset($_GET['pageno'])) {
-            $pageno = $_GET['pageno'];
-        } else {
-            $pageno = 1;
-        }
-        $no_of_records_per_page = 8;
-        $offset = ($pageno-1) * $no_of_records_per_page;
+                ?>
+                        <h1><?php echo htmlentities($row['category']); ?> News</h1>
+                        <div class="card mb-4">
+                            <img class="card-img-top" src="admin/postimages/<?php echo htmlentities($row['PostImage']); ?>" alt="<?php echo htmlentities($row['posttitle']); ?>">
+                            <div class="card-body">
+                                <p class="text-right mb-0"><small>Posted on <?php echo htmlentities($row['postingdate']); ?></small></p>
 
+                                <a href="news-details.php?nid=<?php echo htmlentities($row['pid']) ?>" class="card-title text-decoration-none text-dark">
+                                    <h2 class="card-title text-dark"><?php echo htmlentities($row['posttitle']); ?></h2>
+                                </a>
 
-        $total_pages_sql = "SELECT COUNT(*) FROM tblposts";
-        $result = mysqli_query($con,$total_pages_sql);
-        $total_rows = mysqli_fetch_array($result)[0];
-        $total_pages = ceil($total_rows / $no_of_records_per_page);
+                                <a href="news-details.php?nid=<?php echo htmlentities($row['pid']) ?>" class="">Read More &rarr;</a>
+                            </div>
 
+                        </div>
+                    <?php } ?>
 
-$query=mysqli_query($con,"select tblposts.id as pid,tblposts.PostTitle as posttitle,tblposts.PostImage,tblcategory.CategoryName as category,tblsubcategory.Subcategory as subcategory,tblposts.PostDetails as postdetails,tblposts.PostingDate as postingdate,tblposts.PostUrl as url from tblposts left join tblcategory on tblcategory.id=tblposts.CategoryId left join  tblsubcategory on  tblsubcategory.SubCategoryId=tblposts.SubCategoryId where tblposts.CategoryId='".$_SESSION['catid']."' and tblposts.Is_Active=1 order by tblposts.id desc LIMIT $offset, $no_of_records_per_page");
-
-$rowcount=mysqli_num_rows($query);
-if($rowcount==0)
-{
-echo "No record found";
-}
-else {
-while ($row=mysqli_fetch_array($query)) {
-
-
-?>
-                <h1><?php echo htmlentities($row['category']);?> News</h1>
-                <div class="card mb-4">
-                    <img class="card-img-top" src="admin/postimages/<?php echo htmlentities($row['PostImage']);?>" alt="<?php echo htmlentities($row['posttitle']);?>">
-                    <div class="card-body">
-                        <p class="text-right mb-0"><small>Posted on <?php echo htmlentities($row['postingdate']);?></small></p>
-
-                        <a href="news-details.php?nid=<?php echo htmlentities($row['pid'])?>" class="card-title text-decoration-none text-dark">
-                            <h2 class="card-title text-dark"><?php echo htmlentities($row['posttitle']);?></h2>
-                        </a>
-
-                        <a href="news-details.php?nid=<?php echo htmlentities($row['pid'])?>" class="">Read More &rarr;</a>
-                    </div>
-
-                </div>
-                <?php } ?>
-
-                <ul class="pagination justify-content-center mb-4">
-                    <li class="page-item"><a href="?pageno=1" class="page-link">First</a></li>
-                    <li class="<?php if($pageno <= 1){ echo 'disabled'; } ?> page-item">
-                        <a href="<?php if($pageno <= 1){ echo '#'; } else { echo "?pageno=".($pageno - 1); } ?>" class="page-link">Prev</a>
-                    </li>
-                    <li class="<?php if($pageno >= $total_pages){ echo 'disabled'; } ?> page-item">
-                        <a href="<?php if($pageno >= $total_pages){ echo '#'; } else { echo "?pageno=".($pageno + 1); } ?> " class="page-link">Next</a>
-                    </li>
-                    <li class="page-item"><a href="?pageno=<?php echo $total_pages; ?>" class="page-link">Last</a></li>
-                </ul>
+                    <ul class="pagination justify-content-center mb-4">
+                        <li class="page-item"><a href="?pageno=1" class="page-link">First</a></li>
+                        <li class="<?php if ($pageno <= 1) {
+                                        echo 'disabled';
+                                    } ?> page-item">
+                            <a href="<?php if ($pageno <= 1) {
+                                            echo '#';
+                                        } else {
+                                            echo "?pageno=" . ($pageno - 1);
+                                        } ?>" class="page-link">Prev</a>
+                        </li>
+                        <li class="<?php if ($pageno >= $total_pages) {
+                                        echo 'disabled';
+                                    } ?> page-item">
+                            <a href="<?php if ($pageno >= $total_pages) {
+                                            echo '#';
+                                        } else {
+                                            echo "?pageno=" . ($pageno + 1);
+                                        } ?> " class="page-link">Next</a>
+                        </li>
+                        <li class="page-item"><a href="?pageno=<?php echo $total_pages; ?>" class="page-link">Last</a></li>
+                    </ul>
                 <?php } ?>
 
 
@@ -149,31 +132,17 @@ while ($row=mysqli_fetch_array($query)) {
 
                 <!-- Pagination -->
 
-
-                <!--  Author Name: MH RONY.
-                        GigHub Link: https://github.com/dev-mhrony
-                        Facebook Link:https://www.facebook.com/dev.mhrony
-                        Youtube Link: https://www.youtube.com/channel/UChYhUxkwDNialcxj-OFRcDw
-                        for any PHP, Laravel, Python, Dart, Flutter work contact me at developer.mhrony@gmail.com  
-                        Visit My Website : developerrony.com -->
-
             </div>
 
             <!-- Sidebar Widgets Column -->
-            <?php include('includes/sidebar.php');?>
+            <?php include('includes/sidebar.php'); ?>
         </div>
         <!-- /.row -->
 
     </div>
     <!-- /.container -->
 
-    <?php include('includes/footer.php');?>
-    <!--  Author Name: MH RONY.
-                        GigHub Link: https://github.com/dev-mhrony
-                        Facebook Link:https://www.facebook.com/dev.mhrony
-                        Youtube Link: https://www.youtube.com/channel/UChYhUxkwDNialcxj-OFRcDw
-                        for any PHP, Laravel, Python, Dart, Flutter work contact me at developer.mhrony@gmail.com  
-                        Visit My Website : developerrony.com -->
+    <?php include('includes/footer.php'); ?>
 
     <script src="js/foot.js"></script>
     <!-- Bootstrap core JavaScript -->
@@ -183,11 +152,5 @@ while ($row=mysqli_fetch_array($query)) {
 
     </head>
 </body>
-<!--  Author Name: MH RONY.
-                        GigHub Link: https://github.com/dev-mhrony
-                        Facebook Link:https://www.facebook.com/dev.mhrony
-                        Youtube Link: https://www.youtube.com/channel/UChYhUxkwDNialcxj-OFRcDw
-                        for any PHP, Laravel, Python, Dart, Flutter work contact me at developer.mhrony@gmail.com  
-                        Visit My Website : developerrony.com -->
 
 </html>

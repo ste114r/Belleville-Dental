@@ -1,4 +1,4 @@
-
+-- Create USERS table
 CREATE TABLE USERS (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) UNIQUE NOT NULL,
@@ -9,26 +9,40 @@ CREATE TABLE USERS (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+INSERT INTO USERS (username, password_hash, email, role) VALUES ('admin01', 'hash123', 'admin01@example.com', 'admin');
+
+-- Create ARTICLE_CATEGORIES table
 CREATE TABLE ARTICLE_CATEGORIES (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
+    name VARCHAR(255) NOT NULL,
+    is_active TINYINT NOT NULL DEFAULT 1 COMMENT '1=active, 0=inactive'
 );
 
+INSERT INTO `ARTICLE_CATEGORIES` (`category_id`, `name`, `is_active`) VALUES
+(1, 'Patient', 1),
+(2, 'Research', 1),
+(3, 'Doctor', 1);
+
+-- Create ARTICLES table
 CREATE TABLE ARTICLES (
     article_id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     slug VARCHAR(255) UNIQUE,
     content TEXT NOT NULL,
-    section VARCHAR(255) NOT NULL,
     category_id INT,
     cover_image_url VARCHAR(500),
-    created_by INT,
+    author VARCHAR(255),
+    view_counter INT DEFAULT 0,
+    is_active TINYINT NOT NULL DEFAULT 1 COMMENT '1=active, 0=inactive',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    -- FOREIGN KEY (category_id) REFERENCES ARTICLE_CATEGORIES(category_id) ON DELETE SET NULL,
-    -- FOREIGN KEY (created_by) REFERENCES USERS(user_id) ON DELETE SET NULL
 );
 
+INSERT INTO ARTICLES (title, slug, content, category_id, author) VALUES ('AI in Life', 'ai-life', 'AI is changing everything.', 1, 'Hieu Hoang');
+INSERT INTO ARTICLES (title, slug, content, category_id, author) VALUES ('Vietnam Beaches', 'vn-beaches', 'Hidden gems in Vietnam.', 2, 'Thinh Tran');
+INSERT INTO ARTICLES (title, slug, content, category_id, author) VALUES ('Minimalism 101', 'minimalism-101', 'Live with less, enjoy more.', 3, 'Hieu Hoang');
+
+-- Create GALLERY table
 CREATE TABLE GALLERY (
     image_id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255),
@@ -37,9 +51,9 @@ CREATE TABLE GALLERY (
     uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     file_size INT,
     file_type VARCHAR(100)
-    -- FOREIGN KEY (uploaded_by) REFERENCES USERS(user_id) ON DELETE CASCADE
 );
 
+-- Create ARTICLE_IMAGES table
 CREATE TABLE ARTICLE_IMAGES (
     id INT AUTO_INCREMENT PRIMARY KEY,
     article_id INT NOT NULL,
@@ -47,15 +61,15 @@ CREATE TABLE ARTICLE_IMAGES (
     caption TEXT,
     display_order INT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    -- FOREIGN KEY (article_id) REFERENCES ARTICLES(article_id) ON DELETE CASCADE,
-    -- FOREIGN KEY (image_id) REFERENCES GALLERY(image_id) ON DELETE CASCADE
 );
 
+-- Create PRODUCT_CATEGORIES table
 CREATE TABLE PRODUCT_CATEGORIES (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL
 );
 
+-- Create PRODUCTS table
 CREATE TABLE PRODUCTS (
     product_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -65,27 +79,25 @@ CREATE TABLE PRODUCTS (
     image_url VARCHAR(500),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    -- FOREIGN KEY (category_id) REFERENCES PRODUCT_CATEGORIES(category_id) ON DELETE SET NULL
 );
 
+-- Create PRODUCT_COMMENTS table
 CREATE TABLE PRODUCT_COMMENTS (
     comment_id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INT NOT NULL,
     user_id INT NOT NULL,
     comment TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    -- FOREIGN KEY (product_id) REFERENCES PRODUCTS(product_id) ON DELETE CASCADE,
-    -- FOREIGN KEY (user_id) REFERENCES USERS(user_id) ON DELETE CASCADE
 );
 
+-- Create ARTICLE_PRODUCTS table
 CREATE TABLE ARTICLE_PRODUCTS (
     id INT AUTO_INCREMENT PRIMARY KEY,
     article_id INT NOT NULL,
     product_id INT NOT NULL
-    -- FOREIGN KEY (article_id) REFERENCES ARTICLES(article_id) ON DELETE CASCADE,
-    -- FOREIGN KEY (product_id) REFERENCES PRODUCTS(product_id) ON DELETE CASCADE,
 );
 
+-- Create FEEDBACK table
 CREATE TABLE FEEDBACK (
     feedback_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -93,12 +105,23 @@ CREATE TABLE FEEDBACK (
     reply TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     replied_at DATETIME
-    -- FOREIGN KEY (user_id) REFERENCES USERS(user_id) ON DELETE CASCADE
 );
 
-CREATE INDEX idx_articles_section ON ARTICLES(section);
+-- Add useful indexes
 CREATE INDEX idx_articles_category ON ARTICLES(category_id);
 CREATE INDEX idx_articles_slug ON ARTICLES(slug);
 CREATE INDEX idx_products_category ON PRODUCTS(category_id);
 CREATE INDEX idx_feedback_created ON FEEDBACK(created_at);
 
+-- -- Insert sample categories
+-- INSERT INTO ARTICLE_CATEGORIES (name) VALUES 
+-- ('Technology'), 
+-- ('Health'), 
+-- ('Education'), 
+-- ('Research Methods');
+
+-- INSERT INTO PRODUCT_CATEGORIES (name) VALUES 
+-- ('Software'), 
+-- ('Hardware'), 
+-- ('Books'), 
+-- ('Online Courses');

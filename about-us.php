@@ -1,18 +1,7 @@
-<!--  Author Name: MH RONY.
-                        GigHub Link: https://github.com/dev-mhrony
-                        Facebook Link:https://www.facebook.com/dev.mhrony
-                        Youtube Link: https://www.youtube.com/channel/UChYhUxkwDNialcxj-OFRcDw
-                        for any PHP, Laravel, Python, Dart, Flutter work contact me at developer.mhrony@gmail.com  
-                        Visit My Website : developerrony.com --><?php
+<?php
 include('includes/config.php');
 
 ?>
-<!--  Author Name: MH RONY.
-GigHub Link: https://github.com/dev-mhrony
-Facebook Link:https://www.facebook.com/dev.mhrony
-Youtube Link: https://www.youtube.com/channel/UChYhUxkwDNialcxj-OFRcDw
-for any PHP, Laravel, Python, Dart, Flutter work contact me at developer.mhrony@gmail.com  
-Visit My Website : developerrony.com -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,12 +12,6 @@ Visit My Website : developerrony.com -->
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
-    <!--  Author Name: MH RONY.
-                        GigHub Link: https://github.com/dev-mhrony
-                        Facebook Link:https://www.facebook.com/dev.mhrony
-                        Youtube Link: https://www.youtube.com/channel/UChYhUxkwDNialcxj-OFRcDw
-                        for any PHP, Laravel, Python, Dart, Flutter work contact me at developer.mhrony@gmail.com  
-                        Visit My Website : developerrony.com -->
     <title>Live News Portal | About us</title>
 
     <!-- Bootstrap core CSS -->
@@ -40,66 +23,27 @@ Visit My Website : developerrony.com -->
 </head>
 
 <body>
-    <!--  Author Name: MH RONY.
-                        GigHub Link: https://github.com/dev-mhrony
-                        Facebook Link:https://www.facebook.com/dev.mhrony
-                        Youtube Link: https://www.youtube.com/channel/UChYhUxkwDNialcxj-OFRcDw
-                        for any PHP, Laravel, Python, Dart, Flutter work contact me at developer.mhrony@gmail.com  
-                        Visit My Website : developerrony.com -->
     <!-- Navigation -->
-    <?php include('includes/header.php');?>
+    <?php include('includes/header.php'); ?>
     <!-- Page Content -->
     <div class="container">
 
-        <?php 
-$pagetype='aboutus';
-$query=mysqli_query($con,"select PageTitle,Description from tblpages where PageName='$pagetype'");
-while($row=mysqli_fetch_array($query))
-{
-
-?>
-        <h1 class="mt-5 mb-3 text-center"><?php echo htmlentities($row['PageTitle'])?>
-
-        </h1>
-
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="index.php">Home</a>
-            </li>
-            <li class="breadcrumb-item active">About</li>
-        </ol>
 
         <!-- Intro Content -->
         <div class="row">
-
             <div class="col-lg-12">
-
-                <p><?php echo $row['Description'];?></p>
+                <p>Welcome to our Dental Care Education page, dedicated to promoting healthy smiles and oral wellness. Our mission is to provide valuable information to help you maintain optimal dental health. Proper dental care is essential for overall well-being, and we aim to empower you with knowledge about preventive practices, treatments, and habits that support a lifetime of healthy teeth and gums.</p>
+                <p>At the core of our educational efforts is the belief that informed individuals make better choices for their oral health. From daily brushing and flossing techniques to understanding the importance of regular dental check-ups, we cover a wide range of topics to ensure you have the tools to care for your smile. Our content is designed to be accessible to everyone, whether you're learning about dental hygiene for the first time or seeking advanced tips for maintaining your oral health.</p>
+                <p>We also explore common dental issues such as cavities, gum disease, and tooth sensitivity, offering practical advice on prevention and treatment options. By staying informed, you can take proactive steps to protect your teeth and gums, ensuring a confident and pain-free smile.</p>
+                <p>Thank you for visiting our Dental Care Education page. We are committed to being your trusted resource for all things related to oral health. Explore our site for more tips, resources, and guidance to keep your smile shining bright!</p>
             </div>
         </div>
-        <!-- /.row -->
-        <?php } ?>
-
-
-        <div class="col-md-12"><a href="tel:+8801608445456">
-                <img src="images/ads.jpg" class="img-fluid"></a>
-
-        </div>
-
     </div>
-
-
 
     <!-- /.container -->
 
     <!-- Footer -->
-    <?php include('includes/footer.php');?>
-    <!--  Author Name: MH RONY.
-                        GigHub Link: https://github.com/dev-mhrony
-                        Facebook Link:https://www.facebook.com/dev.mhrony
-                        Youtube Link: https://www.youtube.com/channel/UChYhUxkwDNialcxj-OFRcDw
-                        for any PHP, Laravel, Python, Dart, Flutter work contact me at developer.mhrony@gmail.com  
-                        Visit My Website : developerrony.com -->
+    <?php include('includes/footer.php'); ?>
 
     <!-- Bootstrap core JavaScript -->
     <script src="vendor/jquery/jquery.min.js"></script>
