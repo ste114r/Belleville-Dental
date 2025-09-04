@@ -6,7 +6,7 @@
 
 
             <div class="col">
-                <a class="navbar-brand" href="index.php"><img src="images/Belleville Dental Logo transparent.png" height="65"></a>
+                <a class="navbar-brand" href="index.php"><img src="images/Belleville Dental logo transparent.png" height="65"></a>
                 <ul class="float-left list-unstyled ">
 
                     <!-- <li class="mb-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum id vitae fugiat, </li> -->
@@ -47,7 +47,7 @@
     justify-content: space-around;
     
     align-items: center;">
-            <p style="text-align: center; ">Design and Developer: Nhom 2</p>
+            <p style="text-align: center; ">Project bởi nhóm 2</p>
         </div>
     </div>
 </div>

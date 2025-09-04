@@ -32,7 +32,7 @@ CREATE TABLE ARTICLES (
     category_id INT,
     cover_image_url VARCHAR(500),
     author VARCHAR(255),
-    view_counter INT DEFAULT 0,
+    view_counter INT DEFAULT NULL,
     is_active TINYINT NOT NULL DEFAULT 1 COMMENT '1=active, 0=inactive',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

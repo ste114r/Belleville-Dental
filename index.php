@@ -11,7 +11,7 @@ include('includes/config.php');
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="shortcut icon" href="images/Belleville Dental Logo transparent.png" type="image/x-icon">
+    <link rel="shortcut icon" href="images/Belleville Dental logo transparent.png" type="image/x-icon">
     <title>Belleville Dental | Home Page</title>
     <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">

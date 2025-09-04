@@ -2,9 +2,9 @@
 session_start();
 include('includes/config.php');
 //Genrating CSRF Token
-if (empty($_SESSION['token'])) {
-    $_SESSION['token'] = bin2hex(random_bytes(32));
-}
+// if (empty($_SESSION['token'])) {
+//     $_SESSION['token'] = bin2hex(random_bytes(32));
+// }
 
 // if (isset($_POST['submit'])) {
 //     //Verifying CSRF Token
@@ -26,15 +26,15 @@ if (empty($_SESSION['token'])) {
 //         }
 //     }
 // }
-$postid = intval($_GET['nid']);
 
-$sql = "SELECT view_counter FROM ARTICLES WHERE id = '$postid'";
+$postid = intval($_GET['nid']);
+$sql = "SELECT view_counter FROM ARTICLES WHERE article_id = '$postid'";
 $result = $con->query($sql);
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $visits = $row["view_counter"];
-        $sql = "UPDATE ARTICLES SET view_counter = $visits+1 WHERE id ='$postid'";
+        $sql = "UPDATE ARTICLES SET view_counter = $visits+1 WHERE article_id ='$postid'";
         $con->query($sql);
     }
 } else {
@@ -52,8 +52,8 @@ if ($result->num_rows > 0) {
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Belleville Dental | Home Page</title>
-    <link rel="shortcut icon" href="images/Belleville Dental Logo.png" type="image/x-icon">
+    <title>Belleville Dental | Article Page</title>
+    <link rel="shortcut icon" href="images/Belleville Dental logo transparent.png" type="image/x-icon">
     <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
@@ -79,17 +79,14 @@ if ($result->num_rows > 0) {
                     <div class="card border-0">
                         <div class="card-body">
                             <a class="badge bg-success text-decoration-none link-light" href="category.php?catid=<?php echo htmlentities($row['cid']) ?>" style="color:#fff"><?php echo htmlentities($row['category']); ?></a>
-                            <!--Subcategory--->
-                            <!-- <a class="badge bg-warning text-decoration-none link-light" style="color:#fff"><?php echo htmlentities($row['subcategory']); ?></a> -->
                             <h1 class="card-title"><?php echo htmlentities($row['posttitle']); ?></h1>
                             <!--category-->
-
                             <p>
                                 by <?php echo htmlentities($row['postedBy']); ?> on | <?php echo htmlentities($row['postingdate']); ?>
-                                <!-- <?php if ($row['lastUpdatedBy'] != ''): ?> -->
-                                Last Updated at <?php echo htmlentities($row['UpdationDate']); ?>
-                            </p>
-                        <?php endif; ?>
+                                <!-- <?php if ($row['lastUpdatedBy'] != ''): ?>
+                                    Last Updated at <?php echo htmlentities($row['UpdationDate']); ?>
+                                <?php endif; ?> -->
+                            </p>                                    
                         <p><strong>Share:</strong> <a href="http://www.facebook.com/share.php?u=<?php echo $currenturl; ?>" target="_blank">Facebook</a> |
                             <a href="https://twitter.com/share?url=<?php echo $currenturl; ?>" target="_blank">Twitter</a> |
                             <a href="https://web.whatsapp.com/send?text=<?php echo $currenturl; ?>" target="_blank">Whatsapp</a> |
