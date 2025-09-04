@@ -42,7 +42,8 @@ if (strlen($_SESSION['login']) == 0) {
 
     <!-- Top Bar Start -->
     <?php include('includes/topheader.php'); ?>
-    <script>
+
+    <!-- <script>
         function getSubCat(val) {
             $.ajax({
                 type: "POST",
@@ -53,7 +54,8 @@ if (strlen($_SESSION['login']) == 0) {
                 }
             });
         }
-    </script>
+    </script> -->
+
     <!-- ========== Left Sidebar Start ========== -->
     <?php include('includes/leftsidebar.php'); ?>
     <!-- Left Sidebar End -->
@@ -109,22 +111,22 @@ if (strlen($_SESSION['login']) == 0) {
                     </div>
                     <div class="form-group col-md-6">
                         <label for="exampleInputEmail1">Category</label>
-                        <select class="form-control" name="category" id="category" onChange="getSubCat(this.value);" required>
+                        <select class="form-control" name="category" id="category" required>
                             <option value="">Select Category </option>
                             <?php
                             // Feching active categories
-                            $ret = mysqli_query($con, "select id,CategoryName from  tblcategory where Is_Active=1");
+                            $ret = mysqli_query($con, "select category_id,name from ARTICLE_CATEGORIES where is_active=1");
                             while ($result = mysqli_fetch_array($ret)) {
                             ?>
-                                <option value="<?php echo htmlentities($result['id']); ?>"><?php echo htmlentities($result['CategoryName']); ?></option>
+                                <option value="<?php echo htmlentities($result['category_id']); ?>"><?php echo htmlentities($result['name']); ?></option>
                             <?php } ?>
                         </select>
                     </div>
-                    <div class="form-group col-md-6">
+                    <!-- <div class="form-group col-md-6">
                         <label for="exampleInputEmail1">Sub Category</label>
                         <select class="form-control" name="subcategory" id="subcategory" required>
                         </select>
-                    </div>
+                    </div> -->
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="card-box">
@@ -144,19 +146,9 @@ if (strlen($_SESSION['login']) == 0) {
                     <button type="submit" name="submit" class="btn btn-custom waves-effect waves-light btn-md">Save and Post</button>
                     <button type="button" class="btn btn-danger waves-effect waves-light">Discard</button>
                 </form>
-
             </div>
             <!-- container -->
         </div>
         <!-- content -->
         <?php include('includes/footer.php'); ?>
-        <!--  
-  Author Name: MH RONY.
-  GigHub Link: https://github.com/dev-mhrony
-  Facebook Link:https://www.facebook.com/dev.mhrony
-  Youtube Link: https://www.youtube.com/channel/UChYhUxkwDNialcxj-OFRcDw
-  for any PHP, Laravel, Python, Dart, Flutter work contact me at developer.mhrony@gmail.com  
-  Visit My Website : developerrony.com 
--->
-
     <?php } ?>

@@ -24,7 +24,7 @@ if (strlen($_SESSION['login']) == 0) {
                             <h4 class="page-title">Dashboard</h4>
                             <ol class="breadcrumb p-0 m-0">
                                 <li>
-                                    <a href="#">NewsPortal</a>
+                                    <a href="#">Belleville Dental</a>
                                 </li>
                                 <li>
                                     <a href="#">Admin</a>
@@ -43,7 +43,7 @@ if (strlen($_SESSION['login']) == 0) {
                         <div class="card-box h-100">
                             <div class="card-header">
                                 <h2 class="card-title mb-2">Welcome!</h2>
-                                <span class="d-block mb-4 text-nowrap">Admin dashboard</span>
+                                <span class="d-block mb-4 text-nowrap">Admin dashboard.</span>
                             </div>
                             <br><br>
                             <div class="card-body">
@@ -67,7 +67,7 @@ if (strlen($_SESSION['login']) == 0) {
                             <div class="card-body">
                                 <div class="row ">
                                     <div class="card-header">
-                                        <h4 class="card-title m-0">Visits of 2023</h4>
+                                        <h4 class="card-title m-0">Total site visits:</h4>
                                     </div>
                                     <div id="chart">
                                         <apexchart type="radialBar" height="265" :options="chartOptions" :series="series"></apexchart>
@@ -82,7 +82,7 @@ if (strlen($_SESSION['login']) == 0) {
                                 <i class="mdi mdi-chart-areaspline widget-one-icon"></i>
                                 <div class="wigdet-one-content">
                                     <p class="m-0 text-secondary" title="Statistics">Categories Listed</p>
-                                    <?php $query = mysqli_query($con, "select * from tblcategory where Is_Active=1");
+                                    <?php $query = mysqli_query($con, "select * from ARTICLE_CATEGORIES where is_active=1");
                                     $countcat = mysqli_num_rows($query);
                                     ?>
                                     <h2><?php echo htmlentities($countcat); ?> <small></small></h2>
@@ -97,7 +97,7 @@ if (strlen($_SESSION['login']) == 0) {
                                 <i class="mdi mdi-layers widget-one-icon"></i>
                                 <div class="wigdet-one-content">
                                     <p class="m-0 text-secondary" title="User This Month">Live News</p>
-                                    <?php $query = mysqli_query($con, "select * from tblposts where Is_Active=1");
+                                    <?php $query = mysqli_query($con, "select * from ARTICLES where is_active=1");
                                     $countposts = mysqli_num_rows($query);
                                     ?>
                                     <h2><?php echo htmlentities($countposts); ?> <small></small></h2>
@@ -105,7 +105,8 @@ if (strlen($_SESSION['login']) == 0) {
                             </div>
                         </div>
                     </a>
-                    <a href="manage-subcategories.php">
+                    
+                    <!-- <a href="manage-subcategories.php">
                         <div class="col-lg-4 col-md-4 col-sm-6">
                             <div class="card-box widget-box-one text-center">
                                 <i class="mdi mdi-layers widget-one-icon"></i>
@@ -118,8 +119,7 @@ if (strlen($_SESSION['login']) == 0) {
                                 </div>
                             </div>
                         </div>
-                        <!-- end col -->
-                    </a>
+                    </a> -->
 
                 </div>
                 <!-- end row -->
@@ -130,7 +130,7 @@ if (strlen($_SESSION['login']) == 0) {
                         <i class="mdi mdi-layers widget-one-icon"></i>
                         <div class="wigdet-one-content">
                         <p class="m-0 text-uppercase font-600 font-secondary text-overflow" title="User This Month">Trash News</p>
-                        <?php $query = mysqli_query($con, "select * from tblposts where Is_Active=0");
+                        <?php $query = mysqli_query($con, "select * from ARTICLES where is_active=0");
                         $countposts = mysqli_num_rows($query);
                         ?>
                         <h2><?php echo htmlentities($countposts); ?> <small></small></h2>
@@ -154,7 +154,7 @@ if (strlen($_SESSION['login']) == 0) {
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $query = mysqli_query($con, "select tblposts.id as postid,tblposts.PostTitle as title,tblcategory.CategoryName as category,tblsubcategory.Subcategory as subcategory from tblposts left join tblcategory on tblcategory.id=tblposts.CategoryId left join tblsubcategory on tblsubcategory.SubCategoryId=tblposts.SubCategoryId where tblposts.Is_Active=1 ");
+                                    $query = mysqli_query($con, "select ARTICLES.article_id as postid,ARTICLES.title as title,ARTICLE_CATEGORIES.name as category where ARTICLES.is_active=1 ");
                                     $rowcount = mysqli_num_rows($query);
                                     if ($rowcount == 0) {
                                     ?>

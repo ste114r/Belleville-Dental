@@ -15,13 +15,18 @@ INSERT INTO USERS (username, password_hash, email, role) VALUES ('admin', 'admin
 CREATE TABLE ARTICLE_CATEGORIES (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    is_active TINYINT NOT NULL DEFAULT 1 COMMENT '1=active, 0=inactive'
+    description VARCHAR(255),
+    is_active TINYINT NOT NULL DEFAULT 1 COMMENT '1=active, 0=inactive',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-INSERT INTO `ARTICLE_CATEGORIES` (`category_id`, `name`, `is_active`) VALUES
-(1, 'Patient', 1),
-(2, 'Research', 1),
-(3, 'Doctor', 1);
+INSERT INTO ARTICLE_CATEGORIES (category_id, name, description, is_active) VALUES
+(1, 'Patients', 'For patients and caregivers.', 1),
+(2, 'Doctor', 'For dental professionals.', 1),
+(3, 'Science & Research', 'For researchers and academics.', 1),
+(4, 'Kids', 'For children.', 0);
+
 
 -- Create ARTICLES table
 CREATE TABLE ARTICLES (

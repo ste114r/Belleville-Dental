@@ -10,7 +10,7 @@ if (strlen($_SESSION['login']) == 0) {
         $category = $_POST['category'];
         $description = $_POST['description'];
         $status = 1;
-        $query = mysqli_query($con, "insert into tblcategory(CategoryName,Description,Is_Active) values('$category','$description','$status')");
+        $query = mysqli_query($con, "insert into ARTICLE_CATEGORIES(name,description,is_active) values('$category','$description','$status')");
         if ($query) {
             $msg = "Category created ";
         } else {
