@@ -1,7 +1,6 @@
 <footer class="foot text-center" style=" position: sticky;
     top: 0;">
-    <?php echo date('Y'); ?> © Design and Developed by
-    <a href=" https://developerrony.com"> MH RONY</a>
+    <?php echo date('Y'); ?> <p style="text-align: center; ">Project bởi nhóm 2</p>
 </footer>
 </div>
 </div>

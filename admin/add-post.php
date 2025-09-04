@@ -10,7 +10,7 @@ if (strlen($_SESSION['login']) == 0) {
     if (isset($_POST['submit'])) {
         $posttitle = $_POST['posttitle'];
         $catid = $_POST['category'];
-        $subcatid = $_POST['subcategory'];
+        // $subcatid = $_POST['subcategory'];
         $postdetails = $_POST['postdescription'];
         $postedby = $_SESSION['login'];
         $arr = explode(" ", $posttitle);
@@ -30,7 +30,7 @@ if (strlen($_SESSION['login']) == 0) {
             move_uploaded_file($_FILES["postimage"]["tmp_name"], "postimages/" . $imgnewfile);
 
             $status = 1;
-            $query = mysqli_query($con, "insert into tblposts(PostTitle,CategoryId,SubCategoryId,PostDetails,PostUrl,Is_Active,PostImage,postedBy) values('$posttitle','$catid','$subcatid','$postdetails','$url','$status','$imgnewfile','$postedby')");
+            $query = mysqli_query($con, "insert into ARTICLES(title,category_id,content,slug,is_active,cover_image_url,author) values('$posttitle','$catid','$postdetails','$url','$status','$imgnewfile','$postedby')");
             if ($query) {
                 $msg = "Post successfully added ";
             } else {

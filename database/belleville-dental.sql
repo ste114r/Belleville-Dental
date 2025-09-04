@@ -9,7 +9,7 @@ CREATE TABLE USERS (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-INSERT INTO USERS (username, password_hash, email, role) VALUES ('admin01', 'hash123', 'admin01@example.com', 'admin');
+INSERT INTO USERS (username, password_hash, email, role) VALUES ('admin', 'admin123', 'admin@gmail.com', 'admin');
 
 -- Create ARTICLE_CATEGORIES table
 CREATE TABLE ARTICLE_CATEGORIES (
