@@ -162,7 +162,7 @@ include('includes/config.php');
                         </div>
                     <?php } ?>
                     <div class="col-md-12"><a href="tel:+8801608445456">
-                            <img src="images/ads.jpg" class="img-fluid"></a>
+                            <!-- <img src="images/ads.jpg" class="img-fluid"></a> -->
 
                         <!-- Pagination -->
                         <!-- <ul class="pagination justify-content-center mb-4">

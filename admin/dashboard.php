@@ -50,17 +50,12 @@ if (strlen($_SESSION['login']) == 0) {
                                 <div class="row ">
                                     <div class="col-md-6">
                                         <h1 class="display-6 text-primary mb-2 pt-4 pb-1">2+ Years of Exprience</h1>
-                                        <small class="d-block mb-3">In <br>PHP, Laravel, Python, Dart, Flutter, C and
-                                            Etc.</small>
-                                        <br>
-                                        <br>
-                                        <a href="https://developerrony.com/" target="a_blank"
-                                            class="btn btn-sm btn-primary">Visit Website</a>
+                                        <h2 class="d-block mb-3">In Dental Care</h2>
                                     </div>
-                                    <div class="col-md-6">
+                                    <!-- <div class="col-md-6">
                                         <img src="assets/images/prize-light.png" width="140" height="150"
                                             class="rounded-start">
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
@@ -70,12 +65,9 @@ if (strlen($_SESSION['login']) == 0) {
                             <div class="card-body">
                                 <div class="row ">
                                     <div class="card-header">
-                                        <h4 class="card-title m-0">Total site visits:</h4>
+                                        <h4 class="card-title m-0">Total articles number per category:</h4>
                                     </div>
-                                    <div id="chart">
-                                        <apexchart type="radialBar" height="265" :options="chartOptions" :series="series">
-                                        </apexchart>
-                                    </div>
+                                    <div id="chart"></div>
                                 </div>
                             </div>
                         </div>
@@ -85,8 +77,8 @@ if (strlen($_SESSION['login']) == 0) {
                             <div class="card-box widget-box-one text-center">
                                 <i class="mdi mdi-chart-areaspline widget-one-icon"></i>
                                 <div class="wigdet-one-content">
-                                    <p class="m-0 text-secondary" title="Statistics">Categories Listed</p>
-                                    <?php $query = mysqli_query($con, "SELECT * FROM ARTICLE_CATEGORIES WHERE is_active=1");
+                                    <p class="m-0 text-secondary" title="Statistics">Live Categories</p>
+                                    <?php $query = mysqli_query($con, "SELECT * FROM ARTICLE_CATEGORIES WHERE is_active = 1");
                                     $countcat = mysqli_num_rows($query);
                                     ?>
                                     <h2><?php echo htmlentities($countcat); ?> <small></small></h2>
@@ -100,8 +92,8 @@ if (strlen($_SESSION['login']) == 0) {
                             <div class="card-box widget-box-one text-center">
                                 <i class="mdi mdi-layers widget-one-icon"></i>
                                 <div class="wigdet-one-content">
-                                    <p class="m-0 text-secondary" title="User This Month">Live News</p>
-                                    <?php $query = mysqli_query($con, "select * from ARTICLES where is_active=1");
+                                    <p class="m-0 text-secondary" title="User This Month">Live Articles</p>
+                                    <?php $query = mysqli_query($con, "SELECT * FROM ARTICLES WHERE is_active = 1");
                                     $countposts = mysqli_num_rows($query);
                                     ?>
                                     <h2><?php echo htmlentities($countposts); ?> <small></small></h2>
@@ -141,10 +133,10 @@ if (strlen($_SESSION['login']) == 0) {
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $query = mysqli_query($con, "SELECT ARTICLES.article_id AS postid, ARTICLES.title AS title, ARTICLE_CATEGORIES.name AS category,
-                                                                                FROM ARTICLES
-                                                                                LEFT JOIN ARTICLE_CATEGORIES ON ARTICLE_CATEGORIES.category_id = ARTICLES.category_id
-                                                                                WHERE ARTICLES.is_active = 1");
+                                    $query = mysqli_query($con, "SELECT ARTICLES.article_id AS postid, ARTICLES.title AS title, ARTICLE_CATEGORIES.name AS category
+                                                                FROM ARTICLES
+                                                                LEFT JOIN ARTICLE_CATEGORIES ON ARTICLE_CATEGORIES.category_id = ARTICLES.category_id
+                                                                WHERE ARTICLES.is_active = 1");
                                     $rowcount = mysqli_num_rows($query);
                                     if ($rowcount == 0) {
                                         ?>
@@ -227,8 +219,40 @@ if (strlen($_SESSION['login']) == 0) {
     </div>
     <!-- END wrapper -->
     <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        <?php
+        // Get category data with article counts
+        $categoryQuery = mysqli_query($con, "
+            SELECT 
+                ac.name as category_name, 
+                COUNT(a.article_id) as article_count
+            FROM ARTICLE_CATEGORIES ac 
+            LEFT JOIN ARTICLES a ON ac.category_id = a.category_id AND a.is_active = 1
+            WHERE ac.is_active = 1 
+            GROUP BY ac.category_id, ac.name 
+            ORDER BY article_count DESC 
+            LIMIT 3
+        ");
+        
+        $categories = [];
+        $counts = [];
+        $total = 0;
+        
+        while($row = mysqli_fetch_array($categoryQuery)) {
+            $categories[] = $row['category_name'];
+            $counts[] = intval($row['article_count']);
+            $total += intval($row['article_count']);
+        }
+        
+        // Pad with empty data if less than 3 categories
+        while(count($categories) < 3) {
+            $categories[] = 'No Category';
+            $counts[] = 0;
+        }
+        ?>
+        
         var options = {
-            series: [44, 55, 67],
+            series: <?php echo json_encode($counts); ?>,
             chart: {
                 height: 265,
                 type: 'radialBar',
@@ -237,26 +261,26 @@ if (strlen($_SESSION['login']) == 0) {
                 radialBar: {
                     dataLabels: {
                         name: {
-                            fontSize: '40px',
+                            fontSize: '22px',
                         },
                         value: {
                             fontSize: '16px',
                         },
                         total: {
                             show: true,
-                            label: 'Total',
+                            label: 'Total Articles',
                             formatter: function (w) {
-                                // By default this function returns the average of all series. The below is just an example to show the use of custom formatter function
-                                return 249
+                                return <?php echo $total; ?>
                             }
                         }
                     }
                 }
             },
-            labels: ['Apples', 'Oranges', 'Bananas'],
+            labels: <?php echo json_encode($categories); ?>,
         };
         var chart = new ApexCharts(document.querySelector("#chart"), options);
         chart.render();
+    });
     </script>
 <?php }
 ?>

@@ -42,7 +42,7 @@ include('includes/config.php');
                         <div class="row">
                             <div class="col-lg-12">
                                 <ul class="list-unstyled mb-0">
-                                    <?php $query = mysqli_query($con, "select category_id,name from ARTICLE_CATEGORIES");
+                                    <?php $query = mysqli_query($con, "SELECT category_id,name FROM ARTICLE_CATEGORIES WHERE is_active = 1");
                                     while ($row = mysqli_fetch_array($query)) {
                                     ?>
                                         <li class=" mb-2">
