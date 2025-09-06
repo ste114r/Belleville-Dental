@@ -10,11 +10,11 @@ if (strlen($_SESSION['login']) == 0) {
         $category = $_POST['category'];
         $description = $_POST['description'];
         $status = 1;
-        $query = mysqli_query($con, "insert into ARTICLE_CATEGORIES(name,description,is_active) values('$category','$description','$status')");
+        $query = mysqli_query($con, "INSERT INTO ARTICLE_CATEGORIES(name, description, is_active) VALUES('$category', '$description', '$status')");
         if ($query) {
-            $msg = "Category created ";
+            $msg = "Category created successfully.";
         } else {
-            $error = "Something went wrong . Please try again.";
+            $error = "Something went wrong. Please try again.";
         }
     }
 
@@ -53,20 +53,20 @@ if (strlen($_SESSION['login']) == 0) {
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="card-box">
-                            <h4 class="m-t-0 header-title"><b>Add Category </b></h4>
+                            <h4 class="m-t-0 header-title"><b>Add Category</b></h4>
                             <hr />
                             <div class="row">
                                 <div class="col-sm-6">
                                     <!---Success Message--->
                                     <?php if ($msg) { ?>
                                         <div class="alert alert-success" role="alert">
-                                            <strong>Well done!</strong> <?php echo htmlentities($msg); ?>
+                                            <strong><?php echo htmlentities($msg); ?></strong>
                                         </div>
                                     <?php } ?>
                                     <!---Error Message--->
                                     <?php if ($error) { ?>
                                         <div class="alert alert-danger" role="alert">
-                                            <strong>Oh snap!</strong> <?php echo htmlentities($error); ?>
+                                            <strong><?php echo htmlentities($error); ?></strong>
                                         </div>
                                     <?php } ?>
                                 </div>

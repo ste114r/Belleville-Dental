@@ -6,7 +6,8 @@
 
 
             <div class="col">
-                <a class="navbar-brand" href="index.php"><img src="images/Belleville Dental logo transparent.png" height="65"></a>
+                <a class="navbar-brand" href="index.php"><img src="images/Belleville Dental logo transparent.png"
+                        height="65"></a>
                 <ul class="float-left list-unstyled ">
 
                     <!-- <li class="mb-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum id vitae fugiat, </li> -->
@@ -38,9 +39,14 @@
 
                 </ul>
             </div>
-
-
         </div>
+
+            <ul class="nav navbar-nav" style=" width: 50%; margin-top: 23px; color: #1969c5;">
+                <marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();">
+                    <b>Placeholder : </b>Placeholder.</marquee>
+                <marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();">
+                    <b>Placeholder : </b>Placeholder.</marquee>
+            </ul>
 
         <div style=" padding: 10px; margin-top: 20px;
     display: flex;
@@ -51,34 +57,38 @@
         </div>
     </div>
 </div>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<script type="text/javascript"
+    src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 <script type="text/javascript">
-function googleTranslateElementInit() {
-    new google.translate.TranslateElement({
-        pageLanguage: 'en'
-    }, 'google_translate_element');
-}
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'en'
+        }, 'google_translate_element');
+    }
 </script>
+
 <style>
-.goog-logo-link {
-    display: none !important;
-}
+    .goog-logo-link {
+        display: none !important;
+    }
 
-.goog-te-gadget {
-    color: transparent;
-}
+    .goog-te-gadget {
+        color: transparent;
+    }
 
-.goog-te-gadget .goog-te-combo {
-    margin: 0px 0;
-    padding: 8px;
-    color: #000;
-    background: #eeee;
-}
+    .goog-te-gadget .goog-te-combo {
+        margin: 0px 0;
+        padding: 8px;
+        color: #000;
+        background: #eeee;
+    }
 
-#google_translate_element {
-    padding-top: 13px;
-    position: absolute;
-    top: 7px;
-    right: 100px;
-}
+    #google_translate_element {
+        padding-top: 13px;
+        position: absolute;
+        top: 7px;
+        right: 100px;
+    }
 </style>

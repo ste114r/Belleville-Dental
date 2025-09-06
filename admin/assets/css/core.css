@@ -15,17 +15,17 @@
 /* =============
   == Core List==
 
-   - Common
-   - Helper classes
-   - Extra
-   - Bootstrap Custom
-   - Waves effect
-   - Print (Invoice css)
-   - Demo Css (Demo purpose only)
+  - Common
+  - Helper classes
+  - Extra
+  - Bootstrap Custom
+  - Waves effect
+  - Print (Invoice css)
+  - Demo Css (Demo purpose only)
 
 ============= */
 /* =============
-   Common
+  Common
 ============= */
 body {
   font-family: "IBM Plex Sans", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", sans-serif;
@@ -93,7 +93,7 @@ a:focus {
 .footer {
   border-top: 1px solid rgba(152, 166, 173, 0.2);
   bottom: 0;
-  text-align: center; !important;
+  text-align: center;
   padding: 19px 30px 20px;
   position: absolute;
   right: 0;
@@ -105,7 +105,7 @@ a:focus {
   width: 100%;
 }
 /* =============
-   Helper classes
+  Helper classes
 ============= */
 .p-0 {
   padding: 0 !important;
@@ -290,7 +290,7 @@ a:focus {
   height: auto !important;
 }
 /* =============
-   Extras
+  Extras
 ============= */
 /* Table type box */
 .table-box {
@@ -307,8 +307,8 @@ a:focus {
   padding: 20px;
   border: 1px solid #d4d8dd;
   -webkit-border-radius: 5px;
-  border-radius: 5px;
   -moz-border-radius: 5px;
+  border-radius: 5px;
   background-clip: padding-box;
   margin-bottom: 20px;
   background-color: #ffffff;
@@ -404,10 +404,10 @@ a:focus {
 /* Dropdown */
 .dropdown-menu {
   padding: 4px 0;
-  transition: all 300ms ease;
   -moz-transition: all 300ms ease;
   -webkit-transition: all 300ms ease;
   -o-transition: all 300ms ease;
+  transition: all 300ms ease;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.06), 0 1px 0 0 rgba(0, 0, 0, 0.02);
   border: 1px solid rgba(152, 166, 173, 0.15);
 }
@@ -784,6 +784,7 @@ a:focus {
   line-height: 2.5em;
   border-radius: 50%;
   -webkit-mask-image: none;
+  mask-image: none; /* Added for Firefox 53+ and standard support */
 }
 .waves-input-wrapper {
   border-radius: 0.2em;
@@ -933,8 +934,8 @@ a:focus {
 }
 .icon-list-demo .col-md-4 {
   -webkit-border-radius: 3px;
-  border-radius: 3px;
   -moz-border-radius: 3px;
+  border-radius: 3px;
   background-clip: padding-box;
   margin-bottom: 10px;
 }

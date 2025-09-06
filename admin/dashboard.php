@@ -5,7 +5,7 @@ error_reporting(0);
 if (strlen($_SESSION['login']) == 0) {
     header('location:index.php');
 } else {
-?>
+    ?>
     <?php include('includes/topheader.php'); ?>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <!-- ========== Left Sidebar Start ========== -->
@@ -50,13 +50,16 @@ if (strlen($_SESSION['login']) == 0) {
                                 <div class="row ">
                                     <div class="col-md-6">
                                         <h1 class="display-6 text-primary mb-2 pt-4 pb-1">2+ Years of Exprience</h1>
-                                        <small class="d-block mb-3">In <br>PHP, Laravel, Python, Dart, Flutter, C and Etc.</small>
+                                        <small class="d-block mb-3">In <br>PHP, Laravel, Python, Dart, Flutter, C and
+                                            Etc.</small>
                                         <br>
                                         <br>
-                                        <a href="https://developerrony.com/" target="a_blank" class="btn btn-sm btn-primary">Visit Website</a>
+                                        <a href="https://developerrony.com/" target="a_blank"
+                                            class="btn btn-sm btn-primary">Visit Website</a>
                                     </div>
                                     <div class="col-md-6">
-                                        <img src="assets/images/prize-light.png" width="140" height="150" class="rounded-start">
+                                        <img src="assets/images/prize-light.png" width="140" height="150"
+                                            class="rounded-start">
                                     </div>
                                 </div>
                             </div>
@@ -70,7 +73,8 @@ if (strlen($_SESSION['login']) == 0) {
                                         <h4 class="card-title m-0">Total site visits:</h4>
                                     </div>
                                     <div id="chart">
-                                        <apexchart type="radialBar" height="265" :options="chartOptions" :series="series"></apexchart>
+                                        <apexchart type="radialBar" height="265" :options="chartOptions" :series="series">
+                                        </apexchart>
                                     </div>
                                 </div>
                             </div>
@@ -82,7 +86,7 @@ if (strlen($_SESSION['login']) == 0) {
                                 <i class="mdi mdi-chart-areaspline widget-one-icon"></i>
                                 <div class="wigdet-one-content">
                                     <p class="m-0 text-secondary" title="Statistics">Categories Listed</p>
-                                    <?php $query = mysqli_query($con, "select * from ARTICLE_CATEGORIES where is_active=1");
+                                    <?php $query = mysqli_query($con, "SELECT * FROM ARTICLE_CATEGORIES WHERE is_active=1");
                                     $countcat = mysqli_num_rows($query);
                                     ?>
                                     <h2><?php echo htmlentities($countcat); ?> <small></small></h2>
@@ -105,24 +109,9 @@ if (strlen($_SESSION['login']) == 0) {
                             </div>
                         </div>
                     </a>
-                    
-                    <!-- <a href="manage-subcategories.php">
-                        <div class="col-lg-4 col-md-4 col-sm-6">
-                            <div class="card-box widget-box-one text-center">
-                                <i class="mdi mdi-layers widget-one-icon"></i>
-                                <div class="wigdet-one-content">
-                                    <p class="m-0 text-secondary" title="User This Month">Listed Subcategories</p>
-                                    <?php $query = mysqli_query($con, "select * from tblsubcategory where Is_Active=1");
-                                    $countsubcat = mysqli_num_rows($query);
-                                    ?>
-                                    <h2><?php echo htmlentities($countsubcat); ?> <small></small></h2>
-                                </div>
-                            </div>
-                        </div>
-                    </a> -->
-
                 </div>
                 <!-- end row -->
+
                 <div class="row">
                     <!--  <a href="trash-posts.php">
                 <div class="col-lg-4 col-md-4 col-sm-6">
@@ -148,33 +137,33 @@ if (strlen($_SESSION['login']) == 0) {
                                     <tr>
                                         <th>Title</th>
                                         <th>Category</th>
-                                        <th>Subcategory</th>
-
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $query = mysqli_query($con, "select ARTICLES.article_id as postid,ARTICLES.title as title,ARTICLE_CATEGORIES.name as category where ARTICLES.is_active=1 ");
+                                    $query = mysqli_query($con, "SELECT ARTICLES.article_id AS postid, ARTICLES.title AS title, ARTICLE_CATEGORIES.name AS category,
+                                                                                FROM ARTICLES
+                                                                                LEFT JOIN ARTICLE_CATEGORIES ON ARTICLE_CATEGORIES.category_id = ARTICLES.category_id
+                                                                                WHERE ARTICLES.is_active = 1");
                                     $rowcount = mysqli_num_rows($query);
                                     if ($rowcount == 0) {
-                                    ?>
+                                        ?>
                                         <tr>
                                             <td colspan="4" align="center">
                                                 <h3 style="color:red">No record found</h3>
                                             </td>
                                         <tr>
                                             <?php
-                                        } else {
-                                            while ($row = mysqli_fetch_array($query)) {
+                                    } else {
+                                        while ($row = mysqli_fetch_array($query)) {
                                             ?>
-                                        <tr>
-                                            <td><?php echo htmlentities($row['title']); ?></td>
-                                            <td><?php echo htmlentities($row['category']) ?></td>
-                                            <td><?php echo htmlentities($row['subcategory']) ?></td>
-
-                                        </tr>
-                                <?php }
-                                        } ?>
+                                            <tr>
+                                                <td><?php echo htmlentities($row['title']); ?></td>
+                                                <td><?php echo htmlentities($row['category']) ?></td>
+                                                <!-- <td><?php echo htmlentities($row['subcategory']) ?></td> -->
+                                            </tr>
+                                        <?php }
+                                    } ?>
                                 </tbody>
                             </table>
                         </div>
@@ -256,7 +245,7 @@ if (strlen($_SESSION['login']) == 0) {
                         total: {
                             show: true,
                             label: 'Total',
-                            formatter: function(w) {
+                            formatter: function (w) {
                                 // By default this function returns the average of all series. The below is just an example to show the use of custom formatter function
                                 return 249
                             }
@@ -266,8 +255,8 @@ if (strlen($_SESSION['login']) == 0) {
             },
             labels: ['Apples', 'Oranges', 'Bananas'],
         };
-
         var chart = new ApexCharts(document.querySelector("#chart"), options);
         chart.render();
     </script>
-<?php } ?>
+<?php }
+?>

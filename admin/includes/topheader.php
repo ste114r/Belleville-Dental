@@ -2,8 +2,8 @@
 <html lang="en">
 
 <head>
-    <title>Live News Portal By MH RONY.</title>
-    <link rel="icon" type="image/x-icon" href="assets/images/favicon.png">
+    <title>Belleville Dental | Admin Portal</title>
+    <link rel="icon" type="image/x-icon" href="assets/images/Belleville Dental logo transparent.png">
 
     <link href="assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="assets/css/core.css" rel="stylesheet" type="text/css" />
@@ -31,11 +31,11 @@
                 url: "check_availability.php",
                 data: 'username=' + $("#sadminusername").val(),
                 type: "POST",
-                success: function(data) {
+                success: function (data) {
                     $("#user-availability-status").html(data);
                     $("#loaderIcon").hide();
                 },
-                error: function() {}
+                error: function () { }
             });
         }
     </script>
@@ -69,10 +69,10 @@
                             </button>
                         </li>
                     </ul>
-                    <ul class="nav navbar-nav" style=" width: 50%; margin-top: 23px; color: #1969c5;">
+                    <!-- <ul class="nav navbar-nav" style=" width: 50%; margin-top: 23px; color: #1969c5;">
                         <marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();"><b>Placeholder : </b>Placeholder.</marquee>
                         <marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();"><b>Placeholder : </b>Placeholder.</marquee>
-                    </ul>
+                    </ul> -->
 
                     <div id="google_translate_element">
 
@@ -84,16 +84,19 @@
 
 
                         <li class="dropdown user-box">
-                            <a href="" class="dropdown-toggle waves-effect user-link" data-toggle="dropdown" aria-expanded="true">
+                            <a href="" class="dropdown-toggle waves-effect user-link" data-toggle="dropdown"
+                                aria-expanded="true">
                                 <img src="assets/images/users/avatar-1.jpg" alt="user-img" class="img-circle user-img">
                             </a>
 
-                            <ul class="dropdown-menu dropdown-menu-right arrow-dropdown-menu arrow-menu-right user-list notify-list">
+                            <ul
+                                class="dropdown-menu dropdown-menu-right arrow-dropdown-menu arrow-menu-right user-list notify-list">
                                 <li>
-                                    <h5>Hi, MH RONY</h5>
+                                    <h5>Hi! Admin</h5>
                                 </li>
 
-                                <li><a href="change-password.php"><i class="ti-settings m-r-5"></i> Change Password</a></li>
+                                <li><a href="change-password.php"><i class="ti-settings m-r-5"></i> Change Password</a>
+                                </li>
 
                                 <li><a href="logout.php"><i class="ti-power-off m-r-5"></i> Logout</a></li>
                             </ul>

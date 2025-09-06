@@ -9,11 +9,11 @@ if (strlen($_SESSION['login']) == 0) {
         $catid = intval($_GET['cid']);
         $category = $_POST['category'];
         $description = $_POST['description'];
-        $query = mysqli_query($con, "Update ARTICLE_CATEGORIES set name='$category',description='$description' where category_id='$catid'");
+        $query = mysqli_query($con, "UPDATE ARTICLE_CATEGORIES SET name='$category', description='$description' WHERE category_id='$catid'");
         if ($query) {
-            $msg = "Category Updated successfully ";
+            $msg = "Category Updated successfully";
         } else {
-            $error = "Something went wrong . Please try again.";
+            $error = "Something went wrong. Please try again.";
         }
     }
 

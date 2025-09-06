@@ -30,15 +30,16 @@ if (strlen($_SESSION['login']) == 0) {
             move_uploaded_file($_FILES["postimage"]["tmp_name"], "postimages/" . $imgnewfile);
 
             $status = 1;
-            $query = mysqli_query($con, "insert into ARTICLES(title,category_id,content,slug,is_active,cover_image_url,author) values('$posttitle','$catid','$postdetails','$url','$status','$imgnewfile','$postedby')");
+            $query = mysqli_query($con, "INSERT INTO ARTICLES (title, category_id, content, slug, is_active, cover_image_url, author) 
+                                                        VALUES ('$posttitle', '$catid', '$postdetails', '$url', '$status', '$imgnewfile', '$postedby' );");
             if ($query) {
-                $msg = "Post successfully added ";
+                $msg = "Article added successfully.";
             } else {
-                $error = "Something went wrong . Please try again.";
+                $error = "Something went wrong. Please try again.";
             }
         }
     }
-?>
+    ?>
 
     <!-- Top Bar Start -->
     <?php include('includes/topheader.php'); ?>
@@ -69,16 +70,16 @@ if (strlen($_SESSION['login']) == 0) {
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="page-title-box">
-                            <h4 class="page-title">Add Post </h4>
+                            <h4 class="page-title">Add Article</h4>
                             <ol class="breadcrumb p-0 m-0">
                                 <li>
-                                    <a href="#">Post</a>
+                                    <a href="#">Admin</a>
                                 </li>
                                 <li>
-                                    <a href="#">Add Post </a>
+                                    <a href="#">Add Article</a>
                                 </li>
                                 <li class="active">
-                                    Add Post
+                                    Add Article
                                 </li>
                             </ol>
                             <div class="clearfix"></div>
@@ -89,40 +90,45 @@ if (strlen($_SESSION['login']) == 0) {
                 <div class="row">
                     <div class="col-sm-6">
                         <!---Success Message--->
-                        <?php if ($msg) { ?>
-                            <div class="alert alert-success" role="alert">
-                                <strong>Well done!</strong> <?php echo htmlentities($msg); ?>
-                            </div>
-                        <?php } ?>
-                        <!---Error Message--->
-                        <?php if ($error) { ?>
-                            <div class="alert alert-danger" role="alert">
-                                <strong>Oh snap!</strong> <?php echo htmlentities($error); ?>
-                            </div>
-                        <?php } ?>
+                    <?php if ($msg) { ?>
+                    <div class="alert alert-success" role="alert">
+                        <strong>Well done!</strong>
+                        <?php echo htmlentities($msg); ?>
                     </div>
+                    <?php } ?>
+                    <!---Error Message--->
+                    <?php if ($error) { ?>
+                    <div class="alert alert-danger" role="alert">
+                        <strong>Oh snap!</strong>
+                        <?php echo htmlentities($error); ?>
+                    </div>
+                    <?php } ?>
                 </div>
+            </div>
 
 
-                <form name="addpost" method="post" class="row" enctype="multipart/form-data">
-                    <div class="form-group col-md-6">
-                        <label for="exampleInputEmail1">Post Title</label>
-                        <input type="text" class="form-control" id="posttitle" name="posttitle" placeholder="Enter title" required>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="exampleInputEmail1">Category</label>
-                        <select class="form-control" name="category" id="category" required>
-                            <option value="">Select Category </option>
-                            <?php
-                            // Feching active categories
-                            $ret = mysqli_query($con, "select category_id,name from ARTICLE_CATEGORIES where is_active=1");
-                            while ($result = mysqli_fetch_array($ret)) {
+            <form name="addpost" method="post" class="row" enctype="multipart/form-data">
+                <div class="form-group col-md-6">
+                    <label for="exampleInputEmail1">Article Title</label>
+                    <input type="text" class="form-control" id="posttitle" name="posttitle" placeholder="Enter title"
+                        required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="exampleInputEmail1">Category</label>
+                    <select class="form-control" name="category" id="category" required>
+                        <option value="">Select Category</option>
+                        <?php
+                        // Feching active categories
+                        $ret = mysqli_query($con, "SELECT category_id, name FROM ARTICLE_CATEGORIES WHERE is_active = 1;");
+                        while ($result = mysqli_fetch_array($ret)) {
                             ?>
-                                <option value="<?php echo htmlentities($result['category_id']); ?>"><?php echo htmlentities($result['name']); ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
-                    <!-- <div class="form-group col-md-6">
+                        <option value="<?php echo htmlentities($result['category_id']); ?>">
+                            <?php echo htmlentities($result['name']); ?>
+                        </option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <!-- <div class="form-group col-md-6">
                         <label for="exampleInputEmail1">Sub Category</label>
                         <select class="form-control" name="subcategory" id="subcategory" required>
                         </select>
@@ -130,7 +136,7 @@ if (strlen($_SESSION['login']) == 0) {
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="card-box">
-                                <h4 class="m-b-30 m-t-0 header-title"><b>Post Details</b></h4>
+                                <h4 class="m-b-30 m-t-0 header-title"><b>Article Details</b></h4>
                                 <textarea class="summernote" name="postdescription" required></textarea>
                             </div>
                         </div>
@@ -138,12 +144,12 @@ if (strlen($_SESSION['login']) == 0) {
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="card-box">
-                                <h4 class="m-b-30 m-t-0 header-title"><b>Feature Image</b></h4>
+                                <h4 class="m-b-30 m-t-0 header-title"><b>Featured Image</b></h4>
                                 <input type="file" class="form-control" id="postimage" name="postimage" required>
                             </div>
                         </div>
                     </div>
-                    <button type="submit" name="submit" class="btn btn-custom waves-effect waves-light btn-md">Save and Post</button>
+                    <button type="submit" name="submit" class="btn btn-custom waves-effect waves-light btn-md">Submit</button>
                     <button type="button" class="btn btn-danger waves-effect waves-light">Discard</button>
                 </form>
             </div>
@@ -151,4 +157,5 @@ if (strlen($_SESSION['login']) == 0) {
         </div>
         <!-- content -->
         <?php include('includes/footer.php'); ?>
-    <?php } ?>
+    <?php } 
+?>

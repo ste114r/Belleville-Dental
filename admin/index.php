@@ -10,7 +10,7 @@ if (isset($_POST['login'])) {
     // $password = md5($_POST['password']);
     $password = $_POST['password'];
     // Fetch data from database on the basis of username/email and password
-    $sql = mysqli_query($con, "SELECT username,email,password_hash,role FROM USERS WHERE (username='$uname' && password_hash='$password')");
+    $sql = mysqli_query($con, "SELECT username, email, password_hash, role FROM USERS WHERE (username = '$uname' && password_hash = '$password')");
     $num = mysqli_fetch_array($sql);
     if ($num > 0) {
         $_SESSION['login'] = $_POST['username'];
@@ -31,8 +31,8 @@ if (isset($_POST['login'])) {
     <meta name="description" content="101 + Belleville Dental.">
     <meta name="author" content="xyz">
 
-
     <!-- App title -->
+    <link rel="shortcut icon" href="assets/images/Belleville Dental logo transparent.png" type="image/x-icon">
     <title> Belleville Dental | Admin Panel</title>
 
     <!-- App css -->
@@ -45,7 +45,6 @@ if (isset($_POST['login'])) {
     <link href="assets/css/responsive.css" rel="stylesheet" type="text/css" />
 
     <script src="assets/js/modernizr.min.js"></script>
-
 </head>
 
 
@@ -71,7 +70,7 @@ if (isset($_POST['login'])) {
                                             <input class="form-control" type="text" required="" name="username" placeholder="Username or email" autocomplete="off">
                                         </div>
                                     </div>
-                                    <div class="text-right mb-2"><a href="forgot-password.php"><i class="mdi mdi-lock"></i> Forgot your password?</a></div>
+                                    <div class="text-right mb-2"><a href="forgot-password.php"><i class="mdi mdi-lock"></i>Forgot Your Password?</a></div>
                                     <div class="form-group">
                                         <div class="col-xs-12">
                                             <input class="form-control" type="password" name="password" required="" placeholder="Password" autocomplete="off">
@@ -84,7 +83,7 @@ if (isset($_POST['login'])) {
                                     </div>
                                 </form>
                                 <div class="text-center">
-                                    <a href="../index.php"><i class="mdi mdi-home"></i> Back Home</a>
+                                    <a href="../index.php"><i class="mdi mdi-home"></i>Back Home</a>
                                 </div>
                             </div>
                         </div>

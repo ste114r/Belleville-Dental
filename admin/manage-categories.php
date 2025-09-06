@@ -2,29 +2,32 @@
 session_start();
 include('includes/config.php');
 error_reporting(0);
+
 if (strlen($_SESSION['login']) == 0) {
     header('location:index.php');
 } else {
+
+    // Code for delete
     if ($_GET['action'] == 'del' && $_GET['rid']) {
         $id = intval($_GET['rid']);
-        $query = mysqli_query($con, "update ARTICLE_CATEGORIES set is_active='0' where category_id='$id'");
-        $msg = "Category deleted ";
+        $query = mysqli_query($con, "UPDATE ARTICLE_CATEGORIES SET is_active = '0' WHERE category_id = '$id'");
+        $msg = "Category " . mysqli_fetch_assoc(mysqli_query($con, "SELECT name FROM ARTICLE_CATEGORIES WHERE category_id = '$id'"))['name'] . " deleted successfully.";
     }
     // Code for restore
     if ($_GET['resid']) {
         $id = intval($_GET['resid']);
-        $query = mysqli_query($con, "update ARTICLE_CATEGORIES set is_active='1' where category_id='$id'");
-        $msg = "Category restored successfully";
+        $query = mysqli_query($con, "UPDATE ARTICLE_CATEGORIES SET is_active = '1' WHERE category_id = '$id'");
+        $msg = "Category " . mysqli_fetch_assoc(mysqli_query($con, "SELECT name FROM ARTICLE_CATEGORIES WHERE category_id = '$id'"))['name'] . " restored successfully.";
     }
 
-    // Code for Forever deletionparmdel
-    if ($_GET['action'] == 'parmdel' && $_GET['rid']) {
+    // Code for permanent delete
+    if ($_GET['action'] == 'permdel' && $_GET['rid']) {
         $id = intval($_GET['rid']);
-        $query = mysqli_query($con, "delete from ARTICLE_CATEGORIES where category_id='$id'");
-        $delmsg = "Category deleted forever";
+        $query = mysqli_query($con, "DELETE FROM ARTICLE_CATEGORIES WHERE category_id = '$id'");
+        $delmsg = "Category " . mysqli_fetch_assoc(mysqli_query($con, "SELECT name FROM ARTICLE_CATEGORIES WHERE category_id = '$id'"))['name'] . " deleted permanently.";
     }
 
-?>
+    ?>
     <!-- Top Bar Start -->
     <?php include('includes/topheader.php'); ?>
     <!-- ========== Left Sidebar Start ========== -->
@@ -46,7 +49,7 @@ if (strlen($_SESSION['login']) == 0) {
                                     <a href="#">Admin</a>
                                 </li>
                                 <li>
-                                    <a href="#">Category </a>
+                                    <a href="#">Category</a>
                                 </li>
                                 <li class="active">
                                     Manage Categories
@@ -56,28 +59,27 @@ if (strlen($_SESSION['login']) == 0) {
                         </div>
                     </div>
                 </div>
-                <!-- end row -->
                 <div class="row">
                     <div class="col-sm-6">
+                        <!---Success Message--->
                         <?php if ($msg) { ?>
                             <div class="alert alert-success" role="alert">
-                                <strong>Well done!</strong> <?php echo htmlentities($msg); ?>
+                                <strong><?php echo htmlentities($msg); ?></strong>
                             </div>
                         <?php } ?>
-                        <?php if ($delmsg) { ?>
+                        <!---Error Message--->
+                        <?php if ($error) { ?>
                             <div class="alert alert-danger" role="alert">
-                                <strong>Oh snap!</strong> <?php echo htmlentities($delmsg); ?>
+                                <strong><?php echo htmlentities($error); ?></strong>
                             </div>
                         <?php } ?>
                     </div>
+                </div>
+                <!-- end row -->
+                <div class="row">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="demo-box m-t-20">
-                                <div class="m-b-30">
-                                    <a href="add-category.php">
-                                        <button id="addToTable" class="btn btn-custom waves-effect waves-light btn-md">Add <i class="mdi mdi-plus-circle-outline"></i></button>
-                                    </a>
-                                </div>
+                            <div class="card-box m-t-20">
                                 <div class="table-responsive">
                                     <table class="table m-0 table-bordered" id="example">
                                         <thead>
@@ -92,21 +94,25 @@ if (strlen($_SESSION['login']) == 0) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            $query = mysqli_query($con, "Select category_id,name,description,created_at,updated_at from ARTICLE_CATEGORIES where is_active=1");
+                                            $query = mysqli_query($con, "SELECT category_id, name, description, created_at, updated_at FROM ARTICLE_CATEGORIES WHERE is_active = 1");
                                             $cnt = 1;
                                             while ($row = mysqli_fetch_array($query)) {
-                                            ?>
+                                                ?>
                                                 <tr>
                                                     <th scope="row"><?php echo htmlentities($cnt); ?></th>
                                                     <td><?php echo htmlentities($row['name']); ?></td>
                                                     <td><?php echo htmlentities($row['description']); ?></td>
                                                     <td><?php echo htmlentities($row['created_at']); ?></td>
                                                     <td><?php echo htmlentities($row['updated_at']); ?></td>
-                                                    <td><a class="btn btn-primary btn-sm" href="edit-category.php?cid=<?php echo htmlentities($row['category_id']); ?>"><i class="fa fa-pencil"></i></a>
-                                                        &nbsp;<a class="btn btn-danger btn-sm" href="manage-categories.php?rid=<?php echo htmlentities($row['category_id']); ?>&&action=del"> <i class="fa fa-trash-o"></i></a>
+                                                    <td><a class="btn btn-primary btn-sm"
+                                                            href="edit-category.php?cid=<?php echo htmlentities($row['category_id']); ?>"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        &nbsp;<a class="btn btn-danger btn-sm"
+                                                            href="manage-categories.php?rid=<?php echo htmlentities($row['category_id']); ?>&&action=del">
+                                                            <i class="fa fa-trash-o"></i></a>
                                                     </td>
                                                 </tr>
-                                            <?php
+                                                <?php
                                                 $cnt++;
                                             } ?>
                                         </tbody>
@@ -116,9 +122,10 @@ if (strlen($_SESSION['login']) == 0) {
                         </div>
                     </div>
                     <!--- end row -->
+
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="demo-box m-t-20">
+                            <div class="card-box m-t-20">
                                 <div class="m-b-30">
                                     <h4><i class="fa fa-trash-o"></i>Deleted Categories</h4>
                                 </div>
@@ -136,21 +143,27 @@ if (strlen($_SESSION['login']) == 0) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            $query = mysqli_query($con, "Select category_id,name,description,created_at,updated_at from  ARTICLE_CATEGORIES where is_active=0");
+                                            $query = mysqli_query($con, "SELECT category_id, name, description, created_at, updated_at FROM ARTICLE_CATEGORIES WHERE is_active = 0");
                                             $cnt = 1;
                                             while ($row = mysqli_fetch_array($query)) {
-                                            ?>
+                                                ?>
                                                 <tr>
                                                     <th scope="row"><?php echo htmlentities($cnt); ?></th>
                                                     <td><?php echo htmlentities($row['name']); ?></td>
                                                     <td><?php echo htmlentities($row['description']); ?></td>
                                                     <td><?php echo htmlentities($row['created_at']); ?></td>
                                                     <td><?php echo htmlentities($row['updated_at']); ?></td>
-                                                    <td><a href="manage-categories.php?resid=<?php echo htmlentities($row['category_id']); ?>"><i class="ion-arrow-return-right" title="Restore this category"></i></a>
-                                                        &nbsp;<a href="manage-categories.php?rid=<?php echo htmlentities($row['category_id']); ?>&&action=parmdel" title="Delete forever"> <i class="fa fa-trash-o" style="color: #f05050"></i>
+                                                    <td><a class="btn btn-primary btn-sm" href="manage-categories.php?resid=<?php echo htmlentities($row['category_id']); ?>">
+                                                            <i class="ion-arrow-return-right" 
+                                                            title="Restore Category"></i></a>
+                                                        &nbsp;
+                                                        <a class="btn btn-danger btn-sm" href="manage-categories.php?rid=<?php echo htmlentities($row['category_id']); ?>&&action=permdel"
+                                                            onclick="return confirm('Do you want to permanently delete this category?')"><i
+                                                                class="fa fa-trash-o"
+                                                                title="Permanently Delete Category"></i></a>
                                                     </td>
                                                 </tr>
-                                            <?php
+                                                <?php
                                                 $cnt++;
                                             } ?>
                                         </tbody>
@@ -164,4 +177,5 @@ if (strlen($_SESSION['login']) == 0) {
             </div>
             <!-- content -->
             <?php include('includes/footer.php'); ?>
-        <?php } ?>
+        <?php }
+?>
