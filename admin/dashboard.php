@@ -122,7 +122,7 @@ if (strlen($_SESSION['login']) == 0) {
                 </div>
                 <div class="col-sm-12">
                     <div class="card-box">
-                        <h2>Recent News Post</h2>
+                        <h2>Recently Uploaded Articles</h2>
                         <div class="table-responsive">
                             <table class="table table-bordered" id="example">
                                 <thead>

@@ -28,7 +28,7 @@
         function checkAvailability() {
             $("#loaderIcon").show();
             jQuery.ajax({
-                url: "check_availability.php",
+                url: "check-availability.php",
                 data: 'username=' + $("#sadminusername").val(),
                 type: "POST",
                 success: function (data) {
