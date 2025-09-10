@@ -1,4 +1,4 @@
-# Belleville Dental
+<!-- # Belleville Dental
 
 ### Available Features:
 
@@ -39,4 +39,66 @@ Database Name: livenews
 
 Username: admin <br/>
 
-Password: admin
+Password: admin -->
+
+### Belleville Dental - Educational Article Website
+
+### Project Overview
+
+Welcome to the Belleville Dental project! This is a complete, functional website built for a fictional
+dental clinic. It is a practical example of a classic dynamic website powered by PHP and
+a MySQL database. The project is divided into two main parts: a client side where
+visitors can learn about the clinic and read articles, and an administration side for
+managing most of the site's content.
+
+A typical visitor can browse the site, read news articles, and search for specific topics. An
+administrator, on the other hand, can log in to a private backend, view site statistics, write and
+publish new articles, manage categories, and moderate user comments, feedbacks, products all through
+an intuitive user interface.
+
+## Features
+
+# Client side:
+
+- Content browsing and navigation
+- Reading and interacting with articles
+- Search articles functionality
+- Sort articles, products by categories functionality
+- Product viewing
+
+# Admin side:
+
+- Authentication
+- Dashboard
+- Article/Post management
+- Category management
+- Product management
+- Comment, feedback queries moderation
+- Administrator & User management
+- Update, forgot password
+
+## Backend Technologies
+
+- PHP
+- MySQL 
+- HTML5
+- CSS3
+- Bootstrap
+- jQuery
+- Zircos Admin Template (by Coderthemes)
+- Advanced JavaScript Plugins
+
+### Prerequisites
+1. Download and place the project files inside the htdocs folder in C:\xampp.
+2. Start the XAMPP Apache & MySQL services.
+3. Create database 'belleville-dental' int phpmyadmin and import the existing database file.
+4. View the website through localhost.
+
+### Info
+- Default administrator username and password: admin.
+
+-------
+
+A quick note on configuration: The database connection settings are stored in `includes/config.php` and
+`admin/includes/config.php`. They are pre-configured for a default XAMPP installation where the MySQL user
+is `root` with no password. If your MySQL setup uses a password, you must update this file.
