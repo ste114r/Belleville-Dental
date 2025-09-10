@@ -34,6 +34,14 @@
                 </li>
                 <li class="has_sub">
                     <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-comment-account-outline"></i>
+                        <span> Feedback Queries </span> <span class="menu-arrow"></span></a>
+                    <ul class="list-unstyled">
+                        <li><a href="unapprove-comment.php"> </a></li>
+                        <li><a href="manage-comments.php">Approved Comments</a></li>
+                    </ul>
+                </li>
+                <li class="has_sub">
+                    <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-comment-account-outline"></i>
                         <span> Comments </span> <span class="menu-arrow"></span></a>
                     <ul class="list-unstyled">
                         <li><a href="unapprove-comment.php">Waiting for Approval </a></li>
@@ -41,11 +49,7 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="#" class="waves-effect"><i class="ti ti-info-alt"></i><span>Watch Video</span></a>
-                </li>
-                <li>
-                    <a href="index.php" class="waves-effect"><i class="fa fa-eye" aria-hidden="true"></i><span>Website
-                            Preview</span></a>
+                    <a href="../index.php" class="waves-effect"><i class="fa fa-eye" aria-hidden="true"></i><span>Go To Website</span></a>
                 </li>
             </ul>
         </div>

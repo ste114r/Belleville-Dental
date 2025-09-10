@@ -74,7 +74,7 @@
                         <marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();"><b>Placeholder : </b>Placeholder.</marquee>
                     </ul> -->
 
-                    <div id="google_translate_element">
+                    <div id="">
 
                     </div>
 

@@ -39,4 +39,4 @@ Database Name: livenews
 
 Username: admin <br/>
 
-Password: Watch Youtube ( Video )
+Password: admin
