@@ -13,7 +13,7 @@ The website is divided into two main sections:
 
 ---
 
-# Features
+## Features
 
 ### Client Side
 
