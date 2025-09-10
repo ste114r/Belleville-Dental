@@ -41,9 +41,9 @@ Username: admin <br/>
 
 Password: admin -->
 
-### Belleville Dental - Educational Article Website
+# Belleville Dental - Educational Article Website
 
-### Project Overview
+## Project Overview
 
 Welcome to the Belleville Dental project! This is a complete, functional website built for a fictional
 dental clinic. It is a practical example of a classic dynamic website powered by PHP and
@@ -56,9 +56,9 @@ administrator, on the other hand, can log in to a private backend, view site sta
 publish new articles, manage categories, and moderate user comments, feedbacks, products all through
 an intuitive user interface.
 
-## Features
+# Features
 
-# Client side:
+## Client side:
 
 - Content browsing and navigation
 - Reading and interacting with articles
@@ -66,7 +66,7 @@ an intuitive user interface.
 - Sort articles, products by categories functionality
 - Product viewing
 
-# Admin side:
+## Admin side:
 
 - Authentication
 - Dashboard
@@ -88,13 +88,13 @@ an intuitive user interface.
 - Zircos Admin Template (by Coderthemes)
 - Advanced JavaScript Plugins
 
-### Prerequisites
+## Prerequisites
 1. Download and place the project files inside the htdocs folder in C:\xampp.
 2. Start the XAMPP Apache & MySQL services.
 3. Create database 'belleville-dental' int phpmyadmin and import the existing database file.
 4. View the website through localhost.
 
-### Info
+## Info
 - Default administrator username and password: admin.
 
 -------
