@@ -552,8 +552,8 @@
 }
 .portlet .portlet-heading {
   -webkit-border-radius: 3px 3px 0 0;
-  border-radius: 3px 3px 0 0;
   -moz-border-radius: 3px 3px 0 0;
+  border-radius: 3px 3px 0 0;
   color: #ffffff;
   padding: 12px 20px;
   margin: -2px -2px 0 -2px;
@@ -570,7 +570,7 @@
   /*  font-family: 'Hind Madurai', sans-serif;*/
 }
 .portlet .portlet-heading .portlet-widgets {
-  display: inline-block;
+  /* display: inline-block; */
   float: right;
   font-size: 15px;
   line-height: 30px;
@@ -578,6 +578,7 @@
   position: relative;
   text-align: right;
 }
+
 .portlet .portlet-heading .portlet-widgets .divider {
   margin: 0 5px;
 }
@@ -649,16 +650,16 @@
 }
 @keyframes sk-rotateplane {
   0% {
-    transform: perspective(120px) rotateX(0deg) rotateY(0deg);
     -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+    transform: perspective(120px) rotateX(0deg) rotateY(0deg);
   }
   50% {
-    transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
     -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+    transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
   }
   100% {
-    transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
     -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+    transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
   }
 }
 /* ==== Draggable card ==== */
@@ -991,8 +992,8 @@
   background-color: #ffffff;
   width: 600px;
   -webkit-border-radius: 4px;
-  border-radius: 4px;
   -moz-border-radius: 4px;
+  border-radius: 4px;
   background-clip: padding-box;
   display: none;
 }
@@ -1612,7 +1613,7 @@
   margin-bottom: 24px;
 }
 .conversation-list .chat-avatar {
-  display: inline-block;
+  /* display: inline-block; */
   float: left;
   text-align: center;
   width: 42px;
@@ -1662,7 +1663,7 @@
   border-right-color: rgba(243, 243, 243, 0.6);
 }
 .conversation-list .conversation-text {
-  display: inline-block;
+  /* display: inline-block; */
   float: left;
   font-size: 12px;
   margin-left: 12px;
@@ -2833,9 +2834,9 @@ input[data-switch="teal"]:checked + label {
 .mce-primary {
   background-color: #7fc1fc !important;
 }
-.mce-window-head .mce-title {
-  /*  font-family: 'Hind Madurai', sans-serif;*/
-}
+/* .mce-window-head .mce-title {
+  font-family: 'Hind Madurai', sans-serif;
+} */
 .mce-window {
   padding: 20px !important;
 }
@@ -2905,9 +2906,9 @@ table.dataTable.dtr-inline.collapsed
   > th:first-child:before {
   background-color: #f5707a;
 }
-table.dataTable > tbody > tr.child span.dtr-title {
-  /*  font-family: 'Hind Madurai', sans-serif;*/
-}
+/* table.dataTable > tbody > tr.child span.dtr-title {
+  font-family: 'Hind Madurai', sans-serif;
+} */
 /* ColVid Tables */
 div.ColVis {
   float: none;
