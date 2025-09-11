@@ -41,10 +41,10 @@
         $('#example').DataTable({
             dom: 'Bfrtip',
             buttons: [
-                'copyHtml5',
-                'excelHtml5',
-                'csvHtml5',
-                'pdfHtml5'
+                // 'copyHtml5',
+                // 'excelHtml5',
+                // 'csvHtml5',
+                // 'pdfHtml5'
             ]
         });
     });
@@ -52,10 +52,10 @@
         $('#example1').DataTable({
             dom: 'Bfrtip',
             buttons: [
-                'copyHtml5',
-                'excelHtml5',
-                'csvHtml5',
-                'pdfHtml5'
+                // 'copyHtml5',
+                // 'excelHtml5',
+                // 'csvHtml5',
+                // 'pdfHtml5'
             ]
         });
     });

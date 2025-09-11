@@ -3073,9 +3073,9 @@ ul.ColVis_collection li {
   position: relative;
   text-align: left;
 }
-.dt-buttons {
+/* .dt-buttons {
   float: left;
-}
+} */
 div#datatable-buttons_info {
   float: left;
 }

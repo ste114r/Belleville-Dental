@@ -42,8 +42,8 @@ File: Components
   font-family: inherit;
   border: none;
   -webkit-border-radius: 3px;
-  border-radius: 3px;
   -moz-border-radius: 3px;
+  border-radius: 3px;
   background-clip: padding-box;
   box-shadow: 0 0 28px rgba(0, 0, 0, 0.15);
 
@@ -591,8 +591,8 @@ File: Components
 
   .portlet-heading {
     -webkit-border-radius: 3px 3px 0 0;
-    border-radius: 3px 3px 0 0;
     -moz-border-radius: 3px 3px 0 0;
+    border-radius: 3px 3px 0 0;
     color: @white;
     padding: 12px 20px;
     margin: -2px -2px 0 -2px;
@@ -609,7 +609,7 @@ File: Components
       font-family: @font-secondary;
     }
     .portlet-widgets {
-      display: inline-block;
+      // display: inline-block;
       float: right;
       font-size: 15px;
       line-height: 30px;
@@ -692,16 +692,16 @@ File: Components
 }
 @keyframes sk-rotateplane {
   0% {
-    transform: perspective(120px) rotateX(0deg) rotateY(0deg);
     -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+    transform: perspective(120px) rotateX(0deg) rotateY(0deg);
   }
   50% {
-    transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
     -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+    transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
   }
   100% {
-    transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
     -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+    transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
   }
 }
 
@@ -1783,8 +1783,8 @@ File: Components
   width: 80px;
   text-align: center;
   -webkit-border-radius: 50%;
-  border-radius: 50%;
   -moz-border-radius: 50%;
+  border-radius: 50%;
   background-clip: padding-box;
   border: 1px dashed @muted;
   background-color: @light3;
@@ -1894,7 +1894,7 @@ File: Components
     margin-bottom: 24px;
   }
   .chat-avatar {
-    display: inline-block;
+    // display: inline-block;
     float: left;
     text-align: center;
     width: 42px;
@@ -1945,7 +1945,7 @@ File: Components
     }
   }
   .conversation-text {
-    display: inline-block;
+    // display: inline-block;
     float: left;
     font-size: 12px;
     margin-left: 12px;
@@ -3549,9 +3549,9 @@ ul.ColVis_collection li {
 }
 
 
-.dt-buttons {
-  float: left;
-}
+// .dt-buttons {
+//   float: left;
+// }
 div#datatable-buttons_info {
   float: left;
 }
@@ -4276,8 +4276,8 @@ table.dataTable thead th.sorting_desc:after {
   background-color: @dark !important;
   padding: 5px 10px !important;
   -webkit-border-radius: 3px;
-  border-radius: 3px;
   -moz-border-radius: 3px;
+  border-radius: 3px;
   border-color: @dark !important;
 }
 .jqsfield {
