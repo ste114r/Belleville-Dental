@@ -5,7 +5,7 @@
 define('DB_SERVER', getenv('DB_SERVER') ?: 'localhost');
 define('DB_USER', getenv('DB_USER') ?: 'root');
 define('DB_PASS', getenv('DB_PASS') ?: '');
-define('DB_NAME', getenv('DB_NAME') ?: 'belleville-dental');
+define('DB_NAME', getenv('DB_NAME') ?: 'belleville-dental-test');
 
 // Establish database connection
 $con = mysqli_connect(DB_SERVER, DB_USER, DB_PASS, DB_NAME);

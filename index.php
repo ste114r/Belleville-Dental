@@ -71,7 +71,12 @@ include('includes/config.php');
         }
         
         .article-image {
-            height: 200px;
+            height: 210px;
+            object-fit: cover;
+        }
+
+        .join-article-image {
+            height: 400px;
             object-fit: cover;
         }
         
@@ -268,7 +273,7 @@ include('includes/config.php');
                     <!-- Join Us Section -->
                     <div class="col-md-12">
                         <div class="article-card text-center">
-                            <img class="article-image w-100" src="admin/postimages/dental hospital 1.jpg" alt="Join Us">
+                            <img class="join-article-image w-100" src="./images/join-us.png" alt="Join Us">
                             <div class="card-body">
                                 <a href="#" class="text-decoration-none text-dark">
                                     <h5 class="card-title">Join Us!</h5>
