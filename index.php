@@ -59,7 +59,7 @@ include('includes/config.php');
             border: none;
             border-radius: 8px;
             transition: all 0.2s ease;
-            height: 100%;
+            height: 95%;
             background: white;
             margin-bottom: 25px;
             overflow: hidden;
@@ -90,6 +90,10 @@ include('includes/config.php');
             margin-bottom: 10px;
         }
         
+        .card-body-inner {
+            padding: 20px 20px;
+        }
+
         .section-title {
             position: relative;
             display: inline-block;
@@ -248,11 +252,13 @@ include('includes/config.php');
                             <div class="article-card">
                                 <img class="article-image w-100" src="admin/postimages/<?php echo htmlentities($row['PostImage']); ?>" alt="<?php echo htmlentities($row['posttitle']); ?>">
                                 <div class="card-body">
-                                    <span class="category-badge"><?php echo htmlentities($row['category']); ?></span>
-                                    <!-- <p class="m-0"><small> Posted on <?php echo htmlentities($row['postingdate']); ?></small></p> -->
-                                    <a href="news-details.php?nid=<?php echo htmlentities($row['pid']) ?>" class="text-decoration-none text-dark">
-                                        <h5 class="card-title mt-2"><?php echo htmlentities($row['posttitle']); ?></h5>
-                                    </a>
+                                    <div class="card-body-inner">
+                                        <span class="category-badge"><?php echo htmlentities($row['category']); ?></span>
+                                        <!-- <p class="m-0"><small> Posted on <?php echo htmlentities($row['postingdate']); ?></small></p> -->
+                                        <a href="news-details.php?nid=<?php echo htmlentities($row['pid']) ?>" class="text-decoration-none text-dark">
+                                            <h5 class="card-title mt-2"><?php echo htmlentities($row['posttitle']); ?></h5>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -276,7 +282,7 @@ include('includes/config.php');
                             <img class="join-article-image w-100" src="./images/join-us.png" alt="Join Us">
                             <div class="card-body">
                                 <a href="#" class="text-decoration-none text-dark">
-                                    <h5 class="card-title">Join Us!</h5>
+                                    <h5 class="card-title" style="padding-top: 10px;">Join Us!</h5>
                                 </a>
                                 <p class="card-text">Become part of our dental health community</p>
                             </div>

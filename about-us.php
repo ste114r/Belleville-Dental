@@ -58,7 +58,7 @@ include('includes/config.php');
         
         .mission-vision {
             background: var(--primary);
-            padding: 40px 0;
+            padding: 40px 40px;
             border-radius: 8px;
             margin: 30px 0;
             color: white;

@@ -217,101 +217,51 @@ include('includes/config.php');
 
         <h2 class="text-center mb-4 section-title">Our Recommendations</h2>
         <div class="row justify-content-center">
-        <div class="row" style="margin-top: 4%">
-            <!-- Categories Column -->
-            <div class="col-md-2 mt-4">
-                <div class="sidebar-card">
-                    <div class="sidebar-header">
-                        <h5 class="mb-0">Categories</h5>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card product-card">
+                    <div class="product-image">
+                        <img src="images/01.png" alt="Soft Bristle Toothbrush">
                     </div>
-                    <div class="card-body p-0">
-                        <ul class="category-list">
-                            <?php $query = mysqli_query($con, "select category_id,name from ARTICLE_CATEGORIES WHERE is_active = 1");
-                            while ($row = mysqli_fetch_array($query)) {
-                            ?>
-                                <li>
-                                    <a href="category.php?catid=<?php echo htmlentities($row['category_id']) ?>"><?php echo htmlentities($row['name']); ?></a>
-                                </li>
-                            <?php } ?>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Main Content Column -->
-            <div class="col-md-7">
-                <h4 class="section-title">Today <span>Highlight</span></h4>
-                
-                <div class="row">
-                    <?php
-                    if (isset($_GET['pageno'])) {
-                        $pageno = $_GET['pageno'];
-                    } else {
-                        $pageno = 1;
-                    }
-                    $no_of_records_per_page = 8;
-                    $offset = ($pageno - 1) * $no_of_records_per_page;
-
-                    $total_pages_sql = "SELECT COUNT(*) FROM ARTICLES";
-                    $result = mysqli_query($con, $total_pages_sql);
-                    if (!$result) {
-                        echo "SQL Error: " . mysqli_error($conn);
-                    }
-
-                    $total_rows = mysqli_fetch_array($result)[0];
-                    $total_pages = ceil($total_rows / $no_of_records_per_page);
-
-                    $query = mysqli_query($con, "
-                        SELECT 
-                            ARTICLES.article_id AS pid,
-                            ARTICLES.title AS posttitle,
-                            ARTICLES.cover_image_url AS PostImage,
-                            ARTICLE_CATEGORIES.name AS category,
-                            ARTICLE_CATEGORIES.category_id AS cid,
-                            ARTICLES.content AS postdetails,
-                            ARTICLES.created_at AS postingdate,
-                            ARTICLES.slug AS url
-                        FROM ARTICLES
-                        LEFT JOIN ARTICLE_CATEGORIES 
-                            ON ARTICLE_CATEGORIES.category_id = ARTICLES.category_id
-                        WHERE ARTICLES.is_active = 1
-                        ORDER BY ARTICLES.article_id DESC
-                        LIMIT $offset, $no_of_records_per_page
-                        ");
-                    while ($row = mysqli_fetch_array($query)) {
-                    ?>
-                        <div class="col-md-6">
-                            <div class="article-card">
-                                <img class="article-image w-100" src="admin/postimages/<?php echo htmlentities($row['PostImage']); ?>" alt="<?php echo htmlentities($row['posttitle']); ?>">
-                                <div class="card-body">
-                                    <div class="card-body-inner">
-                                        <span class="category-badge"><?php echo htmlentities($row['category']); ?></span>
-                                        <!-- <p class="m-0"><small> Posted on <?php echo htmlentities($row['postingdate']); ?></small></p> -->
-                                        <a href="product-details.php?nid=<?php echo htmlentities($row['pid']) ?>" class="text-decoration-none text-dark">
-                                            <h5 class="card-title mt-2"><?php echo htmlentities($row['posttitle']); ?></h5>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="card-body">
+                        <div class="product-category">TOOTHBRUSH</div>
+                        <h5 class="card-title">Soft Bristle Toothbrush</h5>
+                        <div class="text-center mt-3">
+                            <a href="#" class="btn btn-primary">Learn More</a>
                         </div>
-                    <?php } ?>
-                    
-                    <!-- Pagination -->
-                    <div class="col-md-12">
-                        <ul class="pagination justify-content-center mb-4">
-                            <li class="page-item <?php if ($pageno <= 1) { echo 'disabled'; } ?>">
-                                <a href="<?php if ($pageno <= 1) { echo '#'; } else { echo "?pageno=" . ($pageno - 1); } ?>" class="page-link">Prev</a>
-                            </li>
-                            <li class="page-item <?php if ($pageno >= $total_pages) { echo 'disabled'; } ?>">
-                                <a href="<?php if ($pageno >= $total_pages) { echo '#'; } else { echo "?pageno=" . ($pageno + 1); } ?> " class="page-link">Next</a>
-                            </li>
-                        </ul>
                     </div>
                 </div>
             </div>
-        </div>    
 
-    <!-- </div> -->
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card product-card">
+                    <div class="product-image">
+                        <img src="images/01.png" alt="Soft Bristle Toothbrush">
+                    </div>
+                    <div class="card-body">
+                        <div class="product-category">TOOTHBRUSH</div>
+                        <h5 class="card-title">Soft Bristle Toothbrush</h5>
+                        <div class="text-center mt-3">
+                            <a href="#" class="btn btn-primary">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card product-card">
+                    <div class="product-image">
+                        <img src="images/03.png" alt="Antibacterial Mouthwash">
+                    </div>
+                    <div class="card-body">
+                        <div class="product-category">MOUTHWASH</div>
+                        <h5 class="card-title">Antibacterial Mouthwash</h5>
+                        <div class="text-center mt-3">
+                            <a href="#" class="btn btn-primary">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="criteria-section">
             <div class="row">

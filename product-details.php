@@ -397,7 +397,7 @@ if ($result->num_rows > 0) {
                                     <div class="card-body">
                                         <h5 class="card-title">Soft Bristle Toothbrush</h5>
                                         <p class="card-text">Gentle on gums, effective at cleaning.</p>
-                                        <a href="product-details.php" class="btn btn-outline-primary">View Details</a>
+                                        <a href="product.php" class="btn btn-outline-primary">View Details</a>
                                     </div>
                                 </div>
                             </div>
@@ -408,7 +408,7 @@ if ($result->num_rows > 0) {
                                     <div class="card-body">
                                         <h5 class="card-title">Soft Bristle Toothbrush</h5>
                                         <p class="card-text">Gentle on gums, effective at cleaning.</p>
-                                        <a href="product-details.php" class="btn btn-outline-primary">View Details</a>
+                                        <a href="product.php" class="btn btn-outline-primary">View Details</a>
                                     </div>
                                 </div>
                             </div>
@@ -419,7 +419,7 @@ if ($result->num_rows > 0) {
                                     <div class="card-body">
                                         <h5 class="card-title">Antibacterial Mouthwash</h5>
                                         <p class="card-text">Reduces plaque and freshens breath.</p>
-                                        <a href="product-details.php" class="btn btn-outline-primary">View Details</a>
+                                        <a href="product.php" class="btn btn-outline-primary">View Details</a>
                                     </div>
                                 </div>
                             </div>
