@@ -25,7 +25,7 @@ CREATE TABLE ARTICLE_CATEGORIES (
 CREATE TABLE ARTICLES (
     article_id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    slug VARCHAR(255) UNIQUE,
+    slug VARCHAR(255) UNIQUE NOT NULL,
     content TEXT NOT NULL,
     category_id INT,
     author VARCHAR(255) NOT NULL,
@@ -59,7 +59,7 @@ CREATE TABLE PRODUCT_CATEGORIES (
 CREATE TABLE PRODUCTS (
     product_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    slug VARCHAR(255) UNIQUE,
+    slug VARCHAR(255) UNIQUE NOT NULL,
     description TEXT NOT NULL,
     pcategory_id INT,
     buy_url VARCHAR(500),
@@ -188,3 +188,22 @@ INSERT INTO ARTICLES (title, slug, content, category_id, author, cover_image_url
     1
 );
 
+-- Insert sample product categories
+INSERT INTO PRODUCT_CATEGORIES (name, description, is_active)
+VALUES 
+    ('Electric Toothbrushes', 'Advanced tools for effective plaque removal.', 1),
+    ('Dental Floss & Interdental', 'Products for cleaning between teeth.', 1),
+    ('Mouthwashes & Rinses', 'Solutions for fresh breath and oral hygiene.', 1);
+
+-- Insert sample products with unique, non-null slugs
+INSERT INTO PRODUCTS (name, slug, description, pcategory_id, buy_url, image_url, is_active)
+VALUES 
+    ('Oral-B iO Series 9', 'oral-b-io-series-9', 'A premium electric toothbrush with AI-powered brushing tracking and multiple modes for personalized oral care.', 1, 'https://retailer.com/oral-b-io9', 'oral-b-io9.jpg', 1),
+    ('Philips Sonicare DiamondClean', 'sonicare-diamondclean', 'High-performance toothbrush with sonic technology for superior plaque removal and gum health.', 1, 'https://retailer.com/sonicare-diamondclean', 'sonicare-diamondclean.jpg', 1),
+    ('Colgate ProClinical 250R', 'colgate-proclinical-250r', 'A budget-friendly electric toothbrush with a slim design and effective cleaning for daily use.', 1, 'https://retailer.com/colgate-proclinical', 'colgate-250r.jpg', 1),
+    ('Waterpik Cordless Advanced', 'waterpik-cordless', 'A portable water flosser for interdental cleaning, ideal for braces and sensitive gums.', 2, 'https://retailer.com/waterpik-cordless', 'waterpik-cordless.jpg', 1),
+    ('Oral-B Glide Pro-Health Floss', 'glide-pro-health', 'Smooth, shred-resistant dental floss for comfortable cleaning between tight teeth.', 2, 'https://retailer.com/oral-b-glide', 'glide-floss.jpg', 1),
+    ('GUM Soft-Picks Advanced', 'gum-soft-picks', 'Flexible interdental picks for gentle cleaning, suitable for sensitive gums and orthodontics.', 2, 'https://retailer.com/gum-soft-picks', 'gum-picks.jpg', 1),
+    ('Listerine Total Care', 'listerine-total-care', 'Antimicrobial mouthwash that kills 99% of germs, strengthens enamel, and freshens breath.', 3, 'https://retailer.com/listerine-total', 'listerine-total.jpg', 1),
+    ('Colgate Total Advanced Mouthwash', 'colgate-total-mouthwash', 'Alcohol-free mouthwash with fluoride for cavity protection and all-day freshness.', 3, 'https://retailer.com/colgate-mouthwash', 'colgate-mouthwash.jpg', 1),
+    ('TheraBreath Fresh Breath Rinse', 'therabreath-rinse', 'Clinically proven mouthwash to combat bad breath with oxygenating formula.', 3, 'https://retailer.com/therabreath-rinse', 'therabreath-rinse.jpg', 1);

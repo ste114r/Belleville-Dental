@@ -281,10 +281,12 @@ include('includes/config.php');
                         <div class="article-card text-center">
                             <img class="join-article-image w-100" src="./images/join-us.png" alt="Join Us">
                             <div class="card-body">
-                                <a href="#" class="text-decoration-none text-dark">
-                                    <h5 class="card-title" style="padding-top: 10px;">Join Us!</h5>
-                                </a>
-                                <p class="card-text">Become part of our dental health community</p>
+                                <div class="card-body-inner">
+                                    <a href="#" class="text-decoration-none text-dark">
+                                        <h5 class="card-title">Join Us!</h5>
+                                    </a>
+                                    <p class="card-text">Become part of our dental health community</p>
+                                </div>
                             </div>
                         </div>
                     </div>

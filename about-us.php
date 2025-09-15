@@ -142,12 +142,12 @@ include('includes/config.php');
     
     <!-- Page Content -->
     <div class="container-fluid">
-        <ol class="breadcrumb">
+        <!-- <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a href="index.php">Home</a>
             </li>
             <li class="breadcrumb-item active">About Us</li>
-        </ol>
+        </ol> -->
 
         <!-- Intro Content -->
         <div class="row mb-4">

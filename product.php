@@ -39,12 +39,7 @@ include('includes/config.php');
             background-color: #fff;
         }
 
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6 {
+        h1, h2, h3, h4, h5, h6 {
             font-family: 'Merriweather', serif;
             color: var(--dark);
         }
@@ -62,11 +57,11 @@ include('includes/config.php');
             border: none;
             border-radius: 8px;
             transition: all 0.2s ease;
-            height: 100%;
+            height: 95%;
             background: white;
             margin-bottom: 25px;
             overflow: hidden;
-            border: 1px solid rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0,0,0,0.08);
         }
 
         .product-card:hover {
@@ -74,40 +69,22 @@ include('includes/config.php');
         }
 
         .product-image {
-            height: 250px;
+            height: 210px;
             object-fit: cover;
-            background-color: var(--light-blue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
         }
 
-        .product-image img {
-            max-height: 100%;
-            max-width: 100%;
-            object-fit: contain;
-        }
-
-        .product-category {
-            font-size: 0.85rem;
-            color: var(--gray);
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            border: none;
+        .category-badge {
+            background-color: var(--primary);
+            color: white;
+            font-size: 0.8rem;
+            padding: 4px 10px;
             border-radius: 4px;
-            padding: 8px 20px;
-            font-weight: 500;
-            transition: all 0.2s ease;
+            display: inline-block;
+            margin-bottom: 10px;
         }
 
-        .btn-primary:hover {
-            background: var(--primary-dark);
+        .card-body-inner {
+            padding: 20px 20px;
         }
 
         .section-title {
@@ -127,26 +104,76 @@ include('includes/config.php');
             background: var(--primary);
         }
 
-        .benefit-item {
-            margin-bottom: 8px;
-            position: relative;
-            padding-left: 25px;
-            color: var(--gray);
-        }
-
-        .benefit-item:before {
-            content: "✓";
-            color: var(--primary);
-            position: absolute;
-            left: 0;
-            font-weight: bold;
-        }
-
-        .breadcrumb {
-            background: var(--light-blue);
-            border-radius: 4px;
-            padding: 8px 15px;
+        .sidebar-card {
+            border: none;
+            border-radius: 8px;
+            background: white;
             margin-bottom: 25px;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+        
+        .sidebar-header {
+            background-color: var(--light-blue);
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+        }
+        
+        .category-list {
+            padding: 0;
+            margin: 0;
+        }
+        
+        .category-list li {
+            padding: 8px 15px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            list-style: none;
+        }
+        
+        .category-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .category-list a {
+            color: var(--dark);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: block;
+        }
+        
+        .category-list a:hover {
+            color: var(--primary);
+            padding-left: 5px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            border: none;
+            border-radius: 4px;
+            padding: 8px 20px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .pagination .page-link {
+            border: none;
+            color: var(--primary);
+            border-radius: 4px;
+            margin: 0 3px;
+        }
+        
+        .pagination .page-item.active .page-link {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .pagination .page-link:hover {
+            background-color: var(--light-blue);
         }
 
         .criteria-section {
@@ -200,23 +227,6 @@ include('includes/config.php');
     </div>
 
     <div class="container-fluid">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="index.php">Home</a>
-            </li>
-            <li class="breadcrumb-item active">Products</li>
-        </ol>
-
-        <div class="row mb-4">
-            <div class="col-lg-12 text-center">
-                <p class="lead" style="max-width: 800px; margin: 0 auto;">We recommend these dental care products to
-                    help you maintain optimal oral hygiene. Each product is selected based on its effectiveness and
-                    dental professional recommendations.</p>
-            </div>
-        </div>
-
-        <h2 class="text-center mb-4 section-title">Our Recommendations</h2>
-        <div class="row justify-content-center">
         <div class="row" style="margin-top: 4%">
             <!-- Categories Column -->
             <div class="col-md-2 mt-4">
@@ -226,22 +236,22 @@ include('includes/config.php');
                     </div>
                     <div class="card-body p-0">
                         <ul class="category-list">
-                            <?php $query = mysqli_query($con, "select category_id,name from ARTICLE_CATEGORIES WHERE is_active = 1");
+                            <?php $query = mysqli_query($con, "select pcategory_id,name from PRODUCT_CATEGORIES WHERE is_active = 1");
                             while ($row = mysqli_fetch_array($query)) {
                             ?>
                                 <li>
-                                    <a href="category.php?catid=<?php echo htmlentities($row['category_id']) ?>"><?php echo htmlentities($row['name']); ?></a>
+                                    <a href="category.php?catid=<?php echo htmlentities($row['pcategory_id']) ?>"><?php echo htmlentities($row['name']); ?></a>
                                 </li>
                             <?php } ?>
                         </ul>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Main Content Column -->
             <div class="col-md-7">
-                <h4 class="section-title">Today <span>Highlight</span></h4>
-                
+                <h4 class="section-title">Our <span>Recommendations</span></h4>
+
                 <div class="row">
                     <?php
                     if (isset($_GET['pageno'])) {
@@ -252,7 +262,7 @@ include('includes/config.php');
                     $no_of_records_per_page = 8;
                     $offset = ($pageno - 1) * $no_of_records_per_page;
 
-                    $total_pages_sql = "SELECT COUNT(*) FROM ARTICLES";
+                    $total_pages_sql = "SELECT COUNT(*) FROM PRODUCTS";
                     $result = mysqli_query($con, $total_pages_sql);
                     if (!$result) {
                         echo "SQL Error: " . mysqli_error($conn);
@@ -263,33 +273,35 @@ include('includes/config.php');
 
                     $query = mysqli_query($con, "
                         SELECT 
-                            ARTICLES.article_id AS pid,
-                            ARTICLES.title AS posttitle,
-                            ARTICLES.cover_image_url AS PostImage,
-                            ARTICLE_CATEGORIES.name AS category,
-                            ARTICLE_CATEGORIES.category_id AS cid,
-                            ARTICLES.content AS postdetails,
-                            ARTICLES.created_at AS postingdate,
-                            ARTICLES.slug AS url
-                        FROM ARTICLES
-                        LEFT JOIN ARTICLE_CATEGORIES 
-                            ON ARTICLE_CATEGORIES.category_id = ARTICLES.category_id
-                        WHERE ARTICLES.is_active = 1
-                        ORDER BY ARTICLES.article_id DESC
+                            PRODUCTS.product_id AS pid,
+                            PRODUCTS.name AS posttitle,
+                            PRODUCTS.image_url AS PostImage,
+                            PRODUCT_CATEGORIES.name AS category,
+                            PRODUCT_CATEGORIES.pcategory_id AS cid,
+                            PRODUCTS.description AS postdetails,
+                            PRODUCTS.created_at AS postingdate,
+                            PRODUCTS.slug AS url
+                        FROM PRODUCTS
+                        LEFT JOIN PRODUCT_CATEGORIES 
+                            ON PRODUCT_CATEGORIES.pcategory_id = PRODUCTS.pcategory_id
+                        WHERE PRODUCTS.is_active = 1
+                        ORDER BY PRODUCTS.product_id DESC
                         LIMIT $offset, $no_of_records_per_page
                         ");
                     while ($row = mysqli_fetch_array($query)) {
                     ?>
-                        <div class="col-md-6">
-                            <div class="article-card">
-                                <img class="article-image w-100" src="admin/postimages/<?php echo htmlentities($row['PostImage']); ?>" alt="<?php echo htmlentities($row['posttitle']); ?>">
+                        <div class="col-md-5">
+                            <div class="product-card">
+                                <img class="product-image w-100" src="images/<?php echo htmlentities($row['PostImage']); ?>" alt="<?php echo htmlentities($row['posttitle']); ?>">
                                 <div class="card-body">
                                     <div class="card-body-inner">
                                         <span class="category-badge"><?php echo htmlentities($row['category']); ?></span>
-                                        <!-- <p class="m-0"><small> Posted on <?php echo htmlentities($row['postingdate']); ?></small></p> -->
                                         <a href="product-details.php?nid=<?php echo htmlentities($row['pid']) ?>" class="text-decoration-none text-dark">
                                             <h5 class="card-title mt-2"><?php echo htmlentities($row['posttitle']); ?></h5>
                                         </a>
+                                        <div class="text-center mt-3">
+                                            <a href="product-details.php?nid=<?php echo htmlentities($row['pid']) ?>" class="btn btn-primary">Learn More</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -309,9 +321,7 @@ include('includes/config.php');
                     </div>
                 </div>
             </div>
-        </div>    
-
-    <!-- </div> -->
+        </div>
 
         <div class="criteria-section">
             <div class="row">
@@ -332,8 +342,7 @@ include('includes/config.php');
                         <i class="fas fa-flask"></i>
                     </div>
                     <h5>Evidence-Based</h5>
-                    <p>We select products with proven effectiveness based on scientific research and clinical studies.
-                    </p>
+                    <p>We select products with proven effectiveness based on scientific research and clinical studies.</p>
                 </div>
                 <div class="col-md-4 text-center mb-4">
                     <div class="benefit-icon">
@@ -347,11 +356,11 @@ include('includes/config.php');
 
         <div class="consultation-cta">
             <h4 class="text-primary">Have Questions About Dental Products?</h4>
-            <p class="mb-3">Our dental professionals can provide personalized recommendations based on your specific
-                needs.</p>
+            <p class="mb-3">Our dental professionals can provide personalized recommendations based on your specific needs.</p>
             <a href="contact-us.php" class="btn btn-primary">Contact Us for Advice</a>
         </div>
     </div>
+
     <?php include('includes/footer.php'); ?>
 
     <script src="vendor/jquery/jquery.min.js"></script>
