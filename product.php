@@ -39,7 +39,12 @@ include('includes/config.php');
             background-color: #fff;
         }
 
-        h1, h2, h3, h4, h5, h6 {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
             font-family: 'Merriweather', serif;
             color: var(--dark);
         }
@@ -53,40 +58,6 @@ include('includes/config.php');
             border-bottom: 1px solid rgba(11, 126, 200, 0.1);
         }
 
-        .product-card {
-            border: none;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-            height: 95%;
-            background: white;
-            margin-bottom: 25px;
-            overflow: hidden;
-            border: 1px solid rgba(0,0,0,0.08);
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .product-image {
-            height: 210px;
-            object-fit: cover;
-        }
-
-        .category-badge {
-            background-color: var(--primary);
-            color: white;
-            font-size: 0.8rem;
-            padding: 4px 10px;
-            border-radius: 4px;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-
-        .card-body-inner {
-            padding: 20px 20px;
-        }
-
         .section-title {
             position: relative;
             display: inline-block;
@@ -98,52 +69,95 @@ include('includes/config.php');
             content: '';
             position: absolute;
             bottom: 0;
-            left: 0;
+            left: 50%;
+            transform: translateX(-50%);
             width: 60px;
             height: 3px;
             background: var(--primary);
         }
 
-        .sidebar-card {
-            border: none;
-            border-radius: 8px;
-            background: white;
-            margin-bottom: 25px;
-            overflow: hidden;
-            border: 1px solid rgba(0,0,0,0.08);
+        .product-filters {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 40px;
         }
-        
-        .sidebar-header {
-            background-color: var(--light-blue);
-            padding: 12px 15px;
-            border-bottom: 1px solid rgba(0,0,0,0.08);
-        }
-        
-        .category-list {
-            padding: 0;
-            margin: 0;
-        }
-        
-        .category-list li {
-            padding: 8px 15px;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            list-style: none;
-        }
-        
-        .category-list li:last-child {
-            border-bottom: none;
-        }
-        
-        .category-list a {
+
+        .filter-btn {
+            background-color: #fff;
             color: var(--dark);
+            border: 1px solid #ddd;
+            padding: 8px 20px;
+            border-radius: 8px;
             text-decoration: none;
-            transition: all 0.2s ease;
-            display: block;
+            transition: all 0.3s ease;
+            font-weight: 500;
         }
-        
-        .category-list a:hover {
-            color: var(--primary);
-            padding-left: 5px;
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background-color: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .product-card {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background: white;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .product-image-wrapper {
+            height: 220px;
+            overflow: hidden;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-card-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .category-badge {
+            background-color: var(--primary);
+            color: white;
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            display: inline-block;
+            /* prevents flex from stretching it */
+            width: auto;
+            /* shrink to fit content */
+            max-width: max-content;
+            /* ensures it only wraps text length */
+        }
+
+        .product-card-body .card-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            flex-grow: 1;
         }
 
         .btn-primary {
@@ -151,9 +165,10 @@ include('includes/config.php');
             border: none;
             border-radius: 4px;
             padding: 8px 20px;
-            font-weight: 500;
+            font-weight: 600;
             transition: all 0.2s ease;
             font-size: 0.9rem;
+            letter-spacing: 0.5px;
         }
 
         .btn-primary:hover {
@@ -165,13 +180,15 @@ include('includes/config.php');
             color: var(--primary);
             border-radius: 4px;
             margin: 0 3px;
+            transition: all 0.2s ease;
         }
-        
+
         .pagination .page-item.active .page-link {
             background-color: var(--primary);
             border-color: var(--primary);
+            color: #fff;
         }
-        
+
         .pagination .page-link:hover {
             background-color: var(--light-blue);
         }
@@ -201,10 +218,6 @@ include('includes/config.php');
             border-radius: 50%;
         }
 
-        .criteria-section .benefit-icon {
-            color: var(--primary);
-        }
-
         .consultation-cta {
             background: var(--light-blue);
             border-radius: 8px;
@@ -227,30 +240,31 @@ include('includes/config.php');
     </div>
 
     <div class="container-fluid">
-        <div class="row" style="margin-top: 4%">
-            <!-- Categories Column -->
-            <div class="col-md-2 mt-4">
-                <div class="sidebar-card">
-                    <div class="sidebar-header">
-                        <h5 class="mb-0">Categories</h5>
-                    </div>
-                    <div class="card-body p-0">
-                        <ul class="category-list">
-                            <?php $query = mysqli_query($con, "select pcategory_id,name from PRODUCT_CATEGORIES WHERE is_active = 1");
-                            while ($row = mysqli_fetch_array($query)) {
-                            ?>
-                                <li>
-                                    <a href="category.php?catid=<?php echo htmlentities($row['pcategory_id']) ?>"><?php echo htmlentities($row['name']); ?></a>
-                                </li>
-                            <?php } ?>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+        <div class="row justify-content-center" style="margin-top: 4%;">
+            <div class="col-lg-10">
 
-            <!-- Main Content Column -->
-            <div class="col-md-7">
-                <h4 class="section-title">Our <span>Recommendations</span></h4>
+                <?php
+                $catid = 0;
+                if (isset($_GET['catid']) && is_numeric($_GET['catid'])) {
+                    $catid = (int) $_GET['catid'];
+                }
+                ?>
+
+                <div class="text-center">
+                    <h4 class="section-title">Browse by <span>Category</span></h4>
+                </div>
+                <div class="product-filters">
+                    <a href="product.php" class="filter-btn <?php if ($catid == 0)
+                        echo 'active'; ?>">All Products</a>
+                    <?php
+                    $query = mysqli_query($con, "select pcategory_id, name from PRODUCT_CATEGORIES WHERE is_active = 1");
+                    while ($row = mysqli_fetch_array($query)) {
+                        $isActive = ($catid == $row['pcategory_id']) ? 'active' : '';
+                        ?>
+                        <a href="product.php?catid=<?php echo htmlentities($row['pcategory_id']) ?>"
+                            class="filter-btn <?php echo $isActive; ?>"><?php echo htmlentities($row['name']); ?></a>
+                    <?php } ?>
+                </div>
 
                 <div class="row">
                     <?php
@@ -259,69 +273,108 @@ include('includes/config.php');
                     } else {
                         $pageno = 1;
                     }
-                    $no_of_records_per_page = 8;
+                    $no_of_records_per_page = 9;
                     $offset = ($pageno - 1) * $no_of_records_per_page;
 
-                    $total_pages_sql = "SELECT COUNT(*) FROM PRODUCTS";
-                    $result = mysqli_query($con, $total_pages_sql);
-                    if (!$result) {
-                        echo "SQL Error: " . mysqli_error($conn);
+                    $whereClause = "WHERE PRODUCTS.is_active = 1";
+                    if ($catid > 0) {
+                        $whereClause .= " AND PRODUCTS.pcategory_id = $catid";
                     }
 
+                    $total_pages_sql = "SELECT COUNT(*) FROM PRODUCTS $whereClause";
+                    $result = mysqli_query($con, $total_pages_sql);
                     $total_rows = mysqli_fetch_array($result)[0];
                     $total_pages = ceil($total_rows / $no_of_records_per_page);
 
-                    $query = mysqli_query($con, "
+                    $product_query_sql = "
                         SELECT 
                             PRODUCTS.product_id AS pid,
                             PRODUCTS.name AS posttitle,
                             PRODUCTS.image_url AS PostImage,
-                            PRODUCT_CATEGORIES.name AS category,
-                            PRODUCT_CATEGORIES.pcategory_id AS cid,
-                            PRODUCTS.description AS postdetails,
-                            PRODUCTS.created_at AS postingdate,
-                            PRODUCTS.slug AS url
+                            PRODUCT_CATEGORIES.name AS category
                         FROM PRODUCTS
                         LEFT JOIN PRODUCT_CATEGORIES 
                             ON PRODUCT_CATEGORIES.pcategory_id = PRODUCTS.pcategory_id
-                        WHERE PRODUCTS.is_active = 1
+                        $whereClause
                         ORDER BY PRODUCTS.product_id DESC
                         LIMIT $offset, $no_of_records_per_page
-                        ");
-                    while ($row = mysqli_fetch_array($query)) {
-                    ?>
-                        <div class="col-md-5">
-                            <div class="product-card">
-                                <img class="product-image w-100" src="images/<?php echo htmlentities($row['PostImage']); ?>" alt="<?php echo htmlentities($row['posttitle']); ?>">
-                                <div class="card-body">
-                                    <div class="card-body-inner">
+                    ";
+                    $product_query = mysqli_query($con, $product_query_sql);
+
+                    $postcount = mysqli_num_rows($product_query);
+                    if ($postcount == 0) {
+                        echo "<div class='col-12'><p class='text-center fs-5 mt-4'>No products found in this category.</p></div>";
+                    } else {
+                        while ($row = mysqli_fetch_array($product_query)) {
+                            ?>
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="product-card">
+                                    <div class="product-image-wrapper">
+                                        <img class="product-image" src="images/<?php echo htmlentities($row['PostImage']); ?>"
+                                            alt="<?php echo htmlentities($row['posttitle']); ?>">
+                                    </div>
+                                    <div class="product-card-body">
                                         <span class="category-badge"><?php echo htmlentities($row['category']); ?></span>
-                                        <a href="product-details.php?nid=<?php echo htmlentities($row['pid']) ?>" class="text-decoration-none text-dark">
-                                            <h5 class="card-title mt-2"><?php echo htmlentities($row['posttitle']); ?></h5>
+                                        <a href="product-details.php?nid=<?php echo htmlentities($row['pid']) ?>"
+                                            class="text-decoration-none text-dark">
+                                            <h5 class="card-title"><?php echo htmlentities($row['posttitle']); ?></h5>
                                         </a>
-                                        <div class="text-center mt-3">
-                                            <a href="product-details.php?nid=<?php echo htmlentities($row['pid']) ?>" class="btn btn-primary">Learn More</a>
+                                        <div class="mt-auto">
+                                            <a href="product-details.php?nid=<?php echo htmlentities($row['pid']) ?>"
+                                                class="btn btn-primary">Learn More</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    <?php } ?>
-                    
-                    <!-- Pagination -->
-                    <div class="col-md-12">
-                        <ul class="pagination justify-content-center mb-4">
-                            <li class="page-item <?php if ($pageno <= 1) { echo 'disabled'; } ?>">
-                                <a href="<?php if ($pageno <= 1) { echo '#'; } else { echo "?pageno=" . ($pageno - 1); } ?>" class="page-link">Prev</a>
+                        <?php }
+                    } ?>
+                </div>
+
+                <?php if ($total_pages > 1): ?>
+                    <div class="col-md-12 mt-4">
+                        <ul class="pagination justify-content-center">
+                            <?php
+                            $paginationUrl = "?";
+                            if ($catid > 0) {
+                                $paginationUrl .= "catid=$catid&";
+                            }
+                            ?>
+                            <li class="page-item <?php if ($pageno <= 1) {
+                                echo 'disabled';
+                            } ?>">
+                                <a href="<?php if ($pageno <= 1) {
+                                    echo '#';
+                                } else {
+                                    echo $paginationUrl . "pageno=" . ($pageno - 1);
+                                } ?>"
+                                    class="page-link">Prev</a>
                             </li>
-                            <li class="page-item <?php if ($pageno >= $total_pages) { echo 'disabled'; } ?>">
-                                <a href="<?php if ($pageno >= $total_pages) { echo '#'; } else { echo "?pageno=" . ($pageno + 1); } ?> " class="page-link">Next</a>
+
+                            <?php for ($i = 1; $i <= $total_pages; $i++) { ?>
+                                <li class="page-item <?php if ($pageno == $i) {
+                                    echo 'active';
+                                } ?>">
+                                    <a href="<?php echo $paginationUrl . "pageno=" . $i; ?>"
+                                        class="page-link"><?php echo $i; ?></a>
+                                </li>
+                            <?php } ?>
+
+                            <li class="page-item <?php if ($pageno >= $total_pages) {
+                                echo 'disabled';
+                            } ?>">
+                                <a href="<?php if ($pageno >= $total_pages) {
+                                    echo '#';
+                                } else {
+                                    echo $paginationUrl . "pageno=" . ($pageno + 1);
+                                } ?> "
+                                    class="page-link">Next</a>
                             </li>
                         </ul>
                     </div>
-                </div>
+                <?php endif; ?>
             </div>
         </div>
+
 
         <div class="criteria-section">
             <div class="row">
@@ -342,7 +395,8 @@ include('includes/config.php');
                         <i class="fas fa-flask"></i>
                     </div>
                     <h5>Evidence-Based</h5>
-                    <p>We select products with proven effectiveness based on scientific research and clinical studies.</p>
+                    <p>We select products with proven effectiveness based on scientific research and clinical studies.
+                    </p>
                 </div>
                 <div class="col-md-4 text-center mb-4">
                     <div class="benefit-icon">
@@ -356,7 +410,8 @@ include('includes/config.php');
 
         <div class="consultation-cta">
             <h4 class="text-primary">Have Questions About Dental Products?</h4>
-            <p class="mb-3">Our dental professionals can provide personalized recommendations based on your specific needs.</p>
+            <p class="mb-3">Our dental professionals can provide personalized recommendations based on your specific
+                needs.</p>
             <a href="contact-us.php" class="btn btn-primary">Contact Us for Advice</a>
         </div>
     </div>

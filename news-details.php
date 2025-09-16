@@ -170,8 +170,8 @@ if ($result->num_rows > 0) {
         }
 
         .article-content {
-            font-size: 1.05rem;
-            color: #555;
+            /* font-size: 1.05rem; */
+            /* color: #555; */
             line-height: 1.7;
             max-width: 800px;
             margin: 0 auto;
@@ -185,10 +185,10 @@ if ($result->num_rows > 0) {
         .article-content h3 {
             margin-top: 2rem;
             margin-bottom: 1rem;
-            color: var(--primary-dark);
+            /* color: var(--primary-dark); */
             padding-bottom: 8px;
             border-bottom: 1px solid rgba(11, 126, 200, 0.2);
-        }
+        } 
 
         .recommended-products {
             padding: 30px 0;
