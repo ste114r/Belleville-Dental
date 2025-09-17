@@ -47,19 +47,33 @@ if (isset($_POST['login'])) {
     <script src="assets/js/modernizr.min.js"></script>
 </head>
 
+<style>
+.account-logo-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px; /* Optional spacing below the logo */
+}
+
+.account-logo-box img {
+    max-width: 100%;
+    height: auto;
+}
+</style>
 
 <body class="bg-transparent">
     <!-- HOME -->
     <section>
-        <div class="container m-t-50">
-            <div class="row align-items-center m-t-50">
-                <div class="col-md-8 text-center">
+        <div class="container">
+            <div class="">
+                <div class="">
                     <div class="wrapper-page">
-                        <div class="m-t-40 account-pages">
+                        <div class="">
                             <div class="account-logo-box">
                                 <h2 class="text-uppercase">
-                                    <a href="index.php" class="text-success">
-                                        <span><img src="assets/images/Belleville Dental logo transparent.png" alt="" width="300px"></span>
+                                    <a href="index.php" class="brand">
+                                        <span><img src="assets/images/Belleville Dental logo transparent.png" alt=""
+                                                width="300px"></span>
                                     </a>
                                 </h2>
                             </div>
@@ -67,18 +81,22 @@ if (isset($_POST['login'])) {
                                 <form class="form-horizontal" method="post">
                                     <div class="form-group ">
                                         <div class="col-xs-12">
-                                            <input class="form-control" type="text" required="" name="username" placeholder="Username or email" autocomplete="off">
+                                            <input class="form-control" type="text" required="" name="username"
+                                                placeholder="Username or email" autocomplete="off">
                                         </div>
                                     </div>
-                                    <div class="text-right mb-2"><a href="forgot-password.php"><i class="mdi mdi-lock"></i>Forgot Your Password?</a></div>
+                                    <div class="text-right mb-2"><a href="forgot-password.php"><i
+                                                class="mdi mdi-lock"></i>Forgot Your Password?</a></div>
                                     <div class="form-group">
                                         <div class="col-xs-12">
-                                            <input class="form-control" type="password" name="password" required="" placeholder="Password" autocomplete="off">
+                                            <input class="form-control" type="password" name="password" required=""
+                                                placeholder="Password" autocomplete="off">
                                         </div>
                                     </div>
                                     <div class="form-group account-btn text-center m-t-10">
                                         <div class="col-xs-12">
-                                            <button class="btn btn-custom waves-effect waves-light btn-md w-100" type="submit" name="login">Log In</button>
+                                            <button class="btn btn-custom waves-effect waves-light btn-md w-100"
+                                                type="submit" name="login">Log In</button>
                                         </div>
                                     </div>
                                 </form>

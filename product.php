@@ -136,7 +136,6 @@ include('includes/config.php');
             display: flex;
             flex-direction: column;
             flex-grow: 1;
-            text-align: center;
         }
 
         .category-badge {
@@ -147,17 +146,21 @@ include('includes/config.php');
             border-radius: 4px;
             margin-bottom: 10px;
             display: inline-block;
-            /* prevents flex from stretching it */
             width: auto;
-            /* shrink to fit content */
             max-width: max-content;
-            /* ensures it only wraps text length */
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .product-card-body .card-title {
             font-size: 1.1rem;
             margin-bottom: 15px;
             flex-grow: 1;
+            text-align: center;
+        }
+
+        .product-card-body .mt-auto {
+            text-align: center;
         }
 
         .btn-primary {
@@ -169,6 +172,7 @@ include('includes/config.php');
             transition: all 0.2s ease;
             font-size: 0.9rem;
             letter-spacing: 0.5px;
+            display: inline-block;
         }
 
         .btn-primary:hover {
@@ -276,30 +280,52 @@ include('includes/config.php');
                     $no_of_records_per_page = 9;
                     $offset = ($pageno - 1) * $no_of_records_per_page;
 
-                    $whereClause = "WHERE PRODUCTS.is_active = 1";
-                    if ($catid > 0) {
-                        $whereClause .= " AND PRODUCTS.pcategory_id = $catid";
-                    }
+                    // Using prepared statements for security
+                    $params = [];
+                    $types = '';
 
-                    $total_pages_sql = "SELECT COUNT(*) FROM PRODUCTS $whereClause";
-                    $result = mysqli_query($con, $total_pages_sql);
+                    $whereClause = "WHERE p.is_active = 1";
+                    if ($catid > 0) {
+                        $whereClause .= " AND p.pcategory_id = ?";
+                        $params[] = $catid;
+                        $types .= 'i';
+                    }
+                    
+                    // Total pages calculation
+                    $total_pages_sql = "SELECT COUNT(*) FROM PRODUCTS p $whereClause";
+                    $stmt_total = mysqli_prepare($con, $total_pages_sql);
+                    if ($catid > 0) {
+                        mysqli_stmt_bind_param($stmt_total, $types, ...$params);
+                    }
+                    mysqli_stmt_execute($stmt_total);
+                    $result = mysqli_stmt_get_result($stmt_total);
                     $total_rows = mysqli_fetch_array($result)[0];
                     $total_pages = ceil($total_rows / $no_of_records_per_page);
 
+                    // Product fetching query
                     $product_query_sql = "
                         SELECT 
-                            PRODUCTS.product_id AS pid,
-                            PRODUCTS.name AS posttitle,
-                            PRODUCTS.image_url AS PostImage,
-                            PRODUCT_CATEGORIES.name AS category
-                        FROM PRODUCTS
-                        LEFT JOIN PRODUCT_CATEGORIES 
-                            ON PRODUCT_CATEGORIES.pcategory_id = PRODUCTS.pcategory_id
+                            p.product_id AS pid,
+                            p.name AS posttitle,
+                            p.image_url AS PostImage,
+                            pc.name AS category
+                        FROM PRODUCTS p
+                        LEFT JOIN PRODUCT_CATEGORIES pc 
+                            ON pc.pcategory_id = p.pcategory_id
                         $whereClause
-                        ORDER BY PRODUCTS.product_id DESC
-                        LIMIT $offset, $no_of_records_per_page
+                        ORDER BY p.product_id DESC
+                        LIMIT ?, ?
                     ";
-                    $product_query = mysqli_query($con, $product_query_sql);
+                    $stmt_products = mysqli_prepare($con, $product_query_sql);
+                    
+                    // Add limit and offset to params
+                    $params[] = $offset;
+                    $params[] = $no_of_records_per_page;
+                    $types .= 'ii';
+
+                    mysqli_stmt_bind_param($stmt_products, $types, ...$params);
+                    mysqli_stmt_execute($stmt_products);
+                    $product_query = mysqli_stmt_get_result($stmt_products);
 
                     $postcount = mysqli_num_rows($product_query);
                     if ($postcount == 0) {
@@ -310,17 +336,16 @@ include('includes/config.php');
                             <div class="col-lg-4 col-md-6 mb-4">
                                 <div class="product-card">
                                     <div class="product-image-wrapper">
-                                        <img class="product-image" src="images/<?php echo htmlentities($row['PostImage']); ?>"
+                                        <img class="product-image" src="admin/productimages/<?php echo htmlentities($row['PostImage']); ?>"
                                             alt="<?php echo htmlentities($row['posttitle']); ?>">
                                     </div>
                                     <div class="product-card-body">
                                         <span class="category-badge"><?php echo htmlentities($row['category']); ?></span>
-                                        <a href="product-details.php?nid=<?php echo htmlentities($row['pid']) ?>"
-                                            class="text-decoration-none text-dark">
+                                        <a class="text-decoration-none text-dark">
                                             <h5 class="card-title"><?php echo htmlentities($row['posttitle']); ?></h5>
                                         </a>
                                         <div class="mt-auto">
-                                            <a href="product-details.php?nid=<?php echo htmlentities($row['pid']) ?>"
+                                            <a href="product-details.php?pid=<?php echo htmlentities($row['pid']) ?>"
                                                 class="btn btn-primary">Learn More</a>
                                         </div>
                                     </div>
@@ -346,8 +371,7 @@ include('includes/config.php');
                                     echo '#';
                                 } else {
                                     echo $paginationUrl . "pageno=" . ($pageno - 1);
-                                } ?>"
-                                    class="page-link">Prev</a>
+                                } ?>" class="page-link">Prev</a>
                             </li>
 
                             <?php for ($i = 1; $i <= $total_pages; $i++) { ?>
@@ -366,8 +390,7 @@ include('includes/config.php');
                                     echo '#';
                                 } else {
                                     echo $paginationUrl . "pageno=" . ($pageno + 1);
-                                } ?> "
-                                    class="page-link">Next</a>
+                                } ?> " class="page-link">Next</a>
                             </li>
                         </ul>
                     </div>

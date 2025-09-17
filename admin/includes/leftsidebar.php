@@ -8,14 +8,30 @@
                     <a href="dashboard.php" class="waves-effect"><i
                             class="mdi mdi-view-dashboard"></i><span>Dashboard</span></a>
                 </li>
+
                 <li class="has_sub">
-                    <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-format-list-bulleted"></i>
-                        <span>Category</span> <span class="menu-arrow"></span></a>
+                    <a href="javascript:void(0);" class="waves-effect">
+                        <i class="mdi mdi-format-list-bulleted"></i>
+                        <span>Categories</span> <span class="menu-arrow"></span>
+                    </a>
                     <ul class="list-unstyled">
-                        <li><a href="add-category.php">Add Category</a></li>
-                        <li><a href="manage-categories.php">Manage Categories</a></li>
+                        <li class="has_sub">
+                            <a href="javascript:void(0);">Article <span class="menu-arrow"></span></a>
+                            <ul class="list-unstyled">
+                                <li><a href="add-category.php">Add Article Category</a></li>
+                                <li><a href="manage-categories.php">Manage Article Categories</a></li>
+                            </ul>
+                        </li>
+                        <li class="has_sub">
+                            <a href="javascript:void(0);">Product <span class="menu-arrow"></span></a>
+                            <ul class="list-unstyled">
+                                <li><a href="add-product-category.php">Add Product Category</a></li>
+                                <li><a href="manage-product-categories.php">Manage Product Categories</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
+
                 <li class="has_sub">
                     <a href="javascript:void(0);" class="waves-effect"><i
                             class="mdi mdi-newspaper"></i><span>Articles</span><span class="menu-arrow"></span></a>
@@ -26,30 +42,31 @@
                     </ul>
                 </li>
                 <li class="has_sub">
-                    <a href="javascript:void(0);" class="waves-effect"><i class="ti ti-layout-list-thumb"></i> <span>Products</span> <span class="menu-arrow"></span></a>
+                    <a href="javascript:void(0);" class="waves-effect"><i class="ti ti-layout-list-thumb"></i>
+                        <span>Products</span> <span class="menu-arrow"></span></a>
                     <ul class="list-unstyled">
-                        <li><a href="#">Add Product</a></li>
-                        <li><a href="#">Manage Products</a></li>
+                        <li><a href="add-product.php">Add Product</a></li>
+                        <li><a href="manage-products.php">Manage Products</a></li>
                     </ul>
                 </li>
                 <li class="has_sub">
                     <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-comment-account-outline"></i>
                         <span> Feedback Queries </span> <span class="menu-arrow"></span></a>
                     <ul class="list-unstyled">
-                        <li><a href="unapprove-comment.php"> </a></li>
-                        <li><a href="manage-comments.php">Approved Comments</a></li>
+                        <li><a href="manage-feedback.php">Manage Feedbacks</a></li>
                     </ul>
                 </li>
                 <li class="has_sub">
                     <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-comment-account-outline"></i>
                         <span> Comments </span> <span class="menu-arrow"></span></a>
                     <ul class="list-unstyled">
-                        <li><a href="unapprove-comment.php">Waiting for Approval </a></li>
+                        <li><a href="unapprove-comment.php">Manage Comments</a></li>
                         <li><a href="manage-comments.php">Approved Comments</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a href="../index.php" class="waves-effect"><i class="fa fa-eye" aria-hidden="true"></i><span>Go To Website</span></a>
+                    <a href="../index.php" class="waves-effect"><i class="fa fa-eye" aria-hidden="true"></i><span>Go To
+                            Website</span></a>
                 </li>
             </ul>
         </div>

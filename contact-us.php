@@ -1,5 +1,29 @@
 <?php
 include('includes/config.php');
+// Initialize message variables
+$msg = "";
+$error = "";
+
+// Check if the form was submitted
+if (isset($_POST['submit'])) {
+    // Retrieve form data
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $subject = $_POST['subject'];
+    $message = $_POST['message'];
+
+    // Prepare an insert statement to prevent SQL injection
+    $stmt = mysqli_prepare($con, "INSERT INTO FEEDBACK(name, email, subject, message) VALUES(?, ?, ?, ?)");
+    mysqli_stmt_bind_param($stmt, "ssss", $name, $email, $subject, $message);
+
+    // Execute the statement and set feedback message
+    if (mysqli_stmt_execute($stmt)) {
+        $msg = "Your message has been sent successfully! We will get back to you shortly.";
+    } else {
+        $error = "Something went wrong. Please try again.";
+    }
+    mysqli_stmt_close($stmt);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,15 +36,11 @@ include('includes/config.php');
     <link rel="shortcut icon" href="images/Belleville Dental logo transparent.png" type="image/x-icon">
     <title>Belleville Dental | Contact us</title>
 
-    <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Custom styles for this template -->
     <link href="css/modern-business.css" rel="stylesheet">
     <link rel="stylesheet" href="css/icons.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -167,10 +187,8 @@ include('includes/config.php');
 </head>
 
 <body>
-    <!-- Navigation -->
     <?php include('includes/header.php'); ?>
     
-    <!-- Hero Section -->
     <div class="contact-hero">
         <div class="container-fluid">
             <h1 class="display-4 text-primary">Contact Belleville Dental</h1>
@@ -178,23 +196,13 @@ include('includes/config.php');
         </div>
     </div>
     
-    <!-- Page Content -->
     <div class="container-fluid">
-        <!-- <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="index.php">Home</a>
-            </li>
-            <li class="breadcrumb-item active">Contact</li>
-        </ol> -->
-
-        <!-- Intro Content -->
         <div class="row mb-4">
             <div class="col-lg-12 text-center">
                 <p class="lead" style="max-width: 800px; margin: 0 auto;">We're here to assist you with any questions or concerns about dental care! Whether you need advice on oral hygiene, want to learn more about our educational resources, or have feedback to share, please feel free to reach out.</p>
             </div>
         </div>
         
-        <!-- Contact Methods -->
         <div class="contact-info">
             <div class="row">
                 <div class="col-md-3 col-sm-6 mb-4">
@@ -244,48 +252,54 @@ include('includes/config.php');
             </div>
         </div>
         
-        <!-- Map and Form Section -->
         <div class="row mb-4">
             <div class="col-lg-6 mb-4">
                 <h3 class="text-primary mb-3 section-title">Find Us</h3>
                 <div class="map-container">
-                    <!-- Replace with your actual map embed code -->
                     <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.9663095343008!2d-74.00425872426607!3d40.74076987932881!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259bf5c8eef01%3A0x41c84c2d5b175b60!2s123%20Smile%20St%2C%20New%20York%2C%20NY%2010001%2C%20USA!5e0!3m2!1sen!2sbd!4v1714567890123!5m2!1sen!2sbd" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
             </div>
             <div class="col-lg-6 mb-4">
                 <h3 class="text-primary mb-3 section-title">Send Us a Message</h3>
                 <div class="contact-form">
-                    <form>
+                    
+                    <?php if ($msg) { ?>
+                        <div class="alert alert-success" role="alert">
+                            <strong>Success!</strong> <?php echo htmlentities($msg); ?>
+                        </div>
+                    <?php } ?>
+                    <?php if ($error) { ?>
+                        <div class="alert alert-danger" role="alert">
+                            <strong>Error!</strong> <?php echo htmlentities($error); ?>
+                        </div>
+                    <?php } ?>
+
+                    <form name="feedback" method="post" action="">
                         <div class="form-group">
                             <label for="name">Your Name</label>
-                            <input type="text" class="form-control" id="name" placeholder="Enter your name">
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
                         </div>
                         <div class="form-group">
                             <label for="email">Email Address</label>
-                            <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
                         </div>
                         <div class="form-group">
                             <label for="subject">Subject</label>
-                            <input type="text" class="form-control" id="subject" placeholder="What is this regarding?">
+                            <input type="text" class="form-control" id="subject" name="subject" placeholder="What is this regarding?" required>
                         </div>
                         <div class="form-group">
                             <label for="message">Message</label>
-                            <textarea class="form-control" id="message" rows="5" placeholder="How can we help you?"></textarea>
+                            <textarea class="form-control" id="message" name="message" rows="5" placeholder="How can we help you?" required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block">Send Message</button>
+                        <button type="submit" name="submit" class="btn btn-primary btn-block">Send Message</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-    <!-- /.container-fluid -->
-
-    <!-- Footer -->
     <?php include('includes/footer.php'); ?>
 
     <script src="js/foot.js"></script>
-    <!-- Bootstrap core JavaScript -->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>

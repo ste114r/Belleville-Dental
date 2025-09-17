@@ -114,6 +114,12 @@ if (strlen($_SESSION['login']) == 0) {
                         required>
                 </div>
                 <div class="form-group col-md-6">
+                    <label for="exampleInputEmail1">Article Author</label>
+                    <input type="text" class="form-control" id="postedby" name="postedby" placeholder="Enter author"
+                        required>
+                </div>
+
+                <div class="form-group col-md-6">
                     <label for="exampleInputEmail1">Category</label>
                     <select class="form-control" name="category" id="category" required>
                         <option value="">Select Category</option>
@@ -128,34 +134,31 @@ if (strlen($_SESSION['login']) == 0) {
                         <?php } ?>
                     </select>
                 </div>
-                <!-- <div class="form-group col-md-6">
-                        <label for="exampleInputEmail1">Sub Category</label>
-                        <select class="form-control" name="subcategory" id="subcategory" required>
-                        </select>
-                    </div> -->
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="card-box">
-                                <h4 class="m-b-30 m-t-0 header-title"><b>Article Details</b></h4>
-                                <textarea class="summernote" name="postdescription" required></textarea>
-                            </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card-box">
+                            <h4 class="m-b-30 m-t-0 header-title"><b>Article Details</b></h4>
+                            <textarea class="summernote" name="postdescription" required></textarea>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="card-box">
-                                <h4 class="m-b-30 m-t-0 header-title"><b>Featured Image</b></h4>
-                                <input type="file" class="form-control" id="postimage" name="postimage" required>
-                            </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card-box">
+                            <h4 class="m-b-30 m-t-0 header-title"><b>Featured Image</b></h4>
+                            <input type="file" class="form-control" id="postimage" name="postimage" required>
                         </div>
                     </div>
-                    <button type="submit" name="submit" class="btn btn-custom waves-effect waves-light btn-md">Submit</button>
-                    <button type="button" class="btn btn-danger waves-effect waves-light">Discard</button>
-                </form>
-            </div>
-            <!-- container -->
+                </div>
+                <button type="submit" name="submit"
+                    class="btn btn-custom waves-effect waves-light btn-md">Submit</button>
+                <button type="button" class="btn btn-danger waves-effect waves-light">Discard</button>
+            </form>
+        </div>
+        <!-- container -->
         </div>
         <!-- content -->
         <?php include('includes/footer.php'); ?>
-    <?php } 
+    <?php }
 ?>

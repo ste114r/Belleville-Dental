@@ -2,150 +2,197 @@
 session_start();
 include('includes/config.php');
 error_reporting(0);
+
 if (strlen($_SESSION['login']) == 0) {
     header('location:index.php');
 } else {
-    if ($_GET['disid']) {
-        $id = intval($_GET['disid']);
-        $query = mysqli_query($con, "update tblcomments set status='0' where id='$id'");
-        $msg = "Comment unapprove ";
-    }
-    // Code for restore
-    if ($_GET['appid']) {
-        $id = intval($_GET['appid']);
-        $query = mysqli_query($con, "update tblcomments set status='1' where id='$id'");
-        $msg = "Comment approved";
+
+    // Code for marking as replied
+    if ($_GET['action'] == 'reply' && $_GET['fid']) {
+        $feedbackid = intval($_GET['fid']);
+        $query = mysqli_query($con, "UPDATE FEEDBACK SET status = 'replied' WHERE feedback_id = '$feedbackid'");
+        $msg = "Feedback marked as replied.";
     }
 
-    // Code for deletion
-    if ($_GET['action'] == 'del' && $_GET['rid']) {
-        $id = intval($_GET['rid']);
-        $query = mysqli_query($con, "delete from  tblcomments  where id='$id'");
-        $delmsg = "Comment deleted forever";
+    // Code for undoing reply
+    if ($_GET['action'] == 'undo' && $_GET['fid']) {
+        $feedbackid = intval($_GET['fid']);
+        $query = mysqli_query($con, "UPDATE FEEDBACK SET status = 'pending' WHERE feedback_id = '$feedbackid'");
+        $msg = "Feedback status changed back to pending.";
+    }
+
+    // Code for permanent delete
+    if ($_GET['action'] == 'del' && $_GET['fid']) {
+        $feedbackid = intval($_GET['fid']);
+        $query = mysqli_query($con, "DELETE FROM FEEDBACK WHERE feedback_id = '$feedbackid'");
+        $delmsg = "Feedback deleted permanently.";
     }
 
     ?>
-    <!-- Top Bar Start -->
     <?php include('includes/topheader.php'); ?>
-    <!-- ========== Left Sidebar Start ========== -->
     <?php include('includes/leftsidebar.php'); ?>
-    <!-- Left Sidebar End -->
-    <!-- ============================================================== -->
-    <!-- Start right Content here -->
-    <!-- ============================================================== -->
     <div class="content-page">
-        <!-- Start content -->
         <div class="content">
             <div class="container">
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="page-title-box">
-                            <h4 class="page-title">Manage Approved Comments</h4>
+                            <h4 class="page-title">Manage Feedback</h4>
                             <ol class="breadcrumb p-0 m-0">
-                                <li>
-                                    <a href="#">Admin</a>
-                                </li>
-                                <li>
-                                    <a href="#">Comments </a>
-                                </li>
-                                <li class="active">
-                                    Approved Comments
-                                </li>
+                                <li><a href="#">Admin</a></li>
+                                <li><a href="#">Feedback</a></li>
+                                <li class="active">Manage Feedback</li>
                             </ol>
                             <div class="clearfix"></div>
                         </div>
                     </div>
                 </div>
-                <!-- end row -->
                 <div class="row">
                     <div class="col-sm-6">
                         <?php if ($msg) { ?>
                             <div class="alert alert-success" role="alert">
-                                <strong>Well done!</strong> <?php echo htmlentities($msg); ?>
+                                <strong><?php echo htmlentities($msg); ?></strong>
                             </div>
                         <?php } ?>
+
                         <?php if ($delmsg) { ?>
                             <div class="alert alert-danger" role="alert">
-                                <strong>Oh snap!</strong> <?php echo htmlentities($delmsg); ?>
+                                <strong><?php echo htmlentities($delmsg); ?></strong>
                             </div>
                         <?php } ?>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="demo-box m-t-20">
-                                <div class="table-responsive">
-                                    <table class="table m-0 table-bordered" id="example">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th> Name</th>
-                                                <th>Email Id</th>
-                                                <th>Comment</th>
-                                                <th>Status</th>
-                                                <th>Post / News</th>
-                                                <th>Posting Date</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                            $query = mysqli_query($con, "Select tblcomments.id,  tblcomments.name,tblcomments.email,tblcomments.postingDate,tblcomments.comment,tblposts.id as postid,tblposts.PostTitle from  tblcomments join tblposts on tblposts.id=tblcomments.postId where tblcomments.status=1");
-                                            $cnt = 1;
-                                            while ($row = mysqli_fetch_array($query)) {
-                                                ?>
-                                                <tr>
-                                                    <th scope="row"><?php echo htmlentities($cnt); ?></th>
-                                                    <td><?php echo htmlentities($row['name']); ?></td>
-                                                    <td><?php echo htmlentities($row['email']); ?></td>
-                                                    <td><?php echo htmlentities($row['comment']); ?></td>
-                                                    <td><span class="badge badge-secondary"><?php $st = $row['status'];
-                                                    if ($st == '0'):
-                                                        echo "Wating for approval";
-                                                    else:
-                                                        echo "Approved";
-                                                    endif;
-                                                    ?></span></td>
-                                                    <td><a
-                                                            href="edit-post.php?pid=<?php echo htmlentities($row['postid']); ?>"><?php echo htmlentities($row['PostTitle']); ?></a>
-                                                    </td>
-                                                    <td><?php echo htmlentities($row['postingDate']); ?></td>
-                                                    <td width="100px">
-                                                        <?php if ($st == 0): ?>
-                                                            <a href="manage-comments.php?disid=<?php echo htmlentities($row['id']); ?>"
-                                                                title="Disapprove this comment" class="btn btn-primary btn-sm"><i
-                                                                    class="ion-arrow-return-right"></i></a>
-                                                        <?php else: ?>
-                                                            <a class="btn btn-info btn-sm"
-                                                                href="manage-comments.php?appid=<?php echo htmlentities($row['id']); ?>"
-                                                                title="Approve this comment"><i
-                                                                    class="ion-arrow-return-right"></i></a>
-                                                        <?php endif; ?>
-                                                        &nbsp;<a
-                                                            href="manage-comments.php?rid=<?php echo htmlentities($row['id']); ?>&&action=del"
-                                                            class="btn btn-danger btn-sm"> <i class="fa fa-trash-o"></i></a>
-                                                    </td>
-                                                </tr>
-                                                <?php
-                                                $cnt++;
-                                            } ?>
-                                        </tbody>
-                                    </table>
-                                </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card-box m-t-20">
+                            <div class="m-b-30">
+                                <h4><i class="ion-chatbox-working"></i> Pending Feedback</h4>
                             </div>
-                        </div>
-                    </div>
-                    <!--- end row -->
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="demo-box m-t-20">
-                                <div class="m-b-30">
-                                </div>
+                            <div class="table-responsive">
+                                <table class="table m-0 table-bordered" id="example">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Subject</th>
+                                            <th>Message</th>
+                                            <th>Date Sent</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $query = mysqli_query($con, "SELECT feedback_id, name, email, subject, message, created_at FROM FEEDBACK WHERE status = 'pending'");
+                                        $cnt = 1;
+                                        while ($row = mysqli_fetch_array($query)) {
+                                        ?>
+                                            <tr>
+                                                <th scope="row"><?php echo htmlentities($cnt); ?></th>
+                                                <td><?php echo htmlentities($row['name']); ?></td>
+                                                <td><?php echo htmlentities($row['email']); ?></td>
+                                                <td><?php echo htmlentities($row['subject']); ?></td>
+                                                <td><?php echo substr(htmlentities($row['message']), 0, 50); ?>...</td>
+                                                <td><?php echo htmlentities($row['created_at']); ?></td>
+                                                <td>
+                                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#messageModal" data-message="<?php echo htmlentities($row['message']); ?>" title="View Full Message">
+                                                        <i class="fa fa-eye"></i>
+                                                    </button>
+                                                    &nbsp;
+                                                    <a class="btn btn-success btn-sm" href="manage-feedback.php?fid=<?php echo htmlentities($row['feedback_id']); ?>&&action=reply" title="Mark as Replied"><i class="fa fa-check"></i> Replied</a>
+                                                </td>
+                                            </tr>
+                                        <?php
+                                            $cnt++;
+                                        } ?>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- container -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card-box m-t-20">
+                            <div class="m-b-30">
+                                <h4><i class="ion-checkmark-circled"></i> Replied Feedback</h4>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table m-0 table-bordered" id="example1">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Subject</th>
+                                            <th>Message</th>
+                                            <th>Date Sent</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $query = mysqli_query($con, "SELECT feedback_id, name, email, subject, message, created_at FROM FEEDBACK WHERE status = 'replied'");
+                                        $cnt = 1;
+                                        while ($row = mysqli_fetch_array($query)) {
+                                        ?>
+                                            <tr>
+                                                <th scope="row"><?php echo htmlentities($cnt); ?></th>
+                                                <td><?php echo htmlentities($row['name']); ?></td>
+                                                <td><?php echo htmlentities($row['email']); ?></td>
+                                                <td><?php echo htmlentities($row['subject']); ?></td>
+                                                <td><?php echo substr(htmlentities($row['message']), 0, 50); ?>...</td>
+                                                <td><?php echo htmlentities($row['created_at']); ?></td>
+                                                <td>
+                                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#messageModal" data-message="<?php echo htmlentities($row['message']); ?>" title="View Full Message">
+                                                        <i class="fa fa-eye"></i>
+                                                    </button>
+                                                    &nbsp;
+                                                    <a class="btn btn-primary btn-sm" href="manage-feedback.php?fid=<?php echo htmlentities($row['feedback_id']); ?>&&action=undo" title="Mark as Pending"><i class="fa fa-undo"></i> Undo</a>
+                                                    &nbsp;
+                                                    <a class="btn btn-danger btn-sm" href="manage-feedback.php?fid=<?php echo htmlentities($row['feedback_id']); ?>&&action=del" onclick="return confirm('Do you really want to delete this feedback?')" title="Delete Permanently"><i class="fa fa-trash-o"></i></a>
+                                                </td>
+                                            </tr>
+                                        <?php
+                                            $cnt++;
+                                        } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <!-- content -->
-            <?php include('includes/footer.php'); ?>
-        <?php } ?>
+        </div>
+
+        <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="messageModalLabel">Full Feedback Message</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="white-space: pre-wrap;">
+                        </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <?php include('includes/footer.php'); ?>
+
+        <script>
+            $('#messageModal').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget); // Button that triggered the modal
+                var message = button.data('message'); // Extract info from data-* attributes
+                var modal = $(this);
+                modal.find('.modal-body').text(message);
+            });
+        </script>
+
+    </div>
+<?php } ?>

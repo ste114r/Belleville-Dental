@@ -42,7 +42,7 @@ if (strlen($_SESSION['login']) == 0) {
                     <div class="col-md-4">
                         <div class="card-box h-100">
                             <div class="card-header">
-                                <h2 class="card-title mb-2">Welcome!</h2>
+                                <h2 class="card-title mb-2">Welcome <h2><?php echo htmlentities($_SESSION['login'])?>!</h2></h2>
                                 <span class="d-block mb-4 text-nowrap">Admin dashboard.</span>
                             </div>
                             <br><br>
@@ -77,8 +77,8 @@ if (strlen($_SESSION['login']) == 0) {
                             <div class="card-box widget-box-one text-center">
                                 <i class="mdi mdi-chart-areaspline widget-one-icon"></i>
                                 <div class="wigdet-one-content">
-                                    <p class="m-0 text-secondary" title="Statistics">Live Categories</p>
-                                    <?php $query = mysqli_query($con, "SELECT * FROM ARTICLE_CATEGORIES WHERE is_active = 1");
+                                    <p class="m-0 text-secondary" title="Statistics">Live Articles</p>
+                                    <?php $query = mysqli_query($con, "SELECT * FROM ARTICLES WHERE is_active = 1");
                                     $countcat = mysqli_num_rows($query);
                                     ?>
                                     <h2><?php echo htmlentities($countcat); ?> <small></small></h2>
@@ -92,8 +92,8 @@ if (strlen($_SESSION['login']) == 0) {
                             <div class="card-box widget-box-one text-center">
                                 <i class="mdi mdi-layers widget-one-icon"></i>
                                 <div class="wigdet-one-content">
-                                    <p class="m-0 text-secondary" title="User This Month">Live Articles</p>
-                                    <?php $query = mysqli_query($con, "SELECT * FROM ARTICLES WHERE is_active = 1");
+                                    <p class="m-0 text-secondary" title="User This Month">Live Products</p>
+                                    <?php $query = mysqli_query($con, "SELECT * FROM PRODUCTS WHERE is_active = 1");
                                     $countposts = mysqli_num_rows($query);
                                     ?>
                                     <h2><?php echo htmlentities($countposts); ?> <small></small></h2>
