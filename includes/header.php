@@ -1,3 +1,7 @@
+<?php
+// [file name]: includes/header.php
+// session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -93,6 +97,35 @@
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23064A8A' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
         }
         
+        .btn-login {
+            background-color: var(--primary);
+            color: white;
+            border-radius: 6px;
+            padding: 0.5rem 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-login:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+            color: white;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-welcome {
+            margin-right: 15px;
+            color: var(--dark);
+            font-weight: 600;
+        }
+        
         @media (max-width: 991px) {
             .navbar-nav .nav-link {
                 padding: 0.8rem 0;
@@ -109,6 +142,18 @@
                 margin-top: 1rem;
                 padding-top: 1rem;
                 border-top: 1px solid rgba(11, 126, 200, 0.1);
+            }
+            
+            .user-menu {
+                margin-top: 1rem;
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .user-welcome {
+                margin-right: 0;
+                margin-bottom: 10px;
+                text-align: center;
             }
         }
         
@@ -162,9 +207,29 @@
                 </ul>
             </div>
 
-            <!-- Translate Widget -->
-            <div class="translate-box d-none d-lg-block">
-                <div id="google_translate_element"></div>
+            <!-- Right side items -->
+            <div class="d-flex align-items-center">
+                <?php if(isset($_SESSION['login']) && $_SESSION['login'] != "") { ?>
+                    <!-- User is logged in -->
+                    <div class="user-menu">
+                        <span class="user-welcome d-none d-md-block">Welcome, <?php echo $_SESSION['login']; ?></span>
+                        <a href="logout.php" class="btn btn-login">
+                            <i class="fa fa-sign-out"></i>Logout
+                        </a>
+                    </div>
+                <?php } else { ?>
+                    <!-- User is not logged in -->
+                    <div class="login-container me-3">
+                        <a href="login.php" class="btn btn-login">
+                            <i class="fa fa-user"></i>Login
+                        </a>
+                    </div>
+                <?php } ?>
+
+                <!-- Translate Widget -->
+                <div class="translate-box d-none d-lg-block">
+                    <div id="google_translate_element"></div>
+                </div>
             </div>
         </div>
     </nav>

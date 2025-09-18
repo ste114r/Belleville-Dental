@@ -1,22 +1,34 @@
 <?php
-// [file name]: login.php
+// [file name]: register.php
 // session_start();
 include('includes/config.php');
 
-if (isset($_POST['login'])) {
-    $uname = $_POST['username'];
+if (isset($_POST['register'])) {
+    $username = $_POST['username'];
+    $email = $_POST['email'];
     $password = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
     
-    $sql = mysqli_query($con, "SELECT user_id, username, email, password_hash, role FROM USERS WHERE (username = '$uname' OR email = '$uname') AND password_hash = '$password'");
-    $num = mysqli_fetch_array($sql);
-    
-    if ($num > 0) {
-        $_SESSION['login'] = $_POST['username'];
-        $_SESSION['userid'] = $num['user_id'];
-        $_SESSION['utype'] = $num['role'];
-        echo "<script type='text/javascript'> document.location = 'index.php'; </script>";
+    // Check if passwords match
+    if ($password !== $confirm_password) {
+        echo "<script>alert('Passwords do not match');</script>";
     } else {
-        echo "<script>alert('Invalid username or password');</script>";
+        // Check if user already exists
+        $check_query = mysqli_query($con, "SELECT user_id FROM USERS WHERE username = '$username' OR email = '$email'");
+        
+        if (mysqli_num_rows($check_query) > 0) {
+            echo "<script>alert('Username or email already exists');</script>";
+        } else {
+            // Insert new user
+            $insert_query = mysqli_query($con, "INSERT INTO USERS (username, password_hash, email, role) VALUES ('$username', '$password', '$email', 'client')");
+            
+            if ($insert_query) {
+                echo "<script>alert('Registration successful. Please login.');</script>";
+                echo "<script type='text/javascript'> document.location = 'login.php'; </script>";
+            } else {
+                echo "<script>alert('Something went wrong. Please try again.');</script>";
+            }
+        }
     }
 }
 ?>
@@ -30,7 +42,7 @@ if (isset($_POST['login'])) {
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="shortcut icon" href="images/Belleville Dental logo transparent.png" type="image/x-icon">
-    <title>Belleville Dental | Login</title>
+    <title>Belleville Dental | Register</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -59,8 +71,8 @@ if (isset($_POST['login'])) {
             padding-top: 80px;
         }
         
-        .login-container {
-            max-width: 400px;
+        .register-container {
+            max-width: 500px;
             margin: 0 auto;
             padding: 30px;
             background: white;
@@ -69,12 +81,12 @@ if (isset($_POST['login'])) {
             margin-top: 50px;
         }
         
-        .login-logo {
+        .register-logo {
             text-align: center;
             margin-bottom: 30px;
         }
         
-        .login-logo img {
+        .register-logo img {
             max-height: 80px;
         }
         
@@ -85,7 +97,7 @@ if (isset($_POST['login'])) {
             margin-bottom: 15px;
         }
         
-        .btn-login {
+        .btn-register {
             background-color: var(--primary);
             color: white;
             border-radius: 6px;
@@ -96,22 +108,22 @@ if (isset($_POST['login'])) {
             width: 100%;
         }
         
-        .btn-login:hover {
+        .btn-register:hover {
             background-color: var(--primary-dark);
             transform: translateY(-2px);
         }
         
-        .login-links {
+        .register-links {
             text-align: center;
             margin-top: 20px;
         }
         
-        .login-links a {
+        .register-links a {
             color: var(--primary);
             text-decoration: none;
         }
         
-        .login-links a:hover {
+        .register-links a:hover {
             text-decoration: underline;
         }
     </style>
@@ -121,25 +133,32 @@ if (isset($_POST['login'])) {
     <?php include('includes/header.php'); ?>
     
     <div class="container">
-        <div class="login-container">
-            <div class="login-logo">
+        <div class="register-container">
+            <div class="register-logo">
                 <img src="images/Belleville Dental logo transparent.png" alt="Belleville Dental">
             </div>
             
             <form method="post">
                 <div class="form-group">
-                    <input type="text" class="form-control" name="username" placeholder="Username or Email" required>
+                    <input type="text" class="form-control" name="username" placeholder="Username" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="email" class="form-control" name="email" placeholder="Email Address" required>
                 </div>
                 
                 <div class="form-group">
                     <input type="password" class="form-control" name="password" placeholder="Password" required>
                 </div>
                 
-                <button type="submit" name="login" class="btn btn-login">Login</button>
+                <div class="form-group">
+                    <input type="password" class="form-control" name="confirm_password" placeholder="Confirm Password" required>
+                </div>
                 
-                <div class="login-links">
-                    <a href="forgot-password.php">Forgot Password?</a>
-                    <p>Don't have an account? <a href="register.php">Register here</a></p>
+                <button type="submit" name="register" class="btn btn-register">Register</button>
+                
+                <div class="register-links">
+                    <p>Already have an account? <a href="login.php">Login here</a></p>
                 </div>
             </form>
         </div>
