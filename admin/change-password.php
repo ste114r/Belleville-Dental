@@ -15,10 +15,10 @@ if (strlen($_SESSION['login']) == 0) {
         
         // Fixed query to use correct column name
         $sql = mysqli_query($con, "SELECT password_hash FROM USERS WHERE username='$adminid' OR email='$adminid'");
-        $num = mysqli_fetch_array($sql);
+        $user = mysqli_fetch_array($sql);
         
-        if ($num > 0) {
-            $dbpassword = $num['password_hash'];
+        if ($user > 0) {
+            $dbpassword = $user['password_hash'];
 
             // Since you're not using password hashing yet, use direct comparison
             if ($password === $dbpassword) {

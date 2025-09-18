@@ -1,23 +1,21 @@
 <?php
 session_start();
-//Database Configuration File
 include('includes/config.php');
-//error_reporting(0);
-if (isset($_POST['login'])) {
 
-    // Getting username/ email and password
+if (isset($_POST['login'])) {
     $uname = $_POST['username'];
     // $password = md5($_POST['password']);
     $password = $_POST['password'];
-    // Fetch data from database on the basis of username/email and password
-    $sql = mysqli_query($con, "SELECT username, email, password_hash, role FROM USERS WHERE (username = '$uname' && password_hash = '$password')");
-    $num = mysqli_fetch_array($sql);
-    if ($num > 0) {
-        $_SESSION['login'] = $_POST['username'];
-        $_SESSION['utype'] = $num['role'];
+
+    $sql = mysqli_query($con, "SELECT user_id, username, email, password_hash, role FROM USERS WHERE (username = '$uname' OR email = '$uname') AND password_hash = '$password' AND role = 'admin' ");
+    $user = mysqli_fetch_array($sql);
+
+    if ($user) {
+        $_SESSION['login'] = $user['username'];
+        $_SESSION['userid'] = $user['user_id'];
         echo "<script type='text/javascript'> document.location = 'dashboard.php'; </script>";
     } else {
-        echo "<script>alert('Invalid Details');</script>";
+        echo "<script>alert('Invalid username or password');</script>";
     }
 }
 ?>
@@ -101,7 +99,7 @@ if (isset($_POST['login'])) {
                                     </div>
                                 </form>
                                 <div class="text-center">
-                                    <a href="../index.php"><i class="mdi mdi-home"></i>Back Home</a>
+                                    <a href="../index.php"><i class="mdi mdi-home"></i>Back to Website</a>
                                 </div>
                             </div>
                         </div>

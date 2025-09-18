@@ -70,7 +70,7 @@ if (isset($_POST['submit'])) {
                             <div class="text-center account-logo-box">
                                 <h2 class="text-uppercase">
                                     <a href="index.php" class="text-success">
-                                        <span><img src="assets/images/logo.png" alt="" height="56"></span>
+                                        <span><img src="assets/images/Belleville Dental logo transparent.png" alt="" height="56"></span>
                                     </a>
                                 </h2>
                                 <!--<h4 class="text-uppercase font-bold m-b-0">Sign In</h4>-->
@@ -109,7 +109,7 @@ if (isset($_POST['submit'])) {
                                 </form>
 
                                 <div class="clearfix"></div>
-                                <a href="../index.php"><i class="mdi mdi-home"></i>Back Home</a>
+                                <a href="index.php"><i class="mdi mdi-home"></i>Back to Login</a>
                             </div>
                         </div>
                         <!-- end card-box-->
