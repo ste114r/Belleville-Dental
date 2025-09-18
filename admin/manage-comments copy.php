@@ -8,49 +8,43 @@ if (strlen($_SESSION['login']) == 0) {
     header('location:index.php');
 } else {
 
+    $msg = '';
+    $delmsg = '';
+
     // Action handler
     if (isset($_GET['action']) && isset($_GET['cid'])) {
         $comment_id = intval($_GET['cid']);
         $action = $_GET['action'];
-        $stmt = null;
 
         // Approve a comment
         if ($action == 'approve') {
-            $stmt = mysqli_prepare($con, "UPDATE PRODUCT_COMMENTS SET status = 'approved' WHERE comment_id = ?");
-            mysqli_stmt_bind_param($stmt, "i", $comment_id);
-            if (mysqli_stmt_execute($stmt)) {
-                $_SESSION['msg'] = "Comment has been approved successfully.";
+            $query = mysqli_query($con, "UPDATE PRODUCT_COMMENTS SET status = 'approved' WHERE comment_id = '$comment_id'");
+            if ($query) {
+                $msg = "Comment has been approved successfully.";
             } else {
-                $_SESSION['delmsg'] = "Error: Could not approve comment.";
+                $delmsg = "Error: Could not approve comment.";
             }
         }
         // Unapprove a comment
         elseif ($action == 'unapprove') {
-            $stmt = mysqli_prepare($con, "UPDATE PRODUCT_COMMENTS SET status = 'pending' WHERE comment_id = ?");
-            mysqli_stmt_bind_param($stmt, "i", $comment_id);
-            if (mysqli_stmt_execute($stmt)) {
-                $_SESSION['msg'] = "Comment has been unapproved and moved to pending.";
+            $query = mysqli_query($con, "UPDATE PRODUCT_COMMENTS SET status = 'pending' WHERE comment_id = '$comment_id'");
+            if ($query) {
+                $msg = "Comment has been unapproved and moved to pending.";
             } else {
-                $_SESSION['delmsg'] = "Error: Could not unapprove comment.";
+                $delmsg = "Error: Could not unapprove comment.";
             }
         }
         // Delete a comment
         elseif ($action == 'del') {
-            $stmt = mysqli_prepare($con, "DELETE FROM PRODUCT_COMMENTS WHERE comment_id = ?");
-            mysqli_stmt_bind_param($stmt, "i", $comment_id);
-            if (mysqli_stmt_execute($stmt)) {
-                $_SESSION['delmsg'] = "Comment has been deleted permanently.";
+            $query = mysqli_query($con, "DELETE FROM PRODUCT_COMMENTS WHERE comment_id = '$comment_id'");
+            if ($query) {
+                $delmsg = "Comment has been deleted permanently.";
             } else {
-                $_SESSION['delmsg'] = "Error: Could not delete comment.";
+                $delmsg = "Error: Could not delete comment.";
             }
         }
-
-        if ($stmt) {
-            mysqli_stmt_close($stmt);
-        }
-
         // Redirect to the same page to show the message and prevent resubmission
-        header("Location: manage-comments.php");
+        header("Location: manage-product-comments.php");
         exit();
     }
     ?>
@@ -92,6 +86,7 @@ if (strlen($_SESSION['login']) == 0) {
                     </div>
                 </div>
 
+                <!-- Pending Comments Table -->
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card-box m-t-20">
@@ -134,11 +129,11 @@ if (strlen($_SESSION['login']) == 0) {
                                                             title="View Full Comment"><i class="fa fa-eye"></i></button>
                                                         &nbsp;
                                                         <a class="btn btn-success btn-sm"
-                                                            href="manage-comments.php?cid=<?php echo htmlentities($row['comment_id']); ?>&action=approve"
+                                                            href="manage-product-comments.php?cid=<?php echo htmlentities($row['comment_id']); ?>&action=approve"
                                                             title="Approve Comment"><i class="fa fa-check"></i></a>
                                                         &nbsp;
                                                         <a class="btn btn-danger btn-sm"
-                                                            href="manage-comments.php?cid=<?php echo htmlentities($row['comment_id']); ?>&action=del"
+                                                            href="manage-product-comments.php?cid=<?php echo htmlentities($row['comment_id']); ?>&action=del"
                                                             onclick="return confirm('Do you really want to delete this comment?')"
                                                             title="Delete Permanently"><i class="fa fa-trash-o"></i></a>
                                                     </td>
@@ -154,6 +149,7 @@ if (strlen($_SESSION['login']) == 0) {
                     </div>
                 </div>
 
+                <!-- Approved Comments Table -->
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card-box m-t-20">
@@ -196,11 +192,11 @@ if (strlen($_SESSION['login']) == 0) {
                                                             title="View Full Comment"><i class="fa fa-eye"></i></button>
                                                         &nbsp;
                                                         <a class="btn btn-warning btn-sm"
-                                                            href="manage-comments.php?cid=<?php echo htmlentities($row['comment_id']); ?>&action=unapprove"
+                                                            href="manage-product-comments.php?cid=<?php echo htmlentities($row['comment_id']); ?>&action=unapprove"
                                                             title="Unapprove Comment"><i class="fa fa-times"></i></a>
                                                         &nbsp;
                                                         <a class="btn btn-danger btn-sm"
-                                                            href="manage-comments.php?cid=<?php echo htmlentities($row['comment_id']); ?>&action=del"
+                                                            href="manage-product-comments.php?cid=<?php echo htmlentities($row['comment_id']); ?>&action=del"
                                                             onclick="return confirm('Do you really want to delete this comment?')"
                                                             title="Delete Permanently"><i class="fa fa-trash-o"></i></a>
                                                     </td>
@@ -219,6 +215,7 @@ if (strlen($_SESSION['login']) == 0) {
             </div>
         </div>
 
+        <!-- Comment Modal -->
         <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -230,6 +227,7 @@ if (strlen($_SESSION['login']) == 0) {
                         </button>
                     </div>
                     <div class="modal-body" style="white-space: pre-wrap;">
+                        <!-- Comment content will be injected here by jQuery -->
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

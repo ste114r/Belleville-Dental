@@ -12,7 +12,7 @@ if (isset($_POST['login'])) {
 
     if ($user) {
         $_SESSION['login'] = $_POST['username'];
-        $_SESSION['userid'] = $user['user_id'];
+        $_SESSION['user_id'] = $user['user_id'];
         echo "<script type='text/javascript'> document.location = 'index.php'; </script>";
     } else {
         echo "<script>alert('Invalid username or password');</script>";

@@ -1,6 +1,6 @@
 <?php
 include('includes/config.php');
-// Initialize message variables
+session_start();
 $msg = "";
 $error = "";
 

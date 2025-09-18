@@ -2,6 +2,44 @@
 session_start();
 include('includes/config.php');
 
+// Handle Comment Submission
+$comment_message = '';
+if (isset($_POST['submit_comment'])) {
+    // Check if user is logged in
+    if (isset($_SESSION['login']) && !empty($_SESSION['user_id'])) {
+        $user_id = $_SESSION['user_id'];
+        $product_id = intval($_POST['product_id']);
+        $comment = trim($_POST['comment']);
+
+        if (!empty($comment)) {
+            // Check if user has already commented to prevent duplicates
+            $stmt_check = mysqli_prepare($con, "SELECT comment_id FROM PRODUCT_COMMENTS WHERE user_id = ? AND product_id = ?");
+            mysqli_stmt_bind_param($stmt_check, "ii", $user_id, $product_id);
+            mysqli_stmt_execute($stmt_check);
+            mysqli_stmt_store_result($stmt_check);
+
+            if (mysqli_stmt_num_rows($stmt_check) == 0) {
+                // Insert the new comment with 'pending' status
+                $stmt_insert = mysqli_prepare($con, "INSERT INTO PRODUCT_COMMENTS (product_id, user_id, comment, status) VALUES (?, ?, ?, 'pending')");
+                mysqli_stmt_bind_param($stmt_insert, "iis", $product_id, $user_id, $comment);
+                if (mysqli_stmt_execute($stmt_insert)) {
+                    $_SESSION['comment_flash_msg'] = "Your comment has been submitted and is awaiting approval.";
+                } else {
+                    $_SESSION['comment_flash_msg'] = "Error: Could not submit your comment. Please try again.";
+                }
+            } else {
+                $_SESSION['comment_flash_msg'] = "You have already submitted a comment for this product.";
+            }
+            mysqli_stmt_close($stmt_check);
+        } else {
+            $_SESSION['comment_flash_msg'] = "Comment cannot be empty.";
+        }
+        // Redirect to the same page to prevent form resubmission
+        header("Location: " . $_SERVER['REQUEST_URI']);
+        exit();
+    }
+}
+
 // 1. Check if 'pid' is set and is a valid number. Exit if not.
 if (!isset($_GET['pid']) || !is_numeric($_GET['pid'])) {
     // You can redirect to a 404 page or just show an error message.
@@ -397,6 +435,58 @@ $productid = intval($_GET['pid']);
         .description-accordion .btn-link[aria-expanded="true"] .fa-chevron-down {
             transform: rotate(180deg);
         }
+
+        /* --- NEW STYLES FOR COMMENT SECTION --- */
+        .comments-section {
+            background: white;
+            padding: 30px;
+            margin-top: 40px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .comment-card {
+            background: var(--secondary);
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+        }
+
+        .comment-date {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+
+        .comment-text {
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .no-comments {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+            border: 1px dashed var(--gray);
+            border-radius: 8px;
+            background-color: var(--secondary);
+        }
+
+        .guest-comment-lock {
+            border: 1px dashed var(--gray);
+            border-radius: 8px;
+            background-color: var(--secondary);
+            padding: 20px;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -405,7 +495,6 @@ $productid = intval($_GET['pid']);
 
     <div class="container-fluid product-container">
         <div class="row" style="margin-top: 4%;">
-            <!-- Main Content Column -->
             <div class="col-md-9">
                 <?php
                 // 2. Use a prepared statement for security
@@ -440,26 +529,6 @@ $productid = intval($_GET['pid']);
                                     <div class="col-md-6">
                                         <span class="category-badge"><?php echo htmlentities($row['CategoryName']); ?></span>
                                         <h1 class="product-title"><?php echo htmlentities($row['ProductName']); ?></h1>
-                                        <!-- <div class="product-highlights">
-                                            <div class="highlight-item">
-                                                <div class="highlight-icon">
-                                                    <i class="fas fa-teeth"></i>
-                                                </div>
-                                                <div>Professional-grade dental care</div>
-                                            </div>
-                                            <div class="highlight-item">
-                                                <div class="highlight-icon">
-                                                    <i class="fas fa-shield-alt"></i>
-                                                </div>
-                                                <div>Clinically proven effectiveness</div>
-                                            </div>
-                                            <div class="highlight-item">
-                                                <div class="highlight-icon">
-                                                    <i class="fas fa-thumbs-up"></i>
-                                                </div>
-                                                <div>Dentist recommended</div>
-                                            </div>
-                                        </div> -->
 
                                         <div class="description-accordion" id="descriptionAccordion">
                                             <div class="card">
@@ -516,7 +585,82 @@ $productid = intval($_GET['pid']);
                                 </a>
                             </div>
 
-                            <!-- Related Products -->
+                            <section class="comments-section">
+                                <h4 class="section-title text-center">Product Comments</h4>
+
+                                <?php
+                                $comment_stmt = mysqli_prepare($con, "SELECT u.username, pc.comment, pc.created_at 
+                                                                        FROM PRODUCT_COMMENTS pc
+                                                                        JOIN USERS u ON pc.user_id = u.user_id
+                                                                        WHERE pc.product_id = ? AND pc.status = 'approved'
+                                                                        ORDER BY pc.created_at DESC");
+                                mysqli_stmt_bind_param($comment_stmt, "i", $productid);
+                                mysqli_stmt_execute($comment_stmt);
+                                $comment_query = mysqli_stmt_get_result($comment_stmt);
+                                $comment_count = mysqli_num_rows($comment_query);
+
+                                if ($comment_count > 0) {
+                                    while ($comment_row = mysqli_fetch_array($comment_query)) {
+                                ?>
+                                <div class="comment-card">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="comment-author mb-0"><i class="fas fa-user-circle mr-2"></i><?php echo htmlentities($comment_row['username']); ?></p>
+                                        <p class="comment-date mb-0"><?php echo date('F j, Y', strtotime($comment_row['created_at'])); ?></p>
+                                    </div>
+                                    <hr class="my-2">
+                                    <p class="comment-text mb-0"><?php echo htmlentities($comment_row['comment']); ?></p>
+                                </div>
+                                <?php
+                                    }
+                                } else {
+                                    echo "<div class='no-comments'><p class='mb-0'>Be the first to leave a comment!</p></div>";
+                                }
+                                ?>
+
+                                <div class="comment-form-container mt-4 pt-4 border-top">
+                                    <h5 class="text-center mb-3">Leave a Comment</h5>
+                                    <?php 
+                                    // Display flash message if it exists
+                                    if(isset($_SESSION['comment_flash_msg'])){
+                                        echo '<div class="alert alert-info text-center">'.$_SESSION['comment_flash_msg'].'</div>';
+                                        unset($_SESSION['comment_flash_msg']);
+                                    }
+                                    
+                                    if (isset($_SESSION['login']) && !empty($_SESSION['user_id'])): 
+                                        // Check if this user has already commented
+                                        $user_id_check = $_SESSION['user_id'];
+                                        $check_stmt_form = mysqli_prepare($con, "SELECT comment_id FROM PRODUCT_COMMENTS WHERE user_id = ? AND product_id = ?");
+                                        mysqli_stmt_bind_param($check_stmt_form, "ii", $user_id_check, $productid);
+                                        mysqli_stmt_execute($check_stmt_form);
+                                        mysqli_stmt_store_result($check_stmt_form);
+                                        $has_commented = mysqli_stmt_num_rows($check_stmt_form) > 0;
+                                        mysqli_stmt_close($check_stmt_form);
+
+                                        if($has_commented):
+                                    ?>
+                                        <div class="alert alert-success text-center">Thank you for your feedback! Your comment is either pending approval or has been posted.</div>
+                                    <?php else: ?>
+                                        <form name="comment" method="post">
+                                            <input type="hidden" name="product_id" value="<?php echo $productid; ?>" />
+                                            <div class="form-group">
+                                                <textarea class="form-control" name="comment" rows="4" placeholder="Write your comment here..." required></textarea>
+                                            </div>
+                                            <div class="text-center">
+                                                <button type="submit" class="btn btn-primary" name="submit_comment">Submit Comment</button>
+                                            </div>
+                                        </form>
+                                    <?php endif; ?>
+                                    <?php else: ?>
+                                        <div class="guest-comment-lock">
+                                            <textarea class="form-control" rows="3" placeholder="Please log in to leave a comment..." disabled></textarea>
+                                            <p class="mt-3 mb-0">You must be logged in to post a comment. <br>
+                                            <a href="login.php" class="btn btn-primary btn-sm mt-2">Login</a> or 
+                                            <a href="registration.php" class="btn btn-outline-primary btn-sm mt-2">Register</a>
+                                            </p>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </section>
                             <section class="recommended-products">
                                 <h4 class="section-title">Related Products</h4>
                                 <div class="row">
@@ -542,7 +686,7 @@ $productid = intval($_GET['pid']);
                                                 <div class="col-md-4">
                                                     <div class="card product-card">
                                                         <img class="card-img-top"
-                                                            src="images/<?php echo htmlentities($related_row['image_url']); ?>"
+                                                            src="admin/productimages/<?php echo htmlentities($related_row['image_url']); ?>"
                                                             alt="<?php echo htmlentities($related_row['name']); ?>">
                                                         <div class="card-body">
                                                             <h5 class="card-title"><?php echo htmlentities($related_row['name']); ?></h5>
@@ -564,7 +708,6 @@ $productid = intval($_GET['pid']);
                                 </div>
                             </section>
 
-                            <!-- Contact Us Section -->
                             <div class="contact-cta">
                                 <h4>Have Questions About Dental Products?</h4>
                                 <p class="mb-3">Our dental professionals can provide personalized recommendations based on your
@@ -578,7 +721,6 @@ $productid = intval($_GET['pid']);
                 ?>
             </div>
 
-            <!-- Sidebar Column -->
             <?php include('includes/sidebar.php'); ?>
         </div>
     </div>

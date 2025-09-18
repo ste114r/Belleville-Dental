@@ -60,13 +60,11 @@
                     <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-comment-account-outline"></i>
                         <span> Comments </span> <span class="menu-arrow"></span></a>
                     <ul class="list-unstyled">
-                        <li><a href="unapprove-comment.php">Manage Comments</a></li>
-                        <li><a href="manage-comments.php">Approved Comments</a></li>
+                        <li><a href="manage-comments.php">Manage Comments</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a href="../index.php" class="waves-effect"><i class="fa fa-eye" aria-hidden="true"></i><span>Go To
-                            Website</span></a>
+                    <a href="../index.php" class="waves-effect"><i class="fa fa-eye" aria-hidden="true"></i><span>Go to Website</span></a>
                 </li>
             </ul>
         </div>
