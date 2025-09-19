@@ -299,31 +299,49 @@ INSERT INTO ARTICLES (title, slug, content, category_id, author, cover_image_url
 -- Insert sample product categories
 INSERT INTO PRODUCT_CATEGORIES (name, description, is_active)
 VALUES 
-    ('Electric Toothbrushes', 'Advanced tools for effective plaque removal.', 1),
-    ('Dental Floss & Interdental', 'Products for cleaning between teeth.', 1),
-    ('Mouthwashes & Rinses', 'Solutions for fresh breath and oral hygiene.', 1),
-    ('Toothpastes', 'Specialized toothpastes for various oral health needs.', 1);
+    ('Toothbrushes', 'Manual and electric toothbrushes for effective plaque removal.', 1),
+    ('Toothpastes', 'Specialized toothpastes for various oral health needs.', 1),
+    ('Interdental Care', 'Products for cleaning between teeth and hard-to-reach areas.', 1),
+    ('Oral Rinses', 'Mouthwashes and rinses for fresh breath and oral hygiene.', 1),
+    ('Specialty Products', 'Specialized oral care tools and accessories.', 1);
 
--- Insert sample products with unique, non-null slugs
+-- Insert sample products
 INSERT INTO PRODUCTS (name, slug, description, pcategory_id, buy_url, image_url, is_active)
 VALUES 
-    ('Oral-B iO Series 9', 'oral-b-io-series-9', 'A premium electric toothbrush with AI-powered brushing tracking and multiple modes for personalized oral care.', 1, 'https://www.amazon.com/Oral-B-iO-Series-9-Rechargeable/dp/B08P4W6Z7G', 'oral-b-io9.jpg', 1),
-    ('Philips Sonicare DiamondClean', 'sonicare-diamondclean', 'High-performance toothbrush with sonic technology for superior plaque removal and gum health.', 1, 'https://www.amazon.com/Philips-Sonicare-DiamondClean-Smart-9900/dp/B07Z7F5R1K', 'sonicare-diamondclean.jpg', 1),
-    ('Colgate ProClinical 250R', 'colgate-proclinical-250r', 'A budget-friendly electric toothbrush with a slim design and effective cleaning for daily use.', 1, 'https://www.amazon.com/Colgate-ProClinical-250R-Rechargeable-Toothbrush/dp/B07H4J5Q3S', 'colgate-250r.jpg', 1),
-    ('Oral-B Vitality Pro', 'oral-b-vitality-pro', 'A reliable electric toothbrush with oscillating technology for efficient plaque removal.', 1, 'https://www.amazon.com/Oral-B-Vitality-Electric-Rechargeable-Toothbrush/dp/B00T9G9J2M', 'vitality-pro.jpg', 1),
-    ('Burst Sonic Toothbrush', 'burst-sonic-toothbrush', 'A subscription-based toothbrush with charcoal bristles and three modes for whitening and gum care.', 1, 'https://www.amazon.com/Burst-Sonic-Toothbrush-Charcoal-Bristles/dp/B07Z5G3Q4R', 'burst-sonic.jpg', 1),
-    ('Waterpik Cordless Advanced', 'waterpik-cordless', 'A portable water flosser for interdental cleaning, ideal for braces and sensitive gums.', 2, 'https://www.amazon.com/Waterpik-Cordless-Advanced-Water-Flosser/dp/B00T9G9J2M', 'waterpik-cordless.jpg', 1),
-    ('Oral-B Glide Pro-Health Floss', 'glide-pro-health', 'Smooth, shred-resistant dental floss for comfortable cleaning between tight teeth.', 2, 'https://www.amazon.com/Oral-B-Glide-Pro-Health-Comfort-Plus/dp/B001OOLF82', 'glide-floss.jpg', 1),
-    ('GUM Soft-Picks Advanced', 'gum-soft-picks', 'Flexible interdental picks for gentle cleaning, suitable for sensitive gums and orthodontics.', 2, 'https://www.amazon.com/GUM-Soft-Picks-Advanced-0-6mm-36-Count/dp/B000052YHA', 'gum-picks.jpg', 1),
-    ('Philips Sonicare AirFloss Ultra', 'sonicare-airfloss-ultra', 'An air-powered flosser that uses micro-droplet technology for quick interdental cleaning.', 2, 'https://www.amazon.com/Philips-Sonicare-AirFloss-Interdental-Cleaning/dp/B00J5Z8O5A', 'airfloss-ultra.jpg', 1),
-    ('TePe Interdental Brushes', 'tepe-interdental-brushes', 'Color-coded brushes for precise interdental cleaning, ideal for braces and implants.', 2, 'https://www.amazon.com/Tepe-Interdental-Brushes-Assorted-Sizes/dp/B0013GUN8K', 'tepe-brushes.jpg', 1),
-    ('Listerine Total Care', 'listerine-total-care', 'Antimicrobial mouthwash that kills 99% of germs, strengthens enamel, and freshens breath.', 3, 'https://www.amazon.com/Listerine-Total-Care-Anticavity-Fluoride/dp/B07D7J4Z3S', 'listerine-total.jpg', 1),
-    ('Colgate Total Advanced Mouthwash', 'colgate-total-mouthwash', 'Alcohol-free mouthwash with fluoride for cavity protection and all-day freshness.', 3, 'https://www.amazon.com/Colgate-Total-Advanced-Mouthwash-Alcohol-Free/dp/B07N1N5Q2R', 'colgate-mouthwash.jpg', 1),
-    ('TheraBreath Fresh Breath Rinse', 'therabreath-rinse', 'Clinically proven mouthwash to combat bad breath with oxygenating formula.', 3, 'https://www.amazon.com/TheraBreath-Fresh-Breath-Oxygenating-Mouthwash/dp/B000O5IQOQ', 'therabreath-rinse.jpg', 1),
-    ('Crest Pro-Health Multi-Protection', 'crest-pro-health-rinse', 'Alcohol-free rinse with fluoride for cavity prevention and gum health support.', 3, 'https://www.amazon.com/Crest-Pro-Health-Multi-Protection-Mouthwash/dp/B07Z5G3Q4R', 'crest-rinse.jpg', 1),
-    ('ACT Anticavity Fluoride Rinse', 'act-anticavity-rinse', 'Fluoride-based mouthwash designed to strengthen teeth and prevent cavities.', 3, 'https://www.amazon.com/ACT-Anticavity-Fluoride-Rinse-Mint/dp/B000052YHA', 'act-rinse.jpg', 1),
-    ('Sensodyne Pronamel Toothpaste', 'sensodyne-pronamel', 'Fluoride toothpaste designed to protect enamel and relieve tooth sensitivity.', 4, 'https://www.amazon.com/Sensodyne-Pronamel-Toothpaste-Sensitivity-Reenamelization/dp/B07N1N5Q2R', 'pronamel-toothpaste.jpg', 1),
-    ('Colgate Total Whitening', 'colgate-total-whitening', 'Toothpaste with fluoride and mild abrasives for whitening and cavity protection.', 4, 'https://www.amazon.com/Colgate-Total-Whitening-Toothpaste-Gel/dp/B07D7J4Z3S', 'colgate-whitening.jpg', 1),
-    ('Crest 3D White Brilliance', 'crest-3d-white', 'Advanced whitening toothpaste with fluoride for stain removal and enamel safety.', 4, 'https://www.amazon.com/Crest-White-Brilliance-Advanced-Toothpaste/dp/B07Z7F5R1K', 'crest-3d-white.jpg', 1),
-    ('Tom’s of Maine Natural', 'toms-natural-toothpaste', 'Fluoride-free natural toothpaste with plant-based ingredients for gentle cleaning.', 4, 'https://www.amazon.com/Toms-Maine-Natural-Toothpaste-Fluoride/dp/B000O5IQOQ', 'toms-toothpaste.jpg', 1),
-    ('Parodontax Active Gum Repair', 'parodontax-gum-repair', 'Stannous fluoride toothpaste to reduce gum bleeding and support gum health.', 4, 'https://www.amazon.com/Parodontax-Active-Gum-Repair-Toothpaste/dp/B07H4J5Q3S', 'parodontax-toothpaste.jpg', 1);
+    -- TOOTHBRUSHES (3 manual, 3 electric)
+    ('Oral-B Pro-Health Manual', 'oral-b-pro-health-manual', 'Soft-bristled manual toothbrush with angled bristles for effective plaque removal.', 1, 'https://www.amazon.com/Oral-B-Pro-Health-Manual-Toothbrush/dp/B001234567', 'oral-b-manual.jpg', 1),
+    ('Colgate 360° Manual Toothbrush', 'colgate-360-manual', 'Manual toothbrush with whole mouth cleaning including tongue and cheek cleaner.', 1, 'https://www.amazon.com/Colgate-360-Manual-Toothbrush/dp/B001234568', 'colgate-360.jpg', 1),
+    ('GUM Technique Pro Compact', 'gum-technique-pro', 'Compact head manual toothbrush with tapered bristles for precision cleaning.', 1, 'https://www.amazon.com/GUM-Technique-Pro-Compact/dp/B001234569', 'gum-technique.jpg', 1),
+    ('Oral-B iO Series 9', 'oral-b-io-series-9', 'Premium electric toothbrush with AI-powered brushing tracking and multiple cleaning modes.', 1, 'https://www.amazon.com/Oral-B-iO-Series-9/dp/B08P4W6Z7G', 'oral-b-io9.jpg', 1),
+    ('Philips Sonicare DiamondClean', 'philips-sonicare-diamondclean', 'High-performance sonic electric toothbrush for superior plaque removal and gum health.', 1, 'https://www.amazon.com/Philips-Sonicare-DiamondClean/dp/B07Z7F5R1K', 'sonicare-diamondclean.jpg', 1),
+    ('Oral-B Vitality Pro', 'oral-b-vitality-pro', 'Budget-friendly electric toothbrush with oscillating technology for daily cleaning.', 1, 'https://www.amazon.com/Oral-B-Vitality-Pro/dp/B00T9G9J2M', 'vitality-pro.jpg', 1),
+
+    -- TOOTHPASTES (3 regular, 2 sensitivity, 2 whitening)
+    ('Colgate Total Original', 'colgate-total-original', 'Regular fluoride toothpaste for comprehensive oral health protection and cavity prevention.', 2, 'https://www.amazon.com/Colgate-Total-Original/dp/B001234570', 'colgate-total.jpg', 1),
+    ('Crest Cavity Protection', 'crest-cavity-protection', 'Basic fluoride toothpaste providing essential cavity protection for daily use.', 2, 'https://www.amazon.com/Crest-Cavity-Protection/dp/B001234571', 'crest-cavity.jpg', 1),
+    ('Oral-B Pro-Expert Deep Clean', 'oral-b-pro-expert', 'Regular toothpaste with deep cleaning formula for thorough plaque removal.', 2, 'https://www.amazon.com/Oral-B-Pro-Expert-Deep-Clean/dp/B001234572', 'oral-b-expert.jpg', 1),
+    ('Sensodyne Pronamel Gentle', 'sensodyne-pronamel', 'Fluoride toothpaste designed to protect enamel and relieve tooth sensitivity.', 2, 'https://www.amazon.com/Sensodyne-Pronamel-Gentle/dp/B07N1N5Q2R', 'sensodyne-pronamel.jpg', 1),
+    ('Colgate Sensitive Complete', 'colgate-sensitive-complete', 'Sensitivity relief toothpaste with fluoride for complete oral care protection.', 2, 'https://www.amazon.com/Colgate-Sensitive-Complete/dp/B001234573', 'colgate-sensitive.jpg', 1),
+    ('Crest 3D White Brilliance', 'crest-3d-white-brilliance', 'Advanced whitening toothpaste with fluoride for stain removal and enamel protection.', 2, 'https://www.amazon.com/Crest-3D-White-Brilliance/dp/B07Z7F5R1K', 'crest-3d-white.jpg', 1),
+    ('Colgate Optic White Advanced', 'colgate-optic-white', 'Professional-level whitening toothpaste with hydrogen peroxide for visible results.', 2, 'https://www.amazon.com/Colgate-Optic-White-Advanced/dp/B001234574', 'colgate-optic-white.jpg', 1),
+
+    -- INTERDENTAL CARE (2 regular floss, 2 water floss, 2 floss picks)
+    ('Oral-B Glide Pro-Health', 'oral-b-glide-floss', 'Smooth, shred-resistant dental floss for comfortable cleaning between tight teeth.', 3, 'https://www.amazon.com/Oral-B-Glide-Pro-Health/dp/B001OOLF82', 'glide-floss.jpg', 1),
+    ('Johnson & Johnson Reach Floss', 'reach-dental-floss', 'Waxed dental floss with mint flavor for effective interdental plaque removal.', 3, 'https://www.amazon.com/Johnson-Johnson-Reach-Floss/dp/B001234575', 'reach-floss.jpg', 1),
+    ('Waterpik Cordless Advanced', 'waterpik-cordless-advanced', 'Portable water flosser for interdental cleaning, ideal for braces and sensitive gums.', 3, 'https://www.amazon.com/Waterpik-Cordless-Advanced/dp/B00T9G9J2M', 'waterpik-cordless.jpg', 1),
+    ('Philips Sonicare AirFloss Ultra', 'philips-airfloss-ultra', 'Air-powered water flosser using micro-droplet technology for quick interdental cleaning.', 3, 'https://www.amazon.com/Philips-Sonicare-AirFloss-Ultra/dp/B00J5Z8O5A', 'airfloss-ultra.jpg', 1),
+    ('GUM Soft-Picks Advanced', 'gum-soft-picks', 'Flexible interdental picks for gentle cleaning, suitable for sensitive gums.', 3, 'https://www.amazon.com/GUM-Soft-Picks-Advanced/dp/B000052YHA', 'gum-picks.jpg', 1),
+    ('Oral-B Complete Glide Picks', 'oral-b-glide-picks', 'Pre-threaded floss picks with shred-resistant floss for convenient on-the-go cleaning.', 3, 'https://www.amazon.com/Oral-B-Complete-Glide-Picks/dp/B001234576', 'glide-picks.jpg', 1),
+
+    -- ORAL RINSES (3 antibacterial, 2 fluoride, 2 breath freshening)
+    ('Listerine Total Care Antibacterial', 'listerine-total-care', 'Antimicrobial mouthwash that kills 99% of germs and strengthens enamel.', 4, 'https://www.amazon.com/Listerine-Total-Care/dp/B07D7J4Z3S', 'listerine-total.jpg', 1),
+    ('Colgate Total Advanced Pro-Shield', 'colgate-total-proshield', 'Antibacterial mouthwash with fluoride for 12-hour germ protection.', 4, 'https://www.amazon.com/Colgate-Total-Advanced-Pro-Shield/dp/B001234577', 'colgate-proshield.jpg', 1),
+    ('Crest Pro-Health Multi-Protection', 'crest-pro-health-rinse', 'Alcohol-free antibacterial rinse for cavity prevention and gum health support.', 4, 'https://www.amazon.com/Crest-Pro-Health-Multi-Protection/dp/B07Z5G3Q4R', 'crest-rinse.jpg', 1),
+    ('ACT Anticavity Fluoride Rinse', 'act-anticavity-rinse', 'Fluoride-based mouthwash designed to strengthen teeth and prevent cavities.', 4, 'https://www.amazon.com/ACT-Anticavity-Fluoride-Rinse/dp/B000052YHA', 'act-rinse.jpg', 1),
+    ('Oral-B Pro-Expert Fluoride Rinse', 'oral-b-pro-expert-rinse', 'Professional fluoride mouthwash for enhanced cavity protection and enamel strengthening.', 4, 'https://www.amazon.com/Oral-B-Pro-Expert-Fluoride-Rinse/dp/B001234578', 'oral-b-fluoride.jpg', 1),
+    ('TheraBreath Fresh Breath Rinse', 'therabreath-rinse', 'Clinically proven mouthwash to combat bad breath with oxygenating formula.', 4, 'https://www.amazon.com/TheraBreath-Fresh-Breath-Rinse/dp/B000O5IQOQ', 'therabreath-rinse.jpg', 1),
+    ('Scope Outlast Fresh Mint', 'scope-outlast-mint', 'Long-lasting breath freshening mouthwash with up to 5x longer fresh feeling.', 4, 'https://www.amazon.com/Scope-Outlast-Fresh-Mint/dp/B001234579', 'scope-outlast.jpg', 1),
+
+    -- SPECIALTY PRODUCTS (1 night guard, 1 tongue scraper)
+    ('DenTek Comfort-Fit Night Guard', 'dentek-night-guard', 'Custom-fitting dental night guard for teeth grinding and TMJ relief.', 5, 'https://www.amazon.com/DenTek-Comfort-Fit-Night-Guard/dp/B001234580', 'dentek-guard.jpg', 1),
+    ('Dr. Tungs Tongue Cleaner', 'dr-tungs-tongue-cleaner', 'Stainless steel tongue scraper for removing bacteria and freshening breath.', 5, 'https://www.amazon.com/Dr-Tungs-Tongue-Cleaner/dp/B001234581', 'tongue-scraper.jpg', 1);
