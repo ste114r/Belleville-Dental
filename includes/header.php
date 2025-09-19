@@ -209,6 +209,9 @@
                     <!-- User is logged in -->
                     <div class="user-menu">
                         <span class="user-welcome d-none d-md-block">Welcome, <?php echo $_SESSION['login']; ?></span>
+                        <a href="profile.php" class="btn btn-login me-2">
+                            <i class="fa fa-user"></i> Profile
+                        </a>
                         <a href="logout.php" class="btn btn-login">
                             <i class="fa fa-sign-out"></i>Logout
                         </a>

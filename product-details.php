@@ -3,43 +3,98 @@ session_name('client_session');
 session_start();
 include('includes/config.php');
 
-// Handle Comment Submission
-$comment_message = '';
-if (isset($_POST['submit_comment'])) {
+// Handle Feedback Submission (Rating and/or Comment)
+if (isset($_POST['submit_feedback'])) {
+    $alert_messages = []; // Array to hold messages for the alert box.
+
     // Check if user is logged in
     if (isset($_SESSION['login']) && !empty($_SESSION['user_id'])) {
         $user_id = $_SESSION['user_id'];
         $product_id = intval($_POST['product_id']);
-        $comment = trim($_POST['comment']);
+        $comment = isset($_POST['comment']) ? trim($_POST['comment']) : '';
+        $rating = isset($_POST['rating']) ? intval($_POST['rating']) : 0;
 
+        $form_had_input = false; // Flag to check if the user submitted any data
+
+        // Handle Rating Submission
+        if ($rating >= 1 && $rating <= 5) {
+            $form_had_input = true;
+            // Check if the user has already rated this product
+            $stmt_check_rating = mysqli_prepare($con, "SELECT rating_id FROM PRODUCT_RATINGS WHERE user_id = ? AND product_id = ?");
+            mysqli_stmt_bind_param($stmt_check_rating, "ii", $user_id, $product_id);
+            mysqli_stmt_execute($stmt_check_rating);
+            mysqli_stmt_store_result($stmt_check_rating);
+
+            if (mysqli_stmt_num_rows($stmt_check_rating) == 0) {
+                // Insert the new rating
+                $stmt_rate = mysqli_prepare($con, "INSERT INTO PRODUCT_RATINGS (product_id, user_id, rating) VALUES (?, ?, ?)");
+                mysqli_stmt_bind_param($stmt_rate, "iii", $product_id, $user_id, $rating);
+                if (mysqli_stmt_execute($stmt_rate)) {
+                    $alert_messages[] = "Your rating has been submitted successfully.";
+                } else {
+                    $alert_messages[] = "Error: Could not submit your rating.";
+                }
+                mysqli_stmt_close($stmt_rate);
+            } else {
+                $alert_messages[] = "You have already rated this product.";
+            }
+            mysqli_stmt_close($stmt_check_rating);
+        }
+
+        // Handle Comment Submission
         if (!empty($comment)) {
-            // Check if user has already commented to prevent duplicates
+            $form_had_input = true;
+            // Check if user has already commented
             $stmt_check = mysqli_prepare($con, "SELECT comment_id FROM PRODUCT_COMMENTS WHERE user_id = ? AND product_id = ?");
             mysqli_stmt_bind_param($stmt_check, "ii", $user_id, $product_id);
             mysqli_stmt_execute($stmt_check);
             mysqli_stmt_store_result($stmt_check);
 
             if (mysqli_stmt_num_rows($stmt_check) == 0) {
-                // Insert the new comment with 'pending' status
+                // Insert the new comment
                 $stmt_insert = mysqli_prepare($con, "INSERT INTO PRODUCT_COMMENTS (product_id, user_id, comment, status) VALUES (?, ?, ?, 'pending')");
                 mysqli_stmt_bind_param($stmt_insert, "iis", $product_id, $user_id, $comment);
                 if (mysqli_stmt_execute($stmt_insert)) {
-                    $_SESSION['comment_flash_msg'] = "Your comment has been submitted and is awaiting approval.";
+                    $alert_messages[] = "Your comment has been submitted and is awaiting approval.";
                 } else {
-                    $_SESSION['comment_flash_msg'] = "Error: Could not submit your comment. Please try again.";
+                    $alert_messages[] = "Error: Could not submit your comment.";
                 }
+                mysqli_stmt_close($stmt_insert);
             } else {
-                $_SESSION['comment_flash_msg'] = "You have already submitted a comment for this product.";
+                $alert_messages[] = "You have already submitted a comment for this product.";
             }
             mysqli_stmt_close($stmt_check);
-        } else {
-            $_SESSION['comment_flash_msg'] = "Comment cannot be empty.";
         }
-        // Redirect to the same page to prevent form resubmission
+        
+        // If the form was submitted but contained no actual data
+        if (!$form_had_input && empty($comment) && $rating == 0) {
+            $alert_messages[] = "Please provide a rating or a comment to submit.";
+        }
+
+    } else {
+        $alert_messages[] = "You must be logged in to submit feedback.";
+    }
+
+    // After processing, check if there are any messages to display
+    if (!empty($alert_messages)) {
+        // Combine messages with a newline character for the alert box
+        $final_message = implode('\\n', $alert_messages); 
+        // Sanitize the message for use in JavaScript
+        $sanitized_message = addslashes($final_message);
+
+        // Echo the JavaScript to show the alert and then redirect
+        echo "<script>
+                alert('{$sanitized_message}');
+                window.location.href = '{$_SERVER['REQUEST_URI']}';
+              </script>";
+        exit(); // Stop script execution to prevent the rest of the page from loading
+    } else {
+        // Fallback: If form was submitted but no message was generated, just redirect
         header("Location: " . $_SERVER['REQUEST_URI']);
         exit();
     }
 }
+
 
 // 1. Check if 'pid' is set and is a valid number. Exit if not.
 if (!isset($_GET['pid']) || !is_numeric($_GET['pid'])) {
@@ -121,7 +176,7 @@ $productid = intval($_GET['pid']);
 
         .product-title {
             font-size: 2.5rem;
-            margin: 15px 0;
+            margin-top: 10px;
             color: var(--primary-dark);
             line-height: 1.3;
         }
@@ -403,7 +458,6 @@ $productid = intval($_GET['pid']);
             }
         }
 
-        /* Styling for the description dropdown */
         .description-accordion .card {
             border: 1px solid #e9ecef;
             border-radius: 8px;
@@ -437,7 +491,7 @@ $productid = intval($_GET['pid']);
             transform: rotate(180deg);
         }
 
-        /* --- NEW STYLES FOR COMMENT SECTION --- */
+        /* --- STYLES FOR COMMENT & RATING SECTION --- */
         .comments-section {
             background: white;
             padding: 30px;
@@ -458,13 +512,11 @@ $productid = intval($_GET['pid']);
         .comment-author {
             font-weight: 600;
             color: var(--primary-dark);
-            margin-bottom: 5px;
         }
 
         .comment-date {
             font-size: 0.85rem;
             color: var(--gray);
-            margin-bottom: 10px;
         }
 
         .comment-text {
@@ -488,6 +540,61 @@ $productid = intval($_GET['pid']);
             padding: 20px;
             text-align: center;
         }
+        
+        .average-rating-display {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .average-rating-display .stars {
+            color: #ffc107;
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        .average-rating-display .stars .far {
+            color: #ddd;
+        }
+        .average-rating-display .rating-count {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+        
+        .rating-stars {
+            display: inline-block;
+        }
+        .rating-stars input[type="radio"] {
+            display: none;
+        }
+        .rating-stars > label {
+            font-size: 2rem;
+            color: #ddd;
+            float: right;
+            cursor: pointer;
+            transition: color 0.2s;
+            margin: 0 2px;
+        }
+        .rating-stars > label:before {
+            content: '\f005';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+        }
+        .rating-stars > input:checked ~ label,
+        .rating-stars:not(:checked) > label:hover,
+        .rating-stars:not(:checked) > label:hover ~ label {
+            color: #ffc107;
+        }
+        /* New styles for disabled state */
+        .rating-stars input[type="radio"]:disabled ~ label {
+            cursor: not-allowed;
+        }
+        .rating-stars input[type="radio"]:disabled:not(:checked) ~ label:hover,
+        .rating-stars input[type="radio"]:disabled:not(:checked) ~ label:hover ~ label {
+            color: #ddd !important;
+        }
+        .rating-stars > input:disabled:checked ~ label {
+            color: #ffc107 !important;
+            opacity: 0.6;
+        }
     </style>
 </head>
 
@@ -506,7 +613,6 @@ $productid = intval($_GET['pid']);
                                                     pc.name as CategoryName,
                                                     p.pcategory_id -- Fetch category ID for related products query
                                                 FROM PRODUCTS p
-                                                -- 3. Corrected the JOIN condition here
                                                 JOIN PRODUCT_CATEGORIES pc ON p.pcategory_id = pc.pcategory_id
                                                 WHERE p.product_id = ? AND p.is_active = 1");
                 mysqli_stmt_bind_param($stmt, "i", $productid);
@@ -517,6 +623,16 @@ $productid = intval($_GET['pid']);
                 if ($rowcount == 0) {
                     echo "<h3>Product not found or is no longer available.</h3>";
                 } else {
+                    // Get Average Rating
+                    // $rating_stmt = mysqli_prepare($con, "SELECT COUNT(rating_id) as rating_count, AVG(rating) as avg_rating FROM PRODUCT_RATINGS WHERE product_id = ?");
+                    // mysqli_stmt_bind_param($rating_stmt, "i", $productid);
+                    // mysqli_stmt_execute($rating_stmt);
+                    // $rating_result = mysqli_stmt_get_result($rating_stmt);
+                    // $rating_data = mysqli_fetch_assoc($rating_result);
+                    // $avg_rating = round($rating_data['avg_rating'] ?? 0, 1);
+                    // $rating_count = $rating_data['rating_count'] ?? 0;
+                    // mysqli_stmt_close($rating_stmt);
+
                     // Store category ID for the next query
                     $category_id_for_related = 0;
                     $currenturl = "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
@@ -530,7 +646,7 @@ $productid = intval($_GET['pid']);
                                     <div class="col-md-6">
                                         <span class="category-badge"><?php echo htmlentities($row['CategoryName']); ?></span>
                                         <h1 class="product-title"><?php echo htmlentities($row['ProductName']); ?></h1>
-
+                                        
                                         <div class="description-accordion" id="descriptionAccordion">
                                             <div class="card">
                                                 <div class="card-header p-0" id="headingOne">
@@ -568,31 +684,20 @@ $productid = intval($_GET['pid']);
                         <div class="container">
                             <div class="share-buttons">
                                 <span class="share-label">Share this product:</span>
-                                <a href="http://www.facebook.com/share.php?u=<?php echo $currenturl; ?>" target="_blank"
-                                    title="Share on Facebook">
-                                    <i class="fab fa-facebook-f"></i>
-                                </a>
-                                <a href="https://twitter.com/share?url=<?php echo $currenturl; ?>" target="_blank"
-                                    title="Share on Twitter">
-                                    <i class="fab fa-twitter"></i>
-                                </a>
-                                <a href="https://web.whatsapp.com/send?text=<?php echo $currenturl; ?>" target="_blank"
-                                    title="Share on WhatsApp">
-                                    <i class="fab fa-whatsapp"></i>
-                                </a>
-                                <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=<?php echo $currenturl; ?>"
-                                    target="_blank" title="Share on LinkedIn">
-                                    <i class="fab fa-linkedin-in"></i>
-                                </a>
+                                <a href="http://www.facebook.com/share.php?u=<?php echo $currenturl; ?>" target="_blank" title="Share on Facebook"><i class="fab fa-facebook-f"></i></a>
+                                <a href="https://twitter.com/share?url=<?php echo $currenturl; ?>" target="_blank" title="Share on Twitter"><i class="fab fa-twitter"></i></a>
+                                <a href="https://web.whatsapp.com/send?text=<?php echo $currenturl; ?>" target="_blank" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                                <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=<?php echo $currenturl; ?>" target="_blank" title="Share on LinkedIn"><i class="fab fa-linkedin-in"></i></a>
                             </div>
 
                             <section class="comments-section">
-                                <h4 class="section-title text-center">Product Comments</h4>
+                                <h4 class="section-title text-center">Ratings & Comments</h4>
 
                                 <?php
-                                $comment_stmt = mysqli_prepare($con, "SELECT u.username, pc.comment, pc.created_at 
+                                $comment_stmt = mysqli_prepare($con, "SELECT u.username, pc.comment, pc.created_at, pr.rating 
                                                                         FROM PRODUCT_COMMENTS pc
                                                                         JOIN USERS u ON pc.user_id = u.user_id
+                                                                        LEFT JOIN PRODUCT_RATINGS pr ON pc.user_id = pr.user_id AND pc.product_id = pr.product_id
                                                                         WHERE pc.product_id = ? AND pc.status = 'approved'
                                                                         ORDER BY pc.created_at DESC");
                                 mysqli_stmt_bind_param($comment_stmt, "i", $productid);
@@ -604,10 +709,19 @@ $productid = intval($_GET['pid']);
                                     while ($comment_row = mysqli_fetch_array($comment_query)) {
                                 ?>
                                 <div class="comment-card">
-                                    <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex justify-content-between align-items-center flex-wrap">
                                         <p class="comment-author mb-0"><i class="fas fa-user-circle mr-2"></i><?php echo htmlentities($comment_row['username']); ?></p>
                                         <p class="comment-date mb-0"><?php echo date('F j, Y', strtotime($comment_row['created_at'])); ?></p>
                                     </div>
+                                    <?php if (!empty($comment_row['rating'])): ?>
+                                        <div class="user-rating mt-2" style="color: #ffc107; font-size: 0.9rem;">
+                                            <?php 
+                                            for ($i = 1; $i <= 5; $i++) {
+                                                echo $i <= $comment_row['rating'] ? '<i class="fas fa-star"></i>' : '<i class="far fa-star" style="color: #ddd;"></i>';
+                                            }
+                                            ?>
+                                        </div>
+                                    <?php endif; ?>
                                     <hr class="my-2">
                                     <p class="comment-text mb-0"><?php echo htmlentities($comment_row['comment']); ?></p>
                                 </div>
@@ -619,42 +733,58 @@ $productid = intval($_GET['pid']);
                                 ?>
 
                                 <div class="comment-form-container mt-4 pt-4 border-top">
-                                    <h5 class="text-center mb-3">Leave a Comment</h5>
-                                    <?php 
-                                    // Display flash message if it exists
-                                    if(isset($_SESSION['comment_flash_msg'])){
-                                        echo '<div class="alert alert-info text-center">'.$_SESSION['comment_flash_msg'].'</div>';
-                                        unset($_SESSION['comment_flash_msg']);
-                                    }
+                                    <h5 class="text-center mb-3">Leave Your Feedback</h5>
                                     
-                                    if (isset($_SESSION['login']) && !empty($_SESSION['user_id'])): 
-                                        // Check if this user has already commented
+                                    <?php if (isset($_SESSION['login']) && !empty($_SESSION['user_id'])): 
                                         $user_id_check = $_SESSION['user_id'];
-                                        $check_stmt_form = mysqli_prepare($con, "SELECT comment_id FROM PRODUCT_COMMENTS WHERE user_id = ? AND product_id = ?");
-                                        mysqli_stmt_bind_param($check_stmt_form, "ii", $user_id_check, $productid);
-                                        mysqli_stmt_execute($check_stmt_form);
-                                        mysqli_stmt_store_result($check_stmt_form);
-                                        $has_commented = mysqli_stmt_num_rows($check_stmt_form) > 0;
-                                        mysqli_stmt_close($check_stmt_form);
 
-                                        if($has_commented):
+                                        // Check if this user has already commented
+                                        $check_comment_stmt = mysqli_prepare($con, "SELECT comment_id FROM PRODUCT_COMMENTS WHERE user_id = ? AND product_id = ?");
+                                        mysqli_stmt_bind_param($check_comment_stmt, "ii", $user_id_check, $productid);
+                                        mysqli_stmt_execute($check_comment_stmt);
+                                        $has_commented = mysqli_stmt_get_result($check_comment_stmt)->num_rows > 0;
+                                        mysqli_stmt_close($check_comment_stmt);
+                                        
+                                        // Check for this user's existing rating
+                                        $check_rating_stmt = mysqli_prepare($con, "SELECT rating FROM PRODUCT_RATINGS WHERE user_id = ? AND product_id = ?");
+                                        mysqli_stmt_bind_param($check_rating_stmt, "ii", $user_id_check, $productid);
+                                        mysqli_stmt_execute($check_rating_stmt);
+                                        $user_rating_result = mysqli_stmt_get_result($check_rating_stmt);
+                                        $user_rating = mysqli_fetch_assoc($user_rating_result)['rating'] ?? 0;
+                                        mysqli_stmt_close($check_rating_stmt);
                                     ?>
-                                        <div class="alert alert-success text-center">Thank you for your feedback! Your comment is either pending approval or has been posted.</div>
-                                    <?php else: ?>
-                                        <form name="comment" method="post">
+                                        <form name="feedback" method="post">
                                             <input type="hidden" name="product_id" value="<?php echo $productid; ?>" />
+                                            <div class="form-group text-center">
+                                                <label class="font-weight-bold d-block">Your Rating</label>
+                                                <div class="rating-stars">
+                                                    <input type="radio" id="star5" name="rating" value="5" <?php if ($user_rating == 5) echo 'checked'; ?> <?php if ($user_rating > 0) echo 'disabled'; ?> /><label for="star5" title="5 stars"></label>
+                                                    <input type="radio" id="star4" name="rating" value="4" <?php if ($user_rating == 4) echo 'checked'; ?> <?php if ($user_rating > 0) echo 'disabled'; ?> /><label for="star4" title="4 stars"></label>
+                                                    <input type="radio" id="star3" name="rating" value="3" <?php if ($user_rating == 3) echo 'checked'; ?> <?php if ($user_rating > 0) echo 'disabled'; ?> /><label for="star3" title="3 stars"></label>
+                                                    <input type="radio" id="star2" name="rating" value="2" <?php if ($user_rating == 2) echo 'checked'; ?> <?php if ($user_rating > 0) echo 'disabled'; ?> /><label for="star2" title="2 stars"></label>
+                                                    <input type="radio" id="star1" name="rating" value="1" <?php if ($user_rating == 1) echo 'checked'; ?> <?php if ($user_rating > 0) echo 'disabled'; ?> /><label for="star1" title="1 star"></label>
+                                                </div>
+                                            </div>
                                             <div class="form-group">
-                                                <textarea class="form-control" name="comment" rows="4" placeholder="Write your comment here..." required></textarea>
+                                                <label class="font-weight-bold">Your Comment</label>
+                                                <?php if($has_commented): ?>
+                                                    <div class="alert alert-light text-center p-2">Your comment is being reviewed or has been posted. You cannot submit another.</div>
+                                                    <textarea class="form-control" name="comment" rows="3" disabled></textarea>
+                                                <?php else: ?>
+                                                    <textarea class="form-control" name="comment" rows="4" placeholder="Share your thoughts on this product... (optional)"></textarea>
+                                                <?php endif; ?>
                                             </div>
                                             <div class="text-center">
-                                                <button type="submit" class="btn btn-primary" name="submit_comment">Submit Comment</button>
+                                                <?php if($has_commented): ?>
+                                                    <button type="submit" class="btn btn-primary" name="submit_feedback" disabled>Submit Feedback</button>
+                                                <?php else: ?>
+                                                    <button type="submit" class="btn btn-primary" name="submit_feedback">Submit Feedback</button>
+                                                <?php endif; ?>
                                             </div>
                                         </form>
-                                    <?php endif; ?>
                                     <?php else: ?>
                                         <div class="guest-comment-lock">
-                                            <textarea class="form-control" rows="3" placeholder="Please log in to leave a comment..." disabled></textarea>
-                                            <p class="mt-3 mb-0">You must be logged in to post a comment. <br>
+                                            <p class="mt-2 mb-0">You must be logged in to post a rating or comment. <br>
                                             <a href="login.php" class="btn btn-primary btn-sm mt-2">Login</a> or 
                                             <a href="registration.php" class="btn btn-outline-primary btn-sm mt-2">Register</a>
                                             </p>
@@ -662,40 +792,30 @@ $productid = intval($_GET['pid']);
                                     <?php endif; ?>
                                 </div>
                             </section>
+
                             <section class="recommended-products">
                                 <h4 class="section-title">Related Products</h4>
                                 <div class="row">
                                     <?php
-                                    // Check if we found a product and have a category ID before running this query
                                     if ($category_id_for_related > 0) {
-                                        // Use a prepared statement for the related products query too
                                         $related_stmt = mysqli_prepare($con, "SELECT product_id, name, description, image_url
                                                                                 FROM PRODUCTS
-                                                                                WHERE pcategory_id = ?
-                                                                                AND product_id != ?
-                                                                                AND is_active = 1
-                                                                                ORDER BY RAND()
-                                                                                LIMIT 3");
+                                                                                WHERE pcategory_id = ? AND product_id != ? AND is_active = 1
+                                                                                ORDER BY RAND() LIMIT 3");
                                         mysqli_stmt_bind_param($related_stmt, "ii", $category_id_for_related, $productid);
                                         mysqli_stmt_execute($related_stmt);
                                         $related_query = mysqli_stmt_get_result($related_stmt);
 
-                                        $related_count = mysqli_num_rows($related_query);
-                                        if ($related_count > 0) {
+                                        if (mysqli_num_rows($related_query) > 0) {
                                             while ($related_row = mysqli_fetch_array($related_query)) {
                                                 ?>
                                                 <div class="col-md-4">
                                                     <div class="card product-card">
-                                                        <img class="card-img-top"
-                                                            src="admin/productimages/<?php echo htmlentities($related_row['image_url']); ?>"
-                                                            alt="<?php echo htmlentities($related_row['name']); ?>">
+                                                        <img class="card-img-top" src="admin/productimages/<?php echo htmlentities($related_row['image_url']); ?>" alt="<?php echo htmlentities($related_row['name']); ?>">
                                                         <div class="card-body">
                                                             <h5 class="card-title"><?php echo htmlentities($related_row['name']); ?></h5>
-                                                            <p class="card-text">
-                                                                <?php echo strip_tags(substr($related_row['description'], 0, 100)); ?>...
-                                                            </p>
-                                                            <a href="product-details.php?pid=<?php echo htmlentities($related_row['product_id']); ?>"
-                                                                class="btn btn-outline-primary">View Details</a>
+                                                            <p class="card-text"><?php echo strip_tags(substr($related_row['description'], 0, 100)); ?>...</p>
+                                                            <a href="product-details.php?pid=<?php echo htmlentities($related_row['product_id']); ?>" class="btn btn-outline-primary">View Details</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -711,8 +831,7 @@ $productid = intval($_GET['pid']);
 
                             <div class="contact-cta">
                                 <h4>Have Questions About Dental Products?</h4>
-                                <p class="mb-3">Our dental professionals can provide personalized recommendations based on your
-                                    specific needs.</p>
+                                <p class="mb-3">Our dental professionals can provide personalized recommendations based on your specific needs.</p>
                                 <a href="contact-us.php" class="btn btn-primary">Contact Us for Advice</a>
                             </div>
                         </div>

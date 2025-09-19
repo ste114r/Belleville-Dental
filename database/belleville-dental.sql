@@ -7,6 +7,7 @@ CREATE TABLE USERS (
     -- User can change password
     email VARCHAR(255) UNIQUE NOT NULL,
     role ENUM('admin', 'client') NOT NULL,
+    status ENUM('active', 'inactive') DEFAULT 'active',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -81,17 +82,21 @@ CREATE TABLE PRODUCT_COMMENTS (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY (product_id, user_id),
     -- Prevent users from leaving multiple comments on the same product
-    FOREIGN KEY (product_id) REFERENCES PRODUCTS(product_id),
-    FOREIGN KEY (user_id) REFERENCES USERS(user_id) -- User must be registered to leave a comment
+    FOREIGN KEY (product_id) REFERENCES PRODUCTS(product_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES USERS(user_id) ON DELETE CASCADE -- User must be registered to leave a comment
 );
 
--- Create ARTICLE_PRODUCTS table
-CREATE TABLE ARTICLE_PRODUCTS (
-    article_products_id INT AUTO_INCREMENT PRIMARY KEY,
-    article_id INT,
+-- Create PRODUCT_RATINGS table
+CREATE TABLE PRODUCT_RATINGS (
+    rating_id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INT,
-    FOREIGN KEY (article_id) REFERENCES ARTICLES(article_id),
-    FOREIGN KEY (product_id) REFERENCES PRODUCTS(product_id)
+    user_id INT,
+    rating TINYINT NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_user_product_rating (user_id, product_id),
+    FOREIGN KEY (product_id) REFERENCES PRODUCTS(product_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES USERS(user_id) ON DELETE CASCADE
 );
 
 -- Create FEEDBACK table
@@ -106,15 +111,31 @@ CREATE TABLE FEEDBACK (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Create ARTICLE_PRODUCTS table
+CREATE TABLE ARTICLE_PRODUCTS (
+    article_products_id INT AUTO_INCREMENT PRIMARY KEY,
+    article_id INT,
+    product_id INT,
+    FOREIGN KEY (article_id) REFERENCES ARTICLES(article_id),
+    FOREIGN KEY (product_id) REFERENCES PRODUCTS(product_id)
+);
+
 -- Add useful indexes
 CREATE INDEX idx_articles_category ON ARTICLES(category_id);
 CREATE INDEX idx_articles_slug ON ARTICLES(slug);
 CREATE INDEX idx_products_category ON PRODUCTS(pcategory_id);
 CREATE INDEX idx_feedback_created ON FEEDBACK(created_at);
+CREATE INDEX idx_product_ratings_product ON PRODUCT_RATINGS(product_id);
 
 -- Insert admin user
 INSERT INTO USERS (username, password_hash, email, role)
 VALUES ('admin', 'admin', 'admin@gmail.com', 'admin');
+
+INSERT INTO USERS (username, password_hash, email, role)
+VALUES ('user', 'user', 'user@gmail.com', 'client'), 
+    ('user1', 'user1', 'user1@gmail.com', 'client'),
+    ('user2', 'user2', 'user2@gmail.com', 'client'),
+    ('user3', 'user3', 'user3@gmail.com', 'client');
 
 -- Insert categories
 INSERT INTO ARTICLE_CATEGORIES (category_id, name, description, is_active)

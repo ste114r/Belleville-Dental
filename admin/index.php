@@ -8,7 +8,7 @@ if (isset($_POST['login'])) {
     // $password = md5($_POST['password']);
     $password = $_POST['password'];
 
-    $sql = mysqli_query($con, "SELECT user_id, username, email, password_hash, role FROM USERS WHERE (username = '$uname' OR email = '$uname') AND password_hash = '$password' AND role = 'admin' ");
+    $sql = mysqli_query($con, "SELECT user_id, username, password_hash, email, role, status FROM USERS WHERE (username = '$uname' OR email = '$uname') AND password_hash = '$password' AND role = 'admin' AND status = 'active' ");
     $user = mysqli_fetch_array($sql);
 
     if ($user) {
