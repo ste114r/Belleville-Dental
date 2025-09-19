@@ -3,6 +3,45 @@ session_name('client_session');
 session_start();
 include('includes/config.php');
 
+// --- START: FAVORITE TOGGLE LOGIC ---
+// This block handles the adding/removing of a favorite article
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_favorite'])) {
+    // Ensure the user is logged in to perform this action
+    // NOTE: I am assuming your login session variable is named 'user_id'. 
+    // If it's different (e.g., 'uid'), please update $_SESSION['user_id'] accordingly.
+    if (isset($_SESSION['user_id'])) {
+        $user_id = $_SESSION['user_id'];
+        $article_id = intval($_POST['article_id']);
+
+        // Check if the user has already favorited this article
+        $fav_check_stmt = mysqli_prepare($con, "SELECT favorite_id FROM USER_FAVORITE_ARTICLES WHERE user_id = ? AND article_id = ?");
+        mysqli_stmt_bind_param($fav_check_stmt, "ii", $user_id, $article_id);
+        mysqli_stmt_execute($fav_check_stmt);
+        $fav_result = mysqli_stmt_get_result($fav_check_stmt);
+
+        if (mysqli_num_rows($fav_result) > 0) {
+            // If it's already a favorite, remove it (DELETE)
+            $unfav_stmt = mysqli_prepare($con, "DELETE FROM USER_FAVORITE_ARTICLES WHERE user_id = ? AND article_id = ?");
+            mysqli_stmt_bind_param($unfav_stmt, "ii", $user_id, $article_id);
+            mysqli_stmt_execute($unfav_stmt);
+            mysqli_stmt_close($unfav_stmt);
+        } else {
+            // If it's not a favorite, add it (INSERT)
+            $fav_stmt = mysqli_prepare($con, "INSERT INTO USER_FAVORITE_ARTICLES (user_id, article_id) VALUES (?, ?)");
+            mysqli_stmt_bind_param($fav_stmt, "ii", $user_id, $article_id);
+            mysqli_stmt_execute($fav_stmt);
+            mysqli_stmt_close($fav_stmt);
+        }
+        mysqli_stmt_close($fav_check_stmt);
+
+        // Redirect to the same page to prevent form resubmission on refresh
+        header("Location: news-details.php?nid=" . $article_id);
+        exit();
+    }
+}
+// --- END: FAVORITE TOGGLE LOGIC ---
+
+
 $postid = intval($_GET['nid']);
 $sql = "SELECT view_counter FROM ARTICLES WHERE article_id = '$postid'";
 $result = $con->query($sql);
@@ -27,16 +66,12 @@ if ($result->num_rows > 0) {
     <meta name="author" content="">
     <title>Belleville Dental | Article Page</title>
     <link rel="shortcut icon" href="images/Belleville Dental logo transparent.png" type="image/x-icon">
-    <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom styles for this template -->
     <link href="css/modern-business.css" rel="stylesheet">
     <link rel="stylesheet" href="css/icons.css">
-    <!-- Google Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Merriweather:wght@400;700&display=swap"
         rel="stylesheet">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -113,9 +148,14 @@ if ($result->num_rows > 0) {
         }
 
         .article-image {
+            display: block;
             border-radius: 8px;
-            margin: 25px 0;
+            margin: 25px auto;
             border: 1px solid rgba(0, 0, 0, 0.08);
+            width: 90%;
+            height: 300px;
+            max-width: 800px;
+            object-fit: cover;
         }
 
         .share-buttons {
@@ -192,10 +232,10 @@ if ($result->num_rows > 0) {
         }
 
         .recommended-products {
-            padding: 30px 0;
+            padding: 40px 0;
             margin-top: 40px;
             background-color: var(--light-blue);
-            border-radius: 8px;
+            border-radius: 12px;
             text-align: center;
             border: 1px solid rgba(11, 126, 200, 0.2);
         }
@@ -230,28 +270,31 @@ if ($result->num_rows > 0) {
         }
 
         .product-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
         .product-image {
-            height: 180px;
+            height: 200px;
             object-fit: cover;
         }
 
         .product-card .card-body {
-            padding: 15px;
+            padding: 20px;
         }
 
         .product-card .card-title {
-            font-size: 1.05rem;
-            margin-bottom: 10px;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
             color: var(--dark);
+            font-weight: 600;
         }
 
         .product-card .card-text {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: var(--gray);
             margin-bottom: 15px;
+            line-height: 1.5;
         }
 
         .btn-outline-primary {
@@ -307,6 +350,56 @@ if ($result->num_rows > 0) {
             color: var(--primary-dark);
         }
 
+        /* --- START: NEW FAVORITE BUTTON STYLES --- */
+        .favorite-form {
+            margin-left: 15px;
+        }
+
+        .favorite-btn,
+        .favorite-btn-disabled {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            border-radius: 50px;
+            padding: 5px 15px;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            /* Prevents text from wrapping */
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .favorite-btn:hover {
+            background: var(--accent);
+            color: white;
+            cursor: pointer;
+        }
+
+        .favorite-btn.favorited {
+            background: var(--accent);
+            color: white;
+        }
+
+        .favorite-btn-disabled {
+            color: var(--gray);
+            border-color: #ced4da;
+            background-color: #e9ecef;
+        }
+
+        .favorite-btn-disabled:hover {
+            text-decoration: none;
+            color: var(--gray);
+        }
+
+        .favorite-btn i,
+        .favorite-btn-disabled i {
+            margin-right: 6px;
+        }
+
+        /* --- END: NEW FAVORITE BUTTON STYLES --- */
+
         @media (max-width: 768px) {
             .article-title {
                 font-size: 1.8rem;
@@ -325,18 +418,20 @@ if ($result->num_rows > 0) {
                 margin-left: 0;
                 margin-top: 15px;
             }
+
+            .favorite-form {
+                margin-left: 0;
+                margin-top: 10px;
+            }
         }
     </style>
 </head>
 
 <body>
-    <!-- Navigation -->
     <?php include('includes/header.php'); ?>
 
-    <!-- Page Content -->
     <div class="container-fluid article-container">
         <div class="row" style="margin-top: 4%;">
-            <!-- Main Content Column -->
             <div class="col-md-9">
                 <?php
                 $pid = intval($_GET['nid']);
@@ -374,10 +469,45 @@ if ($result->num_rows > 0) {
                         <span class="view-counter">
                             <i class="fas fa-eye"></i> <?php print $visits + 1; ?> views
                         </span>
+
+                        <?php
+                        // Check if the user is logged in
+                        if (isset($_SESSION['user_id'])):
+                            $user_id = $_SESSION['user_id'];
+                            $article_id = $pid;
+
+                            // Check favorite status to determine the button's appearance
+                            $is_favorited_stmt = mysqli_prepare($con, "SELECT favorite_id FROM USER_FAVORITE_ARTICLES WHERE user_id = ? AND article_id = ?");
+                            mysqli_stmt_bind_param($is_favorited_stmt, "ii", $user_id, $article_id);
+                            mysqli_stmt_execute($is_favorited_stmt);
+                            $is_favorited_result = mysqli_stmt_get_result($is_favorited_stmt);
+                            $is_favorited = mysqli_num_rows($is_favorited_result) > 0;
+                            mysqli_stmt_close($is_favorited_stmt);
+                            ?>
+                            <form method="post" class="favorite-form">
+                                <input type="hidden" name="article_id" value="<?php echo $pid; ?>">
+                                <button type="submit" name="toggle_favorite"
+                                    class="favorite-btn <?php if ($is_favorited)
+                                        echo 'favorited'; ?>">
+                                    <?php if ($is_favorited): ?>
+                                        <i class="fas fa-heart"></i> Favorited
+                                    <?php else: ?>
+                                        <i class="far fa-heart"></i> Add to Favorites
+                                    <?php endif; ?>
+                                </button>
+                            </form>
+                        <?php else: ?>
+                            <form class="favorite-form">
+                                <a href="login.php" class="favorite-btn-disabled"
+                                    title="You must be logged in to favorite articles">
+                                    <i class="far fa-heart"></i> Login to Favorite
+                                </a>
+                            </form>
+                        <?php endif; ?>
                     </div>
 
                     <img class="img-fluid article-image"
-                        src="admin/postimages/<?php echo htmlentities($row['PostImage']); ?>"
+                        src="images/<?php echo htmlentities($row['PostImage']); ?>"
                         alt="<?php echo htmlentities($row['posttitle']); ?>">
 
                     <div class="article-content">
@@ -387,7 +517,6 @@ if ($result->num_rows > 0) {
                         ?>
                     </div>
 
-                    <!-- Recommended Products -->
                     <section class="recommended-products">
                         <h4 class="section-title">Recommended Products</h4>
                         <div class="row">
@@ -422,18 +551,21 @@ if ($result->num_rows > 0) {
 
                                 if (mysqli_num_rows($recommendation_query) > 0) {
                                     while ($rec_row = mysqli_fetch_array($recommendation_query)) {
-                                ?>
+                                        ?>
                                         <div class="col-md-4">
                                             <div class="card product-card">
-                                                <img src="admin/productimages/<?php echo htmlentities($rec_row['image_url']); ?>" class="card-img-top" alt="<?php echo htmlentities($rec_row['name']); ?>">
+                                                <img src="images/productimages/<?php echo htmlentities($rec_row['image_url']); ?>"
+                                                    class="card-img-top" alt="<?php echo htmlentities($rec_row['name']); ?>">
                                                 <div class="card-body">
                                                     <h5 class="card-title"><?php echo htmlentities($rec_row['name']); ?></h5>
-                                                    <p class="card-text"><?php echo strip_tags(substr($rec_row['description'], 0, 80)); ?>...</p>
-                                                    <a href="product-details.php?pid=<?php echo htmlentities($rec_row['product_id']); ?>" class="btn btn-outline-primary">View Details</a>
+                                                    <p class="card-text">
+                                                        <?php echo strip_tags(substr($rec_row['description'], 0, 80)); ?>...</p>
+                                                    <a href="product-details.php?pid=<?php echo htmlentities($rec_row['product_id']); ?>"
+                                                        class="btn btn-outline-primary">View Details</a>
                                                 </div>
                                             </div>
                                         </div>
-                                <?php
+                                        <?php
                                     }
                                 } else {
                                     echo "<div class='col-12'><p>No recommended products found for this article.</p></div>";
@@ -447,7 +579,6 @@ if ($result->num_rows > 0) {
                         </div>
                     </section>
 
-                    <!-- Contact Us Section -->
                     <div class="contact-cta">
                         <h4 class="text-primary">Have Questions About Dental Products?</h4>
                         <p class="mb-3">Our dental professionals can provide personalized recommendations based on your
@@ -458,7 +589,6 @@ if ($result->num_rows > 0) {
                 <?php } ?>
             </div>
 
-            <!-- Sidebar Column -->
             <?php include('includes/sidebar.php'); ?>
         </div>
     </div>
@@ -466,7 +596,6 @@ if ($result->num_rows > 0) {
     <?php include('includes/footer.php'); ?>
 
     <script src="js/foot.js"></script>
-    <!-- Bootstrap core JavaScript -->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>

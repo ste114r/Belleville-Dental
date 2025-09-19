@@ -122,12 +122,29 @@ CREATE TABLE ARTICLE_PRODUCT_CATEGORY_MAPPING (
     UNIQUE KEY unique_mapping (article_category_id, product_category_id)
 );
 
+-- Create user favorite article table
+CREATE TABLE USER_FAVORITE_ARTICLES (
+    favorite_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    article_id INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    
+    -- Ensure a user can only favorite an article once
+    UNIQUE KEY unique_user_article (user_id, article_id),
+    
+    -- Foreign keys to enforce referential integrity
+    FOREIGN KEY (user_id) REFERENCES USERS(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (article_id) REFERENCES ARTICLES(article_id) ON DELETE CASCADE
+);
+
 -- Add useful indexes
 CREATE INDEX idx_articles_category ON ARTICLES(category_id);
 CREATE INDEX idx_articles_slug ON ARTICLES(slug);
 CREATE INDEX idx_products_category ON PRODUCTS(pcategory_id);
 CREATE INDEX idx_feedback_created ON FEEDBACK(created_at);
 CREATE INDEX idx_product_ratings_product ON PRODUCT_RATINGS(product_id);
+CREATE INDEX idx_favorites_user ON USER_FAVORITE_ARTICLES(user_id);
+CREATE INDEX idx_favorites_article ON USER_FAVORITE_ARTICLES(article_id);
 
 -- Insert admin user
 INSERT INTO USERS (username, password_hash, email, role)
@@ -354,7 +371,7 @@ VALUES
     ('Colgate Total Advanced Pro-Shield', 'colgate-total-proshield', 'Antibacterial mouthwash with fluoride for 12-hour germ protection.', 4, 'https://www.amazon.com/Colgate-Total-Pro-Shield-Mouthwash-Peppermint/dp/B00EZWSBQ4', 'colgate-proshield.jpg', 1),
     ('Crest Pro-Health Multi-Protection', 'crest-pro-health-rinse', 'Alcohol-free antibacterial rinse for cavity prevention and gum health support.', 4, 'https://www.amazon.com/Crest-Pro-Health-Multi-Protection-Mouthwash-Gingivitis/dp/B003CP12O8', 'crest-rinse.jpg', 1),
     ('ACT Anticavity Fluoride Rinse', 'act-anticavity-rinse', 'Fluoride-based mouthwash designed to strengthen teeth and prevent cavities.', 4, 'https://www.amazon.com/ACT-Alcohol-Anticavity-Fluoride-Rinse/dp/B0012DX2VS', 'act-rinse.jpg', 1),
-    ('Oral-B Pro-Expert Fluoride Rinse', 'oral-b-pro-expert-rinse', 'Professional fluoride mouthwash for enhanced cavity protection and enamel strengthening.', 4, 'https://www.amazon.com/Oral-B-Pro-Health-Clinical-Clean-Rinse/dp/B06ZYHNQ2D', 'oral-b-fluoride.jpg', 1),
+    ('Oral-B Pro-Expert Fluoride Rinse', 'oral-b-pro-expert-rinse', 'Professional fluoride mouthwash for enhanced cavity protection and enamel strengthening.', 4, 'https://www.amazon.co.uk/Oral-B-Pro-Expert-Professional-Protection-Mouthwash/dp/B014DGOZ3E', 'oral-b-fluoride.jpg', 1),
     ('TheraBreath Fresh Breath Rinse', 'therabreath-rinse', 'Clinically proven mouthwash to combat bad breath with oxygenating formula.', 4, 'https://www.amazon.com/TheraBreath-Fresh-Breath-Rinse-Bottle/dp/B00IRKRK9O', 'therabreath-rinse.jpg', 1),
     ('Scope Outlast Fresh Mint', 'scope-outlast-mint', 'Long-lasting breath freshening mouthwash with up to 5x longer fresh feeling.', 4, 'https://www.amazon.com/Crest-Scope-Outlast-Mouthwash-33-8/dp/B019FGCP5C', 'scope-outlast.jpg', 1),
 

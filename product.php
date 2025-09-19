@@ -135,7 +135,7 @@ include('includes/config.php');
         .product-image {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: cover; /* This ensures the image covers the area without distortion */
         }
 
         .product-card-body {
@@ -365,7 +365,7 @@ include('includes/config.php');
                                 <div class="product-card">
                                     <div class="product-image-wrapper">
                                         <img class="product-image"
-                                            src="admin/productimages/<?php echo htmlentities($row['PostImage']); ?>"
+                                            src="images/productimages/<?php echo htmlentities($row['PostImage']); ?>"
                                             alt="<?php echo htmlentities($row['posttitle']); ?>">
                                     </div>
                                     <div class="product-card-body">

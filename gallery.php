@@ -161,7 +161,7 @@ include('includes/config.php');
                     <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                         <div class="gallery-card">
                             <a href="news-details.php?nid=<?php echo htmlentities($row['article_id']); ?>">
-                                <img class="gallery-image" src="admin/postimages/<?php echo htmlentities($row['cover_image_url']); ?>" alt="<?php echo htmlentities($row['title']); ?>">
+                                <img class="gallery-image" src="images/<?php echo htmlentities($row['cover_image_url']); ?>" alt="<?php echo htmlentities($row['title']); ?>">
                             </a>
                             <div class="card-body">
                                 <h6 class="card-title">

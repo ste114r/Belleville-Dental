@@ -194,10 +194,8 @@ $productid = intval($_GET['pid']);
             width: 100%;
             border-radius: 8px;
             transition: transform 0.3s ease;
-        }
-
-        .product-image:hover {
-            transform: scale(1.02);
+            height: 400px; /* Set a fixed height for the main product image */
+            object-fit: cover; /* Ensure the image covers the area without distortion */
         }
 
         .product-details {
@@ -673,7 +671,7 @@ $productid = intval($_GET['pid']);
                                     <div class="col-md-6">
                                         <div class="product-image-container">
                                             <img class="product-image"
-                                                src="admin/productimages/<?php echo htmlentities($row['ProductImage']); ?>"
+                                                src="images/productimages/<?php echo htmlentities($row['ProductImage']); ?>"
                                                 alt="<?php echo htmlentities($row['ProductName']); ?>">
                                         </div>
                                     </div>
@@ -811,7 +809,7 @@ $productid = intval($_GET['pid']);
                                                 ?>
                                                 <div class="col-md-4">
                                                     <div class="card product-card">
-                                                        <img class="card-img-top" src="admin/productimages/<?php echo htmlentities($related_row['image_url']); ?>" alt="<?php echo htmlentities($related_row['name']); ?>">
+                                                        <img class="card-img-top" src="images/productimages/<?php echo htmlentities($related_row['image_url']); ?>" alt="<?php echo htmlentities($related_row['name']); ?>">
                                                         <div class="card-body">
                                                             <h5 class="card-title"><?php echo htmlentities($related_row['name']); ?></h5>
                                                             <p class="card-text"><?php echo strip_tags(substr($related_row['description'], 0, 100)); ?>...</p>

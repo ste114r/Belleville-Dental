@@ -16,16 +16,14 @@ include('includes/config.php');
     <meta name="author" content="">
     <link rel="shortcut icon" href="images/Belleville Dental logo transparent.png" type="image/x-icon">
     <title>Belleville Dental | Category Page</title>
-    <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom styles for this template -->
     <link href="css/modern-business.css" rel="stylesheet">
     <link rel="stylesheet" href="css/icons.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Merriweather:wght@400;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <style>
         :root {
             --primary: #0B7EC8;
@@ -37,19 +35,24 @@ include('includes/config.php');
             --gray: #6c757d;
             --light-blue: #F0F8FF;
         }
-        
+
         body {
             font-family: 'Nunito', sans-serif;
             color: #444;
             line-height: 1.6;
             background-color: #fff;
         }
-        
-        h1, h2, h3, h4, h5, h6 {
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
             font-family: 'Merriweather', serif;
             color: var(--dark);
         }
-        
+
         .hero-section {
             padding: 50px 0 30px;
             text-align: center;
@@ -59,43 +62,57 @@ include('includes/config.php');
             border-bottom: 1px solid rgba(11, 126, 200, 0.1);
         }
         
+        /* Updated article card styling */
         .article-card {
-            border: none;
+            border: 1px solid #e9ecef;
             border-radius: 8px;
-            transition: all 0.2s ease;
-            height: 100%;
+            transition: all 0.3s ease;
             background: white;
-            margin-bottom: 25px;
             overflow: hidden;
-            border: 1px solid rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            text-align: center;
         }
-        
+
         .article-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
         }
-        
+
         .article-image {
-            height: 200px;
+            width: 100%;
+            height: 220px;
             object-fit: cover;
         }
-        
+
         .category-badge {
             background-color: var(--primary);
             color: white;
             font-size: 0.8rem;
             padding: 4px 10px;
             border-radius: 4px;
-            display: inline-block;
             margin-bottom: 10px;
+            display: inline-block;
+            width: auto;
+            max-width: max-content;
         }
-        
+
+        .card-body-inner {
+            padding: 20px 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            align-items: center;
+        }
+
         .section-title {
             position: relative;
             display: inline-block;
             margin-bottom: 25px;
             padding-bottom: 10px;
         }
-        
+
         .section-title::after {
             content: '';
             position: absolute;
@@ -105,90 +122,73 @@ include('includes/config.php');
             height: 3px;
             background: var(--primary);
         }
-        
+
         .sidebar-card {
             border: none;
             border-radius: 8px;
             background: white;
             margin-bottom: 25px;
             overflow: hidden;
-            border: 1px solid rgba(0,0,0,0.08);
+            border: 1px solid rgba(0, 0, 0, 0.08);
         }
-        
+
         .sidebar-header {
             background-color: var(--light-blue);
             padding: 12px 15px;
-            border-bottom: 1px solid rgba(0,0,0,0.08);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
         }
-        
+
         .category-list {
             padding: 0;
             margin: 0;
         }
-        
+
         .category-list li {
             padding: 8px 15px;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             list-style: none;
         }
-        
+
         .category-list li:last-child {
             border-bottom: none;
         }
-        
+
         .category-list a {
             color: var(--dark);
             text-decoration: none;
             transition: all 0.2s ease;
             display: block;
         }
-        
+
         .category-list a:hover {
             color: var(--primary);
             padding-left: 5px;
         }
-        
+
+        /* Pagination */
         .pagination .page-link {
             border: none;
             color: var(--primary);
             border-radius: 4px;
             margin: 0 3px;
         }
-        
+
         .pagination .page-item.active .page-link {
             background-color: var(--primary);
             border-color: var(--primary);
         }
-        
+
         .pagination .page-link:hover {
             background-color: var(--light-blue);
-        }
-
-        .read-more-btn {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-
-        .read-more-btn:hover {
-            color: var(--primary-dark);
-            text-decoration: none;
-        }
-
-        .post-date {
-            color: var(--gray);
-            font-size: 0.9rem;
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Navigation -->
     <?php include('includes/header.php'); ?>
 
-    <?php 
+    <?php
     if ($_GET['catid'] != '') {
         $_SESSION['catid'] = intval($_GET['catid']);
     }
@@ -197,18 +197,8 @@ include('includes/config.php');
     $categoryName = htmlentities($catrow['name']);
     ?>
 
-    <!-- Hero Section -->
-    <!-- <div class="hero-section">
-        <div class="container-fluid">
-            <h1 class="display-4 text-primary"><?php echo $categoryName; ?> Articles</h1>
-            <p class="lead">Explore our collection of <?php echo strtolower($categoryName); ?> content</p>
-        </div>
-    </div> -->
-
-    <!-- Page Content -->
     <div class="container-fluid">
         <div class="row" style="margin-top: 4%">
-            <!-- Categories Column -->
             <div class="col-md-2 mt-4">
                 <div class="sidebar-card">
                     <div class="sidebar-header">
@@ -218,9 +208,11 @@ include('includes/config.php');
                         <ul class="category-list">
                             <?php $query = mysqli_query($con, "SELECT category_id,name FROM ARTICLE_CATEGORIES WHERE is_active = 1");
                             while ($row = mysqli_fetch_array($query)) {
-                            ?>
+                                ?>
+
                                 <li>
-                                    <a href="category.php?catid=<?php echo htmlentities($row['category_id']) ?>"><?php echo htmlentities($row['name']); ?></a>
+                                    <a
+                                        href="category.php?catid=<?php echo htmlentities($row['category_id']) ?>"><?php echo htmlentities($row['name']); ?></a>
                                 </li>
                             <?php } ?>
                         </ul>
@@ -228,10 +220,9 @@ include('includes/config.php');
                 </div>
             </div>
 
-            <!-- Main Content Column -->
             <div class="col-md-7">
                 <h4 class="section-title"><?php echo $categoryName; ?> <span>Articles</span></h4>
-                
+
                 <div class="row">
                     <?php
                     if (isset($_GET['pageno'])) {
@@ -249,54 +240,64 @@ include('includes/config.php');
 
                     $query = mysqli_query($con, "SELECT ARTICLES.article_id as pid,ARTICLES.title as posttitle,ARTICLES.cover_image_url as PostImage,ARTICLE_CATEGORIES.name as category,ARTICLES.content as postdetails,ARTICLES.created_at as postingdate,ARTICLES.slug as url FROM ARTICLES LEFT JOIN ARTICLE_CATEGORIES ON ARTICLE_CATEGORIES.category_id=ARTICLES.category_id WHERE ARTICLES.category_id='" . $_SESSION['catid'] . "' AND ARTICLES.is_active=1 ORDER BY ARTICLES.article_id DESC LIMIT $offset, $no_of_records_per_page");
                     $rowcount = mysqli_num_rows($query);
-                    
+
                     if ($rowcount == 0) {
                         echo '<div class="col-12"><div class="alert alert-info">No articles found in this category.</div></div>';
                     } else {
                         while ($row = mysqli_fetch_array($query)) {
-                        ?>
-                            <div class="col-md-6">
+                            ?>
+                            <div class="col-md-6 mb-4">
                                 <div class="article-card">
-                                    <img class="article-image w-100" src="admin/postimages/<?php echo htmlentities($row['PostImage']); ?>" alt="<?php echo htmlentities($row['posttitle']); ?>">
+                                    <img class="article-image"
+                                        src="images/<?php echo htmlentities($row['PostImage']); ?>"
+                                        alt="<?php echo htmlentities($row['posttitle']); ?>">
                                     <div class="card-body">
-                                        <span class="category-badge"><?php echo htmlentities($row['category']); ?></span>
-                                        <p class="post-date m-0"><small>Posted on <?php echo htmlentities($row['postingdate']); ?></small></p>
-                                        <a href="news-details.php?nid=<?php echo htmlentities($row['pid']) ?>" class="text-decoration-none text-dark">
-                                            <h5 class="card-title mt-2"><?php echo htmlentities($row['posttitle']); ?></h5>
-                                        </a>
-                                        <a href="news-details.php?nid=<?php echo htmlentities($row['pid']) ?>" class="read-more-btn">Read More &rarr;</a>
+                                        <div class="card-body-inner">
+                                            <span class="category-badge"><?php echo htmlentities($row['category']); ?></span>
+                                            <p class="m-0"><small> Posted on
+                                                    <?php echo htmlentities($row['postingdate']); ?></small></p>
+                                            <a href="news-details.php?nid=<?php echo htmlentities($row['pid']) ?>"
+                                                class="text-decoration-none text-dark">
+                                                <h5 class="card-title mt-2"><?php echo htmlentities($row['posttitle']); ?></h5>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         <?php } ?>
+
                         
-                        <!-- Pagination -->
-                        <div class="col-md-12">
-                            <ul class="pagination justify-content-center mb-4">
-                                <li class="page-item"><a href="?catid=<?php echo $_SESSION['catid']; ?>&pageno=1" class="page-link">First</a></li>
+                        <div class="col-md-12 mt-4">
+                            <ul class="pagination justify-content-center">
                                 <li class="page-item <?php if ($pageno <= 1) { echo 'disabled'; } ?>">
                                     <a href="<?php if ($pageno <= 1) { echo '#'; } else { echo "?catid=" . $_SESSION['catid'] . "&pageno=" . ($pageno - 1); } ?>" class="page-link">Prev</a>
                                 </li>
+
+                                <?php for ($i = 1; $i <= $total_pages; $i++) { ?>
+                                    <li class="page-item <?php if ($pageno == $i) { echo 'active'; } ?>">
+                                        <a href="?catid=<?php echo $_SESSION['catid']; ?>&pageno=<?php echo $i; ?>"
+                                            class="page-link"><?php echo $i; ?></a>
+                                    </li>
+                                <?php } ?>
+
                                 <li class="page-item <?php if ($pageno >= $total_pages) { echo 'disabled'; } ?>">
-                                    <a href="<?php if ($pageno >= $total_pages) { echo '#'; } else { echo "?catid=" . $_SESSION['catid'] . "&pageno=" . ($pageno + 1); } ?>" class="page-link">Next</a>
+                                    <a href="<?php if ($pageno >= $total_pages) { echo '#'; } else { echo "?catid=" . $_SESSION['catid'] . "&pageno=" . ($pageno + 1); } ?> " class="page-link">Next</a>
                                 </li>
-                                <li class="page-item"><a href="?catid=<?php echo $_SESSION['catid']; ?>&pageno=<?php echo $total_pages; ?>" class="page-link">Last</a></li>
                             </ul>
                         </div>
+                        
+
                     <?php } ?>
                 </div>
             </div>
 
-            <!-- Sidebar Widgets Column -->
             <?php include('includes/sidebar.php'); ?>
         </div>
     </div>
 
-    <!-- Footer -->
     <?php include('includes/footer.php'); ?>
 
     <script src="js/foot.js"></script>
-    <!-- Bootstrap core JavaScript -->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -28,7 +28,7 @@
                 while ($row = mysqli_fetch_array($query)) {
                     ?>
                     <li class="media mb-3">
-                        <img class="mr-3 rounded" src="admin/postimages/<?php echo htmlentities($row['PostImage']); ?>"
+                        <img class="mr-3 rounded" src="images/<?php echo htmlentities($row['PostImage']); ?>"
                             alt="<?php echo htmlentities($row['posttitle']); ?>" width="50" height="50">
                         <div class="media-body">
                             <a href="news-details.php?nid=<?php echo htmlentities($row['pid']) ?>"
@@ -52,7 +52,7 @@
                 while ($result = mysqli_fetch_array($query1)) {
                     ?>
                     <li class="media mb-3">
-                        <img class="mr-3 rounded" src="admin/postimages/<?php echo htmlentities($result['PostImage']); ?>"
+                        <img class="mr-3 rounded" src="images/<?php echo htmlentities($result['PostImage']); ?>"
                             alt="<?php echo htmlentities($result['posttitle']); ?>" width="50" height="50">
                         <div class="media-body">
                             <a href="news-details.php?nid=<?php echo htmlentities($result['pid']) ?>"

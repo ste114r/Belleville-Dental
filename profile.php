@@ -49,7 +49,12 @@ $user_id = $_SESSION['user_id'];
             background-color: #fff;
         }
 
-        h1, h2, h3, h4, h5, h6 {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
             font-family: 'Merriweather', serif;
             color: var(--dark);
         }
@@ -78,7 +83,7 @@ $user_id = $_SESSION['user_id'];
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             transition: all 0.2s ease-in-out;
         }
-        
+
         .feedback-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
@@ -89,13 +94,15 @@ $user_id = $_SESSION['user_id'];
             font-weight: 600;
             border-bottom: 1px solid #e9ecef;
         }
-        
-        .feedback-card .card-header a {
+
+        .feedback-card .card-header a,
+        .feedback-card .card-body a {
             color: var(--primary-dark);
             text-decoration: none;
         }
 
-        .feedback-card .card-header a:hover {
+        .feedback-card .card-header a:hover,
+        .feedback-card .card-body a:hover {
             text-decoration: underline;
         }
 
@@ -107,21 +114,21 @@ $user_id = $_SESSION['user_id'];
         .badge.bg-warning {
             color: var(--dark) !important;
         }
-        
+
         .rating-card-body {
             display: flex;
             align-items: center;
             gap: 20px;
         }
 
-        .rating-product-image {
+        /* .rating-product-image {
             width: 80px;
             height: 80px;
             object-fit: cover;
             border-radius: 6px;
             border: 1px solid #ddd;
-        }
-        
+        } */
+
         .rating-details h5 {
             margin-bottom: 5px;
             font-size: 1.1rem;
@@ -131,7 +138,7 @@ $user_id = $_SESSION['user_id'];
             color: var(--dark);
             text-decoration: none;
         }
-        
+
         .rating-details h5 a:hover {
             color: var(--primary);
         }
@@ -140,11 +147,11 @@ $user_id = $_SESSION['user_id'];
             color: #ffc107;
             font-size: 1.2rem;
         }
-        
+
         .stars .far {
             color: #ddd;
         }
-        
+
         .no-feedback {
             text-align: center;
             padding: 30px;
@@ -161,15 +168,15 @@ $user_id = $_SESSION['user_id'];
 
     <div class="profile-hero">
         <div class="container">
-            <h1 class="display-4 text-primary">My Profile</h1>
-            <p class="lead">View your submitted product feedback below.</p>
+            <h1 class="display-4 text-primary">User Profile</h1>
+            <p class="lead">View your submitted product feedback and favorite articles below.</p>
         </div>
     </div>
 
     <div class="container my-5">
         <div class="row">
             <div class="col-lg-6">
-                <h2 class="section-heading">My Comments</h2>
+                <h2 class="section-heading">Comments</h2>
                 <?php
                 // 3. Fetch all comments for the current user using a prepared statement.
                 $stmt_comments = mysqli_prepare($con, "SELECT pc.comment, pc.created_at, pc.status, p.name as ProductName, p.product_id FROM PRODUCT_COMMENTS pc JOIN PRODUCTS p ON pc.product_id = p.product_id WHERE pc.user_id = ? ORDER BY pc.created_at DESC");
@@ -180,22 +187,23 @@ $user_id = $_SESSION['user_id'];
 
                 if ($comment_count > 0) {
                     while ($row = mysqli_fetch_assoc($comments_result)) {
-                ?>
-                <div class="feedback-card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <span>For: <a href="product-details.php?pid=<?php echo $row['product_id']; ?>"><?php echo htmlentities($row['ProductName']); ?></a></span>
-                        <small class="text-muted"><?php echo date('M j, Y', strtotime($row['created_at'])); ?></small>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">"<?php echo htmlentities($row['comment']); ?>"</p>
-                        <?php if ($row['status'] == 'pending'): ?>
-                            <span class="badge bg-warning">Pending Approval</span>
-                        <?php else: ?>
-                            <span class="badge bg-success">Approved</span>
-                        <?php endif; ?>
-                    </div>
-                </div>
-                <?php
+                        ?>
+                        <div class="feedback-card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span>For: <a
+                                        href="product-details.php?pid=<?php echo $row['product_id']; ?>"><?php echo htmlentities($row['ProductName']); ?></a></span>
+                                <small class="text-muted"><?php echo date('M j, Y', strtotime($row['created_at'])); ?></small>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">"<?php echo htmlentities($row['comment']); ?>"</p>
+                                <?php if ($row['status'] == 'pending'): ?>
+                                    <span class="badge bg-warning">Pending Approval</span>
+                                <?php else: ?>
+                                    <span class="badge bg-success">Approved</span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <?php
                     }
                 } else {
                     echo "<div class='no-feedback'><p class='mb-0'>You haven't submitted any comments yet.</p></div>";
@@ -205,7 +213,7 @@ $user_id = $_SESSION['user_id'];
             </div>
 
             <div class="col-lg-6">
-                <h2 class="section-heading">My Ratings</h2>
+                <h2 class="section-heading">Product Ratings</h2>
                 <?php
                 // 4. Fetch all ratings for the current user using a prepared statement.
                 $stmt_ratings = mysqli_prepare($con, "SELECT pr.rating, pr.created_at, p.name as ProductName, p.product_id, p.image_url FROM PRODUCT_RATINGS pr JOIN PRODUCTS p ON pr.product_id = p.product_id WHERE pr.user_id = ? ORDER BY pr.created_at DESC");
@@ -216,26 +224,30 @@ $user_id = $_SESSION['user_id'];
 
                 if ($rating_count > 0) {
                     while ($row = mysqli_fetch_assoc($ratings_result)) {
-                ?>
-                <div class="feedback-card">
-                    <div class="card-body rating-card-body">
-                        <img src="admin/productimages/<?php echo htmlentities($row['image_url']); ?>" alt="<?php echo htmlentities($row['ProductName']); ?>" class="rating-product-image">
-                        <div class="rating-details w-100">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <h5><a href="product-details.php?pid=<?php echo $row['product_id']; ?>"><?php echo htmlentities($row['ProductName']); ?></a></h5>
-                                <small class="text-muted flex-shrink-0 ms-2"><?php echo date('M j, Y', strtotime($row['created_at'])); ?></small>
-                            </div>
-                            <div class="stars">
-                                <?php 
-                                for ($i = 1; $i <= 5; $i++) {
-                                    echo $i <= $row['rating'] ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
-                                }
-                                ?>
+                        ?>
+                        <div class="feedback-card">
+                            <div class="card-body rating-card-body">
+                                <!-- <img src="admin/productimages/<?php echo htmlentities($row['image_url']); ?>"
+                                    alt="<?php echo htmlentities($row['ProductName']); ?>" class="rating-product-image"> -->
+                                <div class="rating-details w-100">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <h5><a
+                                                href="product-details.php?pid=<?php echo $row['product_id']; ?>"><?php echo htmlentities($row['ProductName']); ?></a>
+                                        </h5>
+                                        <small
+                                            class="text-muted flex-shrink-0 ms-2"><?php echo date('M j, Y', strtotime($row['created_at'])); ?></small>
+                                    </div>
+                                    <div class="stars">
+                                        <?php
+                                        for ($i = 1; $i <= 5; $i++) {
+                                            echo $i <= $row['rating'] ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <?php
+                        <?php
                     }
                 } else {
                     echo "<div class='no-feedback'><p class='mb-0'>You haven't rated any products yet.</p></div>";
@@ -244,6 +256,49 @@ $user_id = $_SESSION['user_id'];
                 ?>
             </div>
         </div>
+
+        <div class="row mt-5">
+            <div class="col-12">
+                <h2 class="section-heading">Favorited Articles</h2>
+                <?php
+                // 5. Fetch all favorited articles for the current user.
+                $stmt_favorites = mysqli_prepare($con, "SELECT a.article_id, a.title, ufa.created_at FROM USER_FAVORITE_ARTICLES ufa JOIN ARTICLES a ON ufa.article_id = a.article_id WHERE ufa.user_id = ? ORDER BY ufa.created_at DESC");
+                mysqli_stmt_bind_param($stmt_favorites, "i", $user_id);
+                mysqli_stmt_execute($stmt_favorites);
+                $favorites_result = mysqli_stmt_get_result($stmt_favorites);
+                $favorite_count = mysqli_num_rows($favorites_result);
+
+                if ($favorite_count > 0) {
+                    while ($row = mysqli_fetch_assoc($favorites_result)) {
+                        ?>
+                        <div class="feedback-card">
+                            <div class="card-body d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0"><a
+                                        href="news-details.php?nid=<?php echo $row['article_id']; ?>"><?php echo htmlentities($row['title']); ?></a>
+                                </h5>
+                                <small class="text-muted flex-shrink-0 ms-3">
+                                    <i class="fas fa-heart text-danger me-1"></i>Favorited on
+                                    <?php echo date('M j, Y', strtotime($row['created_at'])); ?>
+                                </small>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                } else {
+                    echo "<div class='no-feedback'><p class='mb-0'>You haven't added any articles to your favorites yet.</p></div>";
+                }
+                mysqli_stmt_close($stmt_favorites);
+                ?>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <a href="change-password.php" class="btn btn-sm btn-outline-primary">
+                <i class="fas fa-key me-2"></i>Change Password
+            </a>
+        </div>
+
+
     </div>
 
     <?php include('includes/footer.php'); ?>
