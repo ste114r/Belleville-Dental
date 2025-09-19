@@ -27,10 +27,10 @@
                     <a class="footer-link mx-3" href="contact-us.php">
                         <i class="fa fa-phone me-1"></i>Contact Us
                     </a>
-                    <a class="footer-link mx-3" href="#">
+                    <a class="footer-link mx-3" href="gallery.php">
                         <i class="fa fa-picture-o me-1"></i>Gallery
                     </a>
-                    <a class="footer-link mx-3" href="#">
+                    <a class="footer-link mx-3" href="sitemap.php">
                         <i class="fa fa-map me-1"></i>Site Map
                     </a>
                 </nav>

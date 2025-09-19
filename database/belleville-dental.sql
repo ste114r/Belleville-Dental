@@ -143,7 +143,7 @@ VALUES (1, 'Patients', 'For patients and caregivers.', 1),
     (2, 'Doctor', 'For dental professionals.', 1),
     (
         3,
-        'Science & Research',
+        'Research & Science',
         'For researchers and academics.',
         1
     ),
