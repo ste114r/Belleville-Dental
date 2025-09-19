@@ -60,6 +60,11 @@ include('includes/config.php');
             border-bottom: 1px solid rgba(11, 126, 200, 0.1);
         }
 
+        .search-bar {
+            max-width: 520px;
+            margin: 0 auto 45px;
+        }
+
         .section-title {
             position: relative;
             display: inline-block;
@@ -254,6 +259,11 @@ include('includes/config.php');
                 if (isset($_GET['catid']) && is_numeric($_GET['catid'])) {
                     $catid = (int) $_GET['catid'];
                 }
+
+                $searchQuery = "";
+                if (isset($_GET['search']) && !empty($_GET['search'])) {
+                    $searchQuery = $_GET['search'];
+                }
                 ?>
 
                 <div class="text-center">
@@ -267,10 +277,20 @@ include('includes/config.php');
                     while ($row = mysqli_fetch_array($query)) {
                         $isActive = ($catid == $row['pcategory_id']) ? 'active' : '';
                         ?>
-                        <a href="product.php?catid=<?php echo htmlentities($row['pcategory_id']) ?>"
+                        <a href="product.php?catid=<?php echo htmlentities($row['pcategory_id']) ?><?php echo !empty($searchQuery) ? "&search=" . urlencode($searchQuery) : ''; ?>"
                             class="filter-btn <?php echo $isActive; ?>"><?php echo htmlentities($row['name']); ?></a>
                     <?php } ?>
                 </div>
+
+                <form action="product.php" method="GET" class="search-bar">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="search" placeholder="Search for products..."
+                            value="<?php echo isset($_GET['search']) ? htmlentities($_GET['search']) : ''; ?>">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+                        </div>
+                    </div>
+                </form>
 
                 <div class="row">
                     <?php
@@ -292,11 +312,17 @@ include('includes/config.php');
                         $params[] = $catid;
                         $types .= 'i';
                     }
-                    
+
+                    if (!empty($searchQuery)) {
+                        $whereClause .= " AND p.name LIKE ?";
+                        $params[] = "%" . $searchQuery . "%";
+                        $types .= 's';
+                    }
+
                     // Total pages calculation
                     $total_pages_sql = "SELECT COUNT(*) FROM PRODUCTS p $whereClause";
                     $stmt_total = mysqli_prepare($con, $total_pages_sql);
-                    if ($catid > 0) {
+                    if ($catid > 0 || !empty($searchQuery)) {
                         mysqli_stmt_bind_param($stmt_total, $types, ...$params);
                     }
                     mysqli_stmt_execute($stmt_total);
@@ -319,7 +345,7 @@ include('includes/config.php');
                         LIMIT ?, ?
                     ";
                     $stmt_products = mysqli_prepare($con, $product_query_sql);
-                    
+
                     // Add limit and offset to params
                     $params[] = $offset;
                     $params[] = $no_of_records_per_page;
@@ -338,7 +364,8 @@ include('includes/config.php');
                             <div class="col-lg-4 col-md-6 mb-4">
                                 <div class="product-card">
                                     <div class="product-image-wrapper">
-                                        <img class="product-image" src="admin/productimages/<?php echo htmlentities($row['PostImage']); ?>"
+                                        <img class="product-image"
+                                            src="admin/productimages/<?php echo htmlentities($row['PostImage']); ?>"
                                             alt="<?php echo htmlentities($row['posttitle']); ?>">
                                     </div>
                                     <div class="product-card-body">
@@ -364,6 +391,9 @@ include('includes/config.php');
                             $paginationUrl = "?";
                             if ($catid > 0) {
                                 $paginationUrl .= "catid=$catid&";
+                            }
+                            if (!empty($searchQuery)) {
+                                $paginationUrl .= "search=" . urlencode($searchQuery) . "&";
                             }
                             ?>
                             <li class="page-item <?php if ($pageno <= 1) {

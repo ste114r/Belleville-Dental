@@ -189,7 +189,7 @@ if ($result->num_rows > 0) {
             /* color: var(--primary-dark); */
             padding-bottom: 8px;
             border-bottom: 1px solid rgba(11, 126, 200, 0.2);
-        } 
+        }
 
         .recommended-products {
             padding: 30px 0;
@@ -391,39 +391,59 @@ if ($result->num_rows > 0) {
                     <section class="recommended-products">
                         <h4 class="section-title">Recommended Products</h4>
                         <div class="row">
-                            <div class="col-md-4">
-                                <div class="card product-card">
-                                    <img src="images/toothbrush.jpg" class="card-img-top product-image"
-                                        alt="Soft Bristle Toothbrush">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Soft Bristle Toothbrush</h5>
-                                        <p class="card-text">Gentle on gums, effective at cleaning.</p>
-                                        <a href="product-details.php" class="btn btn-outline-primary">View Details</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="card product-card">
-                                    <img src="images/toothbrush.jpg" class="card-img-top product-image"
-                                        alt="Soft Bristle Toothbrush">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Soft Bristle Toothbrush</h5>
-                                        <p class="card-text">Gentle on gums, effective at cleaning.</p>
-                                        <a href="product-details.php" class="btn btn-outline-primary">View Details</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="card product-card">
-                                    <img src="images/mouthwash.jpg" class="card-img-top product-image"
-                                        alt="Antibacterial Mouthwash">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Antibacterial Mouthwash</h5>
-                                        <p class="card-text">Reduces plaque and freshens breath.</p>
-                                        <a href="product-details.php" class="btn btn-outline-primary">View Details</a>
-                                    </div>
-                                </div>
-                            </div>
+                            <?php
+                            // Prepare the query to fetch recommended products based on the current article's category.
+                            // This version uses standard spaces to prevent SQL syntax errors.
+                            $recommendation_query_sql = "
+                                SELECT DISTINCT
+                                    p.product_id,
+                                    p.name,
+                                    p.image_url,
+                                    p.description,
+                                    m.relevance_score
+                                FROM PRODUCTS p
+                                JOIN ARTICLE_PRODUCT_CATEGORY_MAPPING m
+                                    ON p.pcategory_id = m.product_category_id
+                                JOIN ARTICLES a
+                                    ON a.category_id = m.article_category_id
+                                WHERE a.article_id = ?
+                                AND p.is_active = 1
+                                ORDER BY m.relevance_score DESC, RAND()
+                                LIMIT 3
+                            ";
+
+                            $stmt = mysqli_prepare($con, $recommendation_query_sql);
+
+                            // Check if the prepare statement was successful before binding parameters
+                            if ($stmt) {
+                                mysqli_stmt_bind_param($stmt, "i", $pid); // $pid is the current article ID
+                                mysqli_stmt_execute($stmt);
+                                $recommendation_query = mysqli_stmt_get_result($stmt);
+
+                                if (mysqli_num_rows($recommendation_query) > 0) {
+                                    while ($rec_row = mysqli_fetch_array($recommendation_query)) {
+                                ?>
+                                        <div class="col-md-4">
+                                            <div class="card product-card">
+                                                <img src="admin/productimages/<?php echo htmlentities($rec_row['image_url']); ?>" class="card-img-top" alt="<?php echo htmlentities($rec_row['name']); ?>">
+                                                <div class="card-body">
+                                                    <h5 class="card-title"><?php echo htmlentities($rec_row['name']); ?></h5>
+                                                    <p class="card-text"><?php echo strip_tags(substr($rec_row['description'], 0, 80)); ?>...</p>
+                                                    <a href="product-details.php?pid=<?php echo htmlentities($rec_row['product_id']); ?>" class="btn btn-outline-primary">View Details</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                <?php
+                                    }
+                                } else {
+                                    echo "<div class='col-12'><p>No recommended products found for this article.</p></div>";
+                                }
+                                mysqli_stmt_close($stmt);
+                            } else {
+                                // Optional: Output an error if the query preparation failed for debugging
+                                echo "<div class='col-12'><p>Error: Could not prepare the product recommendation query.</p></div>";
+                            }
+                            ?>
                         </div>
                     </section>
 

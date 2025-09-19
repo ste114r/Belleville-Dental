@@ -111,13 +111,15 @@ CREATE TABLE FEEDBACK (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create ARTICLE_PRODUCTS table
-CREATE TABLE ARTICLE_PRODUCTS (
-    article_products_id INT AUTO_INCREMENT PRIMARY KEY,
-    article_id INT,
-    product_id INT,
-    FOREIGN KEY (article_id) REFERENCES ARTICLES(article_id),
-    FOREIGN KEY (product_id) REFERENCES PRODUCTS(product_id)
+-- Create product mapping table
+CREATE TABLE ARTICLE_PRODUCT_CATEGORY_MAPPING (
+    mapping_id INT AUTO_INCREMENT PRIMARY KEY,
+    article_category_id INT,
+    product_category_id INT,
+    relevance_score TINYINT DEFAULT 5 CHECK (relevance_score >= 1 AND relevance_score <= 10),
+    FOREIGN KEY (article_category_id) REFERENCES ARTICLE_CATEGORIES(category_id),
+    FOREIGN KEY (product_category_id) REFERENCES PRODUCT_CATEGORIES(pcategory_id),
+    UNIQUE KEY unique_mapping (article_category_id, product_category_id)
 );
 
 -- Add useful indexes
@@ -139,15 +141,11 @@ VALUES ('user', 'user', 'user@gmail.com', 'client'),
 
 -- Insert categories
 INSERT INTO ARTICLE_CATEGORIES (category_id, name, description, is_active)
-VALUES (1, 'Patients', 'For patients and caregivers.', 1),
-    (2, 'Doctor', 'For dental professionals.', 1),
-    (
-        3,
-        'Research & Science',
-        'For researchers and academics.',
-        1
-    ),
-    (4, 'Not Active', 'Not active category.', 0);
+VALUES (1, 'Daily Oral Care', 'Guides on routine habits, brushing techniques, and simple ways to maintain oral hygiene in everyday life.', 1),
+(2, 'Common Dental Concerns', 'Solutions for frequent issues like pain, sensitivity, or bad breath, including when to seek help.', 1),
+(3, 'Oral Health Across Ages', 'Advice tailored to different life stages, from childrens dental care to senior wellness, including diet and habits.', 1),
+(4, 'Dental Science and Research', 'Insights into recent studies, innovations, and evidence-based dental practices for better understanding.', 1),
+(5, 'Not Active', 'Not active category.', 0);
 
 -- Insert sample data for articles
 INSERT INTO ARTICLES (title, slug, content, category_id, author, cover_image_url, is_active) VALUES 
@@ -170,6 +168,24 @@ INSERT INTO ARTICLES (title, slug, content, category_id, author, cover_image_url
     1
 ),
 (
+    'Effective Brushing and Flossing Techniques',
+    'effective-brushing-and-flossing-techniques',
+    '<h1><span style="font-size: 30px;">Introduction</span></h1>
+    <p>Mastering proper brushing and flossing is key to preventing plaque buildup and maintaining a healthy mouth. Many people brush incorrectly, missing areas that lead to issues like cavities. This guide covers effective techniques and their importance in daily routines.</p>
+    <h2>Key Techniques</h2>
+    <p>Use a soft-bristled brush with fluoride toothpaste. Hold at a 45-degree angle to gums and brush in short circular motions for two minutes, covering all surfaces. A 2024 <em>Oral Health Journal</em> study showed this removes 40% more plaque than back-and-forth brushing. For flossing, wrap 18 inches around fingers, slide gently between teeth, and curve into a C-shape to clean under the gumline. Water flossers are great for braces, per a 2025 <em>Dental Care Review</em>.</p>
+    <h2>Benefits in Daily Life</h2>
+    <p>These methods reduce decay risk by 25% and improve gum health, linking to better overall wellness like lower diabetes risk. Consistent use saves on dental visits. Educating families builds habits early, cutting pediatric caries by 15%, as in a 2025 <em>Pediatric Dentistry Review</em>.</p>
+    <h2>Overcoming Common Mistakes</h2>
+    <p>Hard brushing wears enamel; opt for gentle pressure. Skipping floss misses 35% of surfaces. Apps remind and guide techniques. Affordable tools make it accessible.</p>
+    <h2>Conclusion</h2>
+    <p>Adopting these techniques enhances oral health effortlessly. Use resources for guidance and enjoy a healthier smile.</p>',
+    1,
+    'Thinh Tran',
+    'brushing-flossing.jpg',
+    1
+),
+(
     'Managing Dental Anxiety: Tips for Patients',
     'managing-dental-anxiety-tips-for-patients',
     '<h1><span style="font-size: 30px;">Understanding the Issue</span></h1>
@@ -182,45 +198,63 @@ INSERT INTO ARTICLES (title, slug, content, category_id, author, cover_image_url
     <p>Access to sedation or specialized care can be costly, and not all patients know where to seek help. Dental websites can provide resources, such as anxiety management guides or lists of sedation-certified dentists. Support groups or online forums also allow patients to share experiences, reducing feelings of isolation. Practices offering patient-centered care, like pre-visit consultations, can further ease fears.</p>
     <h2>Final Thoughts</h2>
     <p>Overcoming dental anxiety is achievable with the right tools and support. By using relaxation techniques, open communication, and educational resources, patients can approach dental visits with confidence, ensuring better oral and overall health.</p>',
-    1,
+    2,
     'Thinh Tran',
     'dental-anxiety-tips.jpg',
     1
 ),
 (
-    'The Importance of Continuing Education for Dental Professionals',
-    'the-importance-of-continuing-education-for-dental-professionals',
-    '<h1><span style="font-size: 30px;">Introduction</span></h1>
-    <p>Continuing education (CE) is a vital component of dental practice, ensuring professionals remain at the forefront of a rapidly evolving field. As new technologies and techniques emerge, CE empowers dentists to deliver high-quality, patient-centered care. This article explores the role of CE, its key benefits, practical applications, and challenges for dental professionals striving to maintain excellence.</p>
-    <h2>Key Benefits of Continuing Education</h2>
-    <p>CE keeps dentists updated on advancements like CAD/CAM systems, laser dentistry, and biocompatible materials such as zirconia, which enhance restorative and implant outcomes. For example, training in 3D-printed prosthetics improves precision in crown fabrication. Beyond technical skills, CE programs teach soft skills, such as managing patient anxiety through behavioral techniques, which boost trust and compliance. Most dental boards mandate 20–40 CE hours annually, but the true value lies in staying competitive. A 2024 <em>Journal of Dental Education</em> study found that dentists engaging in regular CE reported 25% higher patient satisfaction due to improved skills and communication.</p>
-    <h2>Practical Applications in Practice</h2>
-    <p>CE directly impacts clinical workflows. Courses on minimally invasive techniques, like resin infiltration for early caries, allow dentists to offer less invasive treatments. Training in digital tools, such as intraoral scanners, streamlines workflows and improves restoration accuracy. CE also fosters collaboration through conferences and webinars, where professionals share insights on complex cases. For instance, learning about antimicrobial stewardship helps address antibiotic-resistant infections, enhancing patient safety. Practices that prioritize CE can market themselves as cutting-edge, attracting patients seeking modern care.</p>
-    <h2>Challenges and Opportunities</h2>
-    <p>The primary challenge of CE is the time and cost involved. Workshops and certifications can cost thousands, and busy schedules make attendance difficult. Online CE platforms, like those offered by the Academy of General Dentistry, provide flexibility but require self-discipline. Keeping pace with rapid advancements, such as AI diagnostics, demands ongoing commitment. However, these challenges present opportunities: practices that invest in CE differentiate themselves, attracting tech-savvy patients. A 2025 <em>Dental Economics</em> survey noted that CE-focused practices saw a 20% increase in case acceptance for cosmetic procedures.</p>
+    'Addressing Tooth Sensitivity and Discomfort',
+    'addressing-tooth-sensitivity-and-discomfort',
+    '<h1><span style="font-size: 30px;">Why It Matters</span></h1>
+    <p>Tooth sensitivity affects millions, causing pain from hot, cold, or sweet foods, often due to enamel erosion or gum recession. A 2024 <em>Dental Care Journal</em> report notes it impacts 40% of adults. This article explores causes and solutions for managing discomfort.</p>
+    <h2>Common Causes and Solutions</h2>
+    <p>Enamel wear from acidic drinks or hard brushing exposes dentin, triggering pain. Using sensitivity toothpaste with potassium nitrate blocks nerve signals, reducing sensitivity by 35% in two weeks, per a 2025 study. Gentle brushing with soft bristles prevents further erosion. Gum recession from over-brushing or disease exposes roots; fluoride rinses strengthen them. A 2024 <em>Oral Health Journal</em> found regular rinses cut sensitivity by 25%.</p>
+    <h2>Benefits of Management</h2>
+    <p>Reducing sensitivity improves quality of life, allowing enjoyment of foods without pain. It prevents avoidance of hygiene routines, lowering decay risk. Early intervention avoids costly treatments like fillings.</p>
+    <h2>Challenges and Tips</h2>
+    <p>Identifying triggers can be tricky; track diet and habits. Cost of specialized products is a barrier, but affordable options exist. Consult dentists for persistent issues.</p>
     <h2>Conclusion</h2>
-    <p>Continuing education is essential for dental professionals to deliver exceptional care and remain competitive. By embracing CE, dentists master new technologies, enhance patient communication, and contribute to the field’s advancement. Despite challenges, the benefits—improved outcomes, patient trust, and professional growth—make CE a cornerstone of modern dentistry.</p>',
+    <p>Managing sensitivity enhances comfort and health. With proper techniques and products, enjoy a pain-free smile.</p>',
     2,
-    'Thinh Tran',
-    'dental-professionals-education.jpg',
+    'Hieu Hoang',
+    'tooth-sensitivity.jpg',
     1
 ),
 (
-    'Leveraging Digital Dentistry for Improved Patient Outcomes',
-    'leveraging-digital-dentistry-for-improved-patient-outcomes',
-    '<h1><span style="font-size: 30px;">The Digital Revolution</span></h1>
-    <p>Digital dentistry is transforming practices with tools like intraoral scanners, 3D printing, and AI diagnostics, enhancing precision and patient experience. These technologies streamline workflows and improve outcomes, aligning with the goals of modern dental education. This article explores how digital dentistry benefits professionals and patients alike.</p>
-    <h2>Key Digital Tools</h2>
-    <p>Intraoral scanners replace traditional impressions, offering faster, more accurate molds with 98% precision, per a 2024 <em>Journal of Prosthodontics</em> study. 3D printing enables same-day crowns, reducing patient visits by 30%. AI-driven diagnostics, like those detecting caries from radiographs, improve early detection by 25%, according to a 2025 <em>Dental Technology Review</em>. Teledentistry platforms also expand access, allowing consultations for rural patients, with 15% higher appointment adherence reported in a 2024 <em>Oral Health Journal</em>.</p>
-    <h2>Impact on Practice</h2>
-    <p>Digital tools save time and enhance patient trust through transparency—scans can be shown instantly to explain treatment needs. They also reduce errors; CAD/CAM restorations have a 20% lower remake rate than traditional methods. For professionals, mastering these tools via CE courses boosts efficiency and marketability. Patients benefit from faster treatments and less discomfort, increasing satisfaction and loyalty.</p>
-    <h2>Challenges to Adoption</h2>
-    <p>High costs—scanners and 3D printers can exceed $20,000—pose barriers, especially for smaller practices. Training staff to use new systems also takes time. However, leasing options and online training modules are making adoption easier. Dental education websites can offer tutorials or case studies to guide professionals, ensuring smoother transitions to digital workflows.</p>
-    <h2>Looking Forward</h2>
-    <p>Digital dentistry is redefining care delivery, offering precision, efficiency, and accessibility. By integrating these tools, professionals can elevate patient outcomes and stay competitive. Dental education platforms play a vital role in spreading knowledge, ensuring practitioners can harness digital advancements effectively.</p>',
-    2,
+    'The Role of Diet in Preventing Gum Disease',
+    'the-role-of-diet-in-preventing-gum-disease',
+    '<h1><span style="font-size: 30px;">Why Diet Matters</span></h1>
+    <p>Gum disease, affecting 40% of adults per a 2024 <em>Global Oral Health</em> report, is influenced by diet. Poor nutrition can exacerbate inflammation, while balanced diets support gum health. This article explores dietary choices that prevent gum disease and their practical application.</p>
+    <h2>Key Dietary Choices</h2>
+    <p>Foods rich in vitamin C, like citrus fruits and bell peppers, strengthen gums, reducing bleeding by 30%, per a 2025 <em>Journal of Periodontology</em> study. Omega-3 fatty acids in fish or flaxseeds combat inflammation, lowering gingivitis risk. Crunchy vegetables, like carrots, stimulate saliva, which neutralizes acids. Avoiding sugary snacks and sodas prevents plaque buildup. Green tea, with its antioxidants, reduced periodontal pocket depth in a 2024 <em>Oral Health Journal</em> trial.</p>
+    <h2>Practical Tips</h2>
+    <p>Incorporating these foods is simple—swap sugary snacks for apples or add salmon to weekly meals. Drinking water instead of soda aids saliva production. Dental education websites can offer recipes or meal plans to promote gum-friendly diets, making adherence easier for patients.</p>
+    <h2>Challenges and Solutions</h2>
+    <p>Busy lifestyles and food costs can limit healthy choices. Fast food, high in sugar, worsens gum health. Dental platforms can provide budget-friendly grocery lists or tips for quick, nutritious meals. Educating patients on reading food labels for hidden sugars also helps.</p>
+    <h2>Conclusion</h2>
+    <p>A gum-friendly diet is a powerful tool for preventing periodontal disease. By making informed food choices and using educational resources, patients can protect their gums and enhance overall health.</p>',
+    3,
+    'Thinh Tran',
+    'gum-disease-diet.jpg',
+    1
+),
+(
+    'Dental Care for Children and Seniors',
+    'dental-care-for-children-and-seniors',
+    '<h1><span style="font-size: 30px;">Introduction</span></h1>
+    <p>Oral health needs evolve with age, from teething toddlers to seniors with dry mouth. Tailored care prevents issues like early caries or gum recession. This article covers age-specific advice for lifelong healthy smiles.</p>
+    <h2>Key Strategies by Age</h2>
+    <p>For children, start brushing at first tooth with fluoride paste; supervise until age 6. A 2025 <em>Pediatric Dentistry Review</em> shows this cuts caries by 25%. Teach flossing at age 2. For seniors, dry mouth from medications increases decay risk; fluoride rinses help, per a 2024 <em>Oral Health Journal</em>. Soft brushes prevent gum injury, and regular check-ups catch issues early.</p>
+    <h2>Benefits Across Life</h2>
+    <p>Proper care builds habits in kids, reducing adult problems. For seniors, it maintains nutrition and confidence. Overall, it links to better health, like lower heart disease risk.</p>
+    <h2>Challenges and Solutions</h2>
+    <p>Kids resist routines; make it fun with timers. Seniors may have dexterity issues; electric tools aid. Education empowers caregivers.</p>
+    <h2>Conclusion</h2>
+    <p>Age-appropriate care ensures lasting oral health. Use resources for guidance and enjoy benefits at every stage.</p>',
+    3,
     'Hieu Hoang',
-    'digital-dentistry.jpg',
+    'age-specific-care.jpg',
     1
 ),
 (
@@ -236,27 +270,27 @@ INSERT INTO ARTICLES (title, slug, content, category_id, author, cover_image_url
     <p>Scaling these solutions for clinical use remains a challenge, particularly in cost and accessibility. Bioactive materials are expensive, and probiotic therapies require further trials. A 2024 <em>Global Oral Health</em> report noted that caries disproportionately affects low-income communities, underscoring the need for affordable innovations. Collaborative research and funding will be key to bringing these advancements to clinics, educating both professionals and patients.</p>
     <h2>Closing Thoughts</h2>
     <p>Caries research is paving the way for smarter, less invasive dental care. By leveraging new materials and microbiome insights, researchers are redefining prevention, aligning with the mission of dental education to inform and empower. Continued innovation promises a future with fewer cavities and healthier smiles.</p>',
-    3,
+    4,
     'Hieu Hoang',
     'dental_caries_research.jpg',
     1
 ),
 (
-    'Nanotechnology in Restorative Dentistry',
-    'nanotechnology-in-restorative-dentistry',
-    '<h1><span style="font-size: 30px;">A New Frontier</span></h1>
-    <p>Nanotechnology is revolutionizing restorative dentistry by enabling precise material delivery and enhanced durability of restorations. These advancements promise stronger, longer-lasting dental solutions. This article examines nanotechnology’s role, its applications, and its future in restorative care.</p>
-    <h2>Key Innovations</h2>
-    <p>Nanoparticles in composite resins improve strength and aesthetics, reducing wear by 30%, per a 2024 <em>Journal of Dental Materials</em> study. Nano-filled sealants penetrate enamel micro-cracks better, offering 40% better caries prevention than traditional sealants. Nanoceramics, used in crowns and veneers, mimic natural tooth translucency, improving cosmetic outcomes. A 2025 <em>Biomaterials Research</em> trial showed nano-enhanced adhesives increased bond strength by 25%, extending restoration lifespan.</p>
-    <h2>Clinical Applications</h2>
-    <p>Nanotechnology enables minimally invasive restorations, preserving more natural tooth structure. Nano-delivery systems for remineralizing agents target early caries, reducing drilling needs. These materials also resist bacterial adhesion, lowering secondary decay risk by 20%, per a 2024 <em>Clinical Oral Investigations</em> study. For patients, this means more durable, natural-looking restorations and fewer replacements, enhancing satisfaction.</p>
-    <h2>Challenges Ahead</h2>
-    <p>High production costs and regulatory hurdles slow nanotechnology’s adoption. Long-term clinical data is still limited, requiring further trials. Dental education platforms can address this by offering webinars or research summaries to keep professionals informed. Cost reductions through scalable manufacturing will be critical for widespread use, especially in underserved areas.</p>
+    'The Importance of Continuing Education for Dental Professionals',
+    'the-importance-of-continuing-education-for-dental-professionals',
+    '<h1><span style="font-size: 30px;">Introduction</span></h1>
+    <p>Continuing education (CE) is a vital component of dental practice, ensuring professionals remain at the forefront of a rapidly evolving field. As new technologies and techniques emerge, CE empowers dentists to deliver high-quality, patient-centered care. This article explores the role of CE, its key benefits, practical applications, and challenges for dental professionals striving to maintain excellence.</p>
+    <h2>Key Benefits of Continuing Education</h2>
+    <p>CE keeps dentists updated on advancements like CAD/CAM systems, laser dentistry, and biocompatible materials such as zirconia, which enhance restorative and implant outcomes. For example, training in 3D-printed prosthetics improves precision in crown fabrication. Beyond technical skills, CE programs teach soft skills, such as managing patient anxiety through behavioral techniques, which boost trust and compliance. Most dental boards mandate 20–40 CE hours annually, but the true value lies in staying competitive. A 2024 <em>Journal of Dental Education</em> study found that dentists engaging in regular CE reported 25% higher patient satisfaction due to improved skills and communication.</p>
+    <h2>Practical Applications in Practice</h2>
+    <p>CE directly impacts clinical workflows. Courses on minimally invasive techniques, like resin infiltration for early caries, allow dentists to offer less invasive treatments. Training in digital tools, such as intraoral scanners, streamlines workflows and improves restoration accuracy. CE also fosters collaboration through conferences and webinars, where professionals share insights on complex cases. For instance, learning about antimicrobial stewardship helps address antibiotic-resistant infections, enhancing patient safety. Practices that prioritize CE can market themselves as cutting-edge, attracting patients seeking modern care.</p>
+    <h2>Challenges and Opportunities</h2>
+    <p>The primary challenge of CE is the time and cost involved. Workshops and certifications can cost thousands, and busy schedules make attendance difficult. Online CE platforms, like those offered by the Academy of General Dentistry, provide flexibility but require self-discipline. Keeping pace with rapid advancements, such as AI diagnostics, demands ongoing commitment. However, these challenges present opportunities: practices that invest in CE differentiate themselves, attracting tech-savvy patients. A 2025 <em>Dental Economics</em> survey noted that CE-focused practices saw a 20% increase in case acceptance for cosmetic procedures.</p>
     <h2>Conclusion</h2>
-    <p>Nanotechnology is reshaping restorative dentistry with stronger, more precise materials. As research progresses, it promises to enhance patient outcomes and reduce treatment frequency. Dental education will play a pivotal role in guiding professionals to adopt these innovations effectively.</p>',
-    3,
+    <p>Continuing education is essential for dental professionals to deliver exceptional care and remain competitive. By embracing CE, dentists master new technologies, enhance patient communication, and contribute to the field’s advancement. Despite challenges, the benefits—improved outcomes, patient trust, and professional growth—make CE a cornerstone of modern dentistry.</p>',
+    4,
     'Thinh Tran',
-    'nanotech-dentistry.jpg',
+    'dental-professionals-education.jpg',
     1
 ),
 (
@@ -272,27 +306,9 @@ INSERT INTO ARTICLES (title, slug, content, category_id, author, cover_image_url
     <p>Overusing whitening toothpastes or choosing non-fluoride options can harm enamel. Misleading marketing, like "all-natural" claims, may confuse patients. Cost can also deter—premium toothpastes cost $5–10—but budget-friendly ADA-approved options exist. Education on label reading and dentist consultations can address these issues.</p>
     <h2>Final Thoughts</h2>
     <p>Choosing the right toothpaste is a simple yet critical step for oral health. By understanding their needs and leveraging dental education resources, patients can make informed choices, ensuring effective daily care and healthier smiles.</p>',
-    4,
+    5,
     'Hieu Hoang',
     'toothpaste-selection.jpg',
-    0
-),
-(
-    'The Role of Diet in Preventing Gum Disease',
-    'the-role-of-diet-in-preventing-gum-disease',
-    '<h1><span style="font-size: 30px;">Why Diet Matters</span></h1>
-    <p>Gum disease, affecting 40% of adults per a 2024 <em>Global Oral Health</em> report, is influenced by diet. Poor nutrition can exacerbate inflammation, while balanced diets support gum health. This article explores dietary choices that prevent gum disease and their practical application.</p>
-    <h2>Key Dietary Choices</h2>
-    <p>Foods rich in vitamin C, like citrus fruits and bell peppers, strengthen gums, reducing bleeding by 30%, per a 2025 <em>Journal of Periodontology</em> study. Omega-3 fatty acids in fish or flaxseeds combat inflammation, lowering gingivitis risk. Crunchy vegetables, like carrots, stimulate saliva, which neutralizes acids. Avoiding sugary snacks and sodas prevents plaque buildup. Green tea, with its antioxidants, reduced periodontal pocket depth in a 2024 <em>Oral Health Journal</em> trial.</p>
-    <h2>Practical Tips</h2>
-    <p>Incorporating these foods is simple—swap sugary snacks for apples or add salmon to weekly meals. Drinking water instead of soda aids saliva production. Dental education websites can offer recipes or meal plans to promote gum-friendly diets, making adherence easier for patients.</p>
-    <h2>Challenges and Solutions</h2>
-    <p>Busy lifestyles and food costs can limit healthy choices. Fast food, high in sugar, worsens gum health. Dental platforms can provide budget-friendly grocery lists or tips for quick, nutritious meals. Educating patients on reading food labels for hidden sugars also helps.</p>
-    <h2>Conclusion</h2>
-    <p>A gum-friendly diet is a powerful tool for preventing periodontal disease. By making informed food choices and using educational resources, patients can protect their gums and enhance overall health.</p>',
-    4,
-    'Thinh Tran',
-    'gum-disease-diet.jpg',
     0
 );
 
@@ -309,39 +325,58 @@ VALUES
 INSERT INTO PRODUCTS (name, slug, description, pcategory_id, buy_url, image_url, is_active)
 VALUES 
     -- TOOTHBRUSHES (3 manual, 3 electric)
-    ('Oral-B Pro-Health Manual', 'oral-b-pro-health-manual', 'Soft-bristled manual toothbrush with angled bristles for effective plaque removal.', 1, 'https://www.amazon.com/Oral-B-Pro-Health-Manual-Toothbrush/dp/B001234567', 'oral-b-manual.jpg', 1),
-    ('Colgate 360° Manual Toothbrush', 'colgate-360-manual', 'Manual toothbrush with whole mouth cleaning including tongue and cheek cleaner.', 1, 'https://www.amazon.com/Colgate-360-Manual-Toothbrush/dp/B001234568', 'colgate-360.jpg', 1),
-    ('GUM Technique Pro Compact', 'gum-technique-pro', 'Compact head manual toothbrush with tapered bristles for precision cleaning.', 1, 'https://www.amazon.com/GUM-Technique-Pro-Compact/dp/B001234569', 'gum-technique.jpg', 1),
-    ('Oral-B iO Series 9', 'oral-b-io-series-9', 'Premium electric toothbrush with AI-powered brushing tracking and multiple cleaning modes.', 1, 'https://www.amazon.com/Oral-B-iO-Series-9/dp/B08P4W6Z7G', 'oral-b-io9.jpg', 1),
-    ('Philips Sonicare DiamondClean', 'philips-sonicare-diamondclean', 'High-performance sonic electric toothbrush for superior plaque removal and gum health.', 1, 'https://www.amazon.com/Philips-Sonicare-DiamondClean/dp/B07Z7F5R1K', 'sonicare-diamondclean.jpg', 1),
-    ('Oral-B Vitality Pro', 'oral-b-vitality-pro', 'Budget-friendly electric toothbrush with oscillating technology for daily cleaning.', 1, 'https://www.amazon.com/Oral-B-Vitality-Pro/dp/B00T9G9J2M', 'vitality-pro.jpg', 1),
+    ('Oral-B Pro-Health Manual', 'oral-b-pro-health-manual', 'Soft-bristled manual toothbrush with angled bristles for effective plaque removal.', 1, 'https://www.amazon.com/Oral-B-Pro-Health-Clinical-Pro-Flex-Toothbrush/dp/B00763LZWQ', 'oral-b-manual.jpg', 1),
+    ('Colgate 360° Manual Toothbrush', 'colgate-360-manual', 'Manual toothbrush with whole mouth cleaning including tongue and cheek cleaner.', 1, 'https://www.amazon.com/Colgate-Adult-Toothbrush-Medium-Count/dp/B00H88K9EE', 'colgate-360.jpg', 1),
+    ('GUM Technique Pro Compact', 'gum-technique-pro', 'Compact head manual toothbrush with tapered bristles for precision cleaning.', 1, 'https://www.amazon.com/GUM-Technique-Toothbrush/dp/B0D54WNXHL', 'gum-technique.jpg', 1),
+    ('Oral-B iO Series 9', 'oral-b-io-series-9', 'Premium electric toothbrush with AI-powered brushing tracking and multiple cleaning modes.', 1, 'https://www.amazon.com/Oral-B-iO-Electric-Toothbrush-Brush-Alabaster/dp/B0B5HSNPNH', 'oral-b-io9.jpg', 1),
+    ('Philips Sonicare DiamondClean', 'philips-sonicare-diamondclean', 'High-performance sonic electric toothbrush for superior plaque removal and gum health.', 1, 'https://www.amazon.com/Philips-Sonicare-DiamondClean-Rechargeable-toothbrush/dp/B06XT19TYD', 'sonicare-diamondclean.jpg', 1),
+    ('Oral-B Vitality Pro', 'oral-b-vitality-pro', 'Budget-friendly electric toothbrush with oscillating technology for daily cleaning.', 1, 'https://www.amazon.com/Oral-B-Vitality-Electric-Toothbrush-Rechargeable/dp/B0B1RJ8FDJ', 'vitality-pro.jpg', 1),
 
     -- TOOTHPASTES (3 regular, 2 sensitivity, 2 whitening)
-    ('Colgate Total Original', 'colgate-total-original', 'Regular fluoride toothpaste for comprehensive oral health protection and cavity prevention.', 2, 'https://www.amazon.com/Colgate-Total-Original/dp/B001234570', 'colgate-total.jpg', 1),
-    ('Crest Cavity Protection', 'crest-cavity-protection', 'Basic fluoride toothpaste providing essential cavity protection for daily use.', 2, 'https://www.amazon.com/Crest-Cavity-Protection/dp/B001234571', 'crest-cavity.jpg', 1),
-    ('Oral-B Pro-Expert Deep Clean', 'oral-b-pro-expert', 'Regular toothpaste with deep cleaning formula for thorough plaque removal.', 2, 'https://www.amazon.com/Oral-B-Pro-Expert-Deep-Clean/dp/B001234572', 'oral-b-expert.jpg', 1),
-    ('Sensodyne Pronamel Gentle', 'sensodyne-pronamel', 'Fluoride toothpaste designed to protect enamel and relieve tooth sensitivity.', 2, 'https://www.amazon.com/Sensodyne-Pronamel-Gentle/dp/B07N1N5Q2R', 'sensodyne-pronamel.jpg', 1),
-    ('Colgate Sensitive Complete', 'colgate-sensitive-complete', 'Sensitivity relief toothpaste with fluoride for complete oral care protection.', 2, 'https://www.amazon.com/Colgate-Sensitive-Complete/dp/B001234573', 'colgate-sensitive.jpg', 1),
-    ('Crest 3D White Brilliance', 'crest-3d-white-brilliance', 'Advanced whitening toothpaste with fluoride for stain removal and enamel protection.', 2, 'https://www.amazon.com/Crest-3D-White-Brilliance/dp/B07Z7F5R1K', 'crest-3d-white.jpg', 1),
-    ('Colgate Optic White Advanced', 'colgate-optic-white', 'Professional-level whitening toothpaste with hydrogen peroxide for visible results.', 2, 'https://www.amazon.com/Colgate-Optic-White-Advanced/dp/B001234574', 'colgate-optic-white.jpg', 1),
+    ('Colgate Total Original', 'colgate-total-original', 'Regular fluoride toothpaste for comprehensive oral health protection and cavity prevention.', 2, 'https://www.amazon.com/Colgate-Total-Toothpaste-Clean-ounce/dp/B07L5PDS11', 'colgate-total.jpg', 1),
+    ('Crest Cavity Protection', 'crest-cavity-protection', 'Basic fluoride toothpaste providing essential cavity protection for daily use.', 2, 'https://www.amazon.com/Crest-Cavity-Protection-Toothpaste-Regular/dp/B07GZ7HQ2C', 'crest-cavity.jpg', 1),
+    ('Oral-B Pro-Expert Deep Clean', 'oral-b-pro-expert', 'Regular toothpaste with deep cleaning formula for thorough plaque removal.', 2, 'https://www.amazon.com/Oral-B-Pro-Expert-All-Around-Protection-Toothpaste/dp/B00569I0NE', 'oral-b-expert.jpg', 1),
+    ('Sensodyne Pronamel Gentle', 'sensodyne-pronamel', 'Fluoride toothpaste designed to protect enamel and relieve tooth sensitivity.', 2, 'https://www.amazon.com/Sensodyne-Pronamel-Gentle-Whitening-Toothpaste/dp/B00BIPJJBM', 'sensodyne-pronamel.jpg', 1),
+    ('Colgate Sensitive Complete', 'colgate-sensitive-complete', 'Sensitivity relief toothpaste with fluoride for complete oral care protection.', 2, 'https://www.amazon.com/Colgate-Sensitive-Toothpaste-Complete-Protection/dp/B01LTHYWAQ', 'colgate-sensitive.jpg', 1),
+    ('Crest 3D White Brilliance', 'crest-3d-white-brilliance', 'Advanced whitening toothpaste with fluoride for stain removal and enamel protection.', 2, 'https://www.amazon.com/Crest-Brilliance-Vibrant-Peppermint-Toothpaste/dp/B07CHP3FPQ', 'crest-3d-white.jpg', 1),
+    ('Colgate Optic White Advanced', 'colgate-optic-white', 'Professional-level whitening toothpaste with hydrogen peroxide for visible results.', 2, 'https://www.amazon.com/Colgate-Advanced-Whitening-Toothpaste-Sparkling/dp/B082F1QH7S', 'colgate-optic-white.jpg', 1),
 
     -- INTERDENTAL CARE (2 regular floss, 2 water floss, 2 floss picks)
-    ('Oral-B Glide Pro-Health', 'oral-b-glide-floss', 'Smooth, shred-resistant dental floss for comfortable cleaning between tight teeth.', 3, 'https://www.amazon.com/Oral-B-Glide-Pro-Health/dp/B001OOLF82', 'glide-floss.jpg', 1),
-    ('Johnson & Johnson Reach Floss', 'reach-dental-floss', 'Waxed dental floss with mint flavor for effective interdental plaque removal.', 3, 'https://www.amazon.com/Johnson-Johnson-Reach-Floss/dp/B001234575', 'reach-floss.jpg', 1),
-    ('Waterpik Cordless Advanced', 'waterpik-cordless-advanced', 'Portable water flosser for interdental cleaning, ideal for braces and sensitive gums.', 3, 'https://www.amazon.com/Waterpik-Cordless-Advanced/dp/B00T9G9J2M', 'waterpik-cordless.jpg', 1),
-    ('Philips Sonicare AirFloss Ultra', 'philips-airfloss-ultra', 'Air-powered water flosser using micro-droplet technology for quick interdental cleaning.', 3, 'https://www.amazon.com/Philips-Sonicare-AirFloss-Ultra/dp/B00J5Z8O5A', 'airfloss-ultra.jpg', 1),
-    ('GUM Soft-Picks Advanced', 'gum-soft-picks', 'Flexible interdental picks for gentle cleaning, suitable for sensitive gums.', 3, 'https://www.amazon.com/GUM-Soft-Picks-Advanced/dp/B000052YHA', 'gum-picks.jpg', 1),
-    ('Oral-B Complete Glide Picks', 'oral-b-glide-picks', 'Pre-threaded floss picks with shred-resistant floss for convenient on-the-go cleaning.', 3, 'https://www.amazon.com/Oral-B-Complete-Glide-Picks/dp/B001234576', 'glide-picks.jpg', 1),
+    ('Oral-B Glide Pro-Health', 'oral-b-glide-floss', 'Smooth, shred-resistant dental floss for comfortable cleaning between tight teeth.', 3, 'https://www.amazon.com/Oral-B-Glide-Pro-Health-Comfort-Dental/dp/B07FLBBWJR', 'glide-floss.jpg', 1),
+    ('Johnson & Johnson Reach Floss', 'reach-dental-floss', 'Waxed dental floss with mint flavor for effective interdental plaque removal.', 3, 'https://www.amazon.com/Johnson-Reach-Waxed-Dental-Floss/dp/B00U2H1H8A', 'reach-floss.jpg', 1),
+    ('Waterpik Cordless Advanced', 'waterpik-cordless-advanced', 'Portable water flosser for interdental cleaning, ideal for braces and sensitive gums.', 3, 'https://www.amazon.com/Waterpik-Cordless-Rechargeable-Portable-Irrigator/dp/B01GNVF8S8', 'waterpik-cordless.jpg', 1),
+    ('Philips Sonicare AirFloss Ultra', 'philips-airfloss-ultra', 'Air-powered water flosser using micro-droplet technology for quick interdental cleaning.', 3, 'https://www.amazon.com/Philips-Sonicare-AirFloss-Interdental-Cleaning/dp/B00J5Z8O5A', 'airfloss-ultra.jpg', 1),
+    ('GUM Soft-Picks Advanced', 'gum-soft-picks', 'Flexible interdental picks for gentle cleaning, suitable for sensitive gums.', 3, 'https://www.amazon.com/GUM-Soft-Picks-Advanced-Dental-Picks/dp/B08BSMDDS2', 'gum-picks.jpg', 1),
+    ('Oral-B Complete Glide Picks', 'oral-b-glide-picks', 'Pre-threaded floss picks with shred-resistant floss for convenient on-the-go cleaning.', 3, 'https://www.amazon.com/Oral-B-Glide-Complete-Outlast-Dental/dp/B00UB7BO16', 'glide-picks.jpg', 1),
 
     -- ORAL RINSES (3 antibacterial, 2 fluoride, 2 breath freshening)
-    ('Listerine Total Care Antibacterial', 'listerine-total-care', 'Antimicrobial mouthwash that kills 99% of germs and strengthens enamel.', 4, 'https://www.amazon.com/Listerine-Total-Care/dp/B07D7J4Z3S', 'listerine-total.jpg', 1),
-    ('Colgate Total Advanced Pro-Shield', 'colgate-total-proshield', 'Antibacterial mouthwash with fluoride for 12-hour germ protection.', 4, 'https://www.amazon.com/Colgate-Total-Advanced-Pro-Shield/dp/B001234577', 'colgate-proshield.jpg', 1),
-    ('Crest Pro-Health Multi-Protection', 'crest-pro-health-rinse', 'Alcohol-free antibacterial rinse for cavity prevention and gum health support.', 4, 'https://www.amazon.com/Crest-Pro-Health-Multi-Protection/dp/B07Z5G3Q4R', 'crest-rinse.jpg', 1),
-    ('ACT Anticavity Fluoride Rinse', 'act-anticavity-rinse', 'Fluoride-based mouthwash designed to strengthen teeth and prevent cavities.', 4, 'https://www.amazon.com/ACT-Anticavity-Fluoride-Rinse/dp/B000052YHA', 'act-rinse.jpg', 1),
-    ('Oral-B Pro-Expert Fluoride Rinse', 'oral-b-pro-expert-rinse', 'Professional fluoride mouthwash for enhanced cavity protection and enamel strengthening.', 4, 'https://www.amazon.com/Oral-B-Pro-Expert-Fluoride-Rinse/dp/B001234578', 'oral-b-fluoride.jpg', 1),
-    ('TheraBreath Fresh Breath Rinse', 'therabreath-rinse', 'Clinically proven mouthwash to combat bad breath with oxygenating formula.', 4, 'https://www.amazon.com/TheraBreath-Fresh-Breath-Rinse/dp/B000O5IQOQ', 'therabreath-rinse.jpg', 1),
-    ('Scope Outlast Fresh Mint', 'scope-outlast-mint', 'Long-lasting breath freshening mouthwash with up to 5x longer fresh feeling.', 4, 'https://www.amazon.com/Scope-Outlast-Fresh-Mint/dp/B001234579', 'scope-outlast.jpg', 1),
+    ('Listerine Total Care Antibacterial', 'listerine-total-care', 'Antimicrobial mouthwash that kills 99% of germs and strengthens enamel.', 4, 'https://www.amazon.com/Listerine-Anticavity-Mouthwash-Fluoride-Packaging/dp/B00495Q5OW', 'listerine-total.jpg', 1),
+    ('Colgate Total Advanced Pro-Shield', 'colgate-total-proshield', 'Antibacterial mouthwash with fluoride for 12-hour germ protection.', 4, 'https://www.amazon.com/Colgate-Total-Pro-Shield-Mouthwash-Peppermint/dp/B00EZWSBQ4', 'colgate-proshield.jpg', 1),
+    ('Crest Pro-Health Multi-Protection', 'crest-pro-health-rinse', 'Alcohol-free antibacterial rinse for cavity prevention and gum health support.', 4, 'https://www.amazon.com/Crest-Pro-Health-Multi-Protection-Mouthwash-Gingivitis/dp/B003CP12O8', 'crest-rinse.jpg', 1),
+    ('ACT Anticavity Fluoride Rinse', 'act-anticavity-rinse', 'Fluoride-based mouthwash designed to strengthen teeth and prevent cavities.', 4, 'https://www.amazon.com/ACT-Alcohol-Anticavity-Fluoride-Rinse/dp/B0012DX2VS', 'act-rinse.jpg', 1),
+    ('Oral-B Pro-Expert Fluoride Rinse', 'oral-b-pro-expert-rinse', 'Professional fluoride mouthwash for enhanced cavity protection and enamel strengthening.', 4, 'https://www.amazon.com/Oral-B-Pro-Health-Clinical-Clean-Rinse/dp/B06ZYHNQ2D', 'oral-b-fluoride.jpg', 1),
+    ('TheraBreath Fresh Breath Rinse', 'therabreath-rinse', 'Clinically proven mouthwash to combat bad breath with oxygenating formula.', 4, 'https://www.amazon.com/TheraBreath-Fresh-Breath-Rinse-Bottle/dp/B00IRKRK9O', 'therabreath-rinse.jpg', 1),
+    ('Scope Outlast Fresh Mint', 'scope-outlast-mint', 'Long-lasting breath freshening mouthwash with up to 5x longer fresh feeling.', 4, 'https://www.amazon.com/Crest-Scope-Outlast-Mouthwash-33-8/dp/B019FGCP5C', 'scope-outlast.jpg', 1),
 
     -- SPECIALTY PRODUCTS (1 night guard, 1 tongue scraper)
-    ('DenTek Comfort-Fit Night Guard', 'dentek-night-guard', 'Custom-fitting dental night guard for teeth grinding and TMJ relief.', 5, 'https://www.amazon.com/DenTek-Comfort-Fit-Night-Guard/dp/B001234580', 'dentek-guard.jpg', 1),
-    ('Dr. Tungs Tongue Cleaner', 'dr-tungs-tongue-cleaner', 'Stainless steel tongue scraper for removing bacteria and freshening breath.', 5, 'https://www.amazon.com/Dr-Tungs-Tongue-Cleaner/dp/B001234581', 'tongue-scraper.jpg', 1);
+    ('DenTek Comfort-Fit Night Guard', 'dentek-night-guard', 'Custom-fitting dental night guard for teeth grinding and TMJ relief.', 5, 'https://www.amazon.com/DenTek-Comfort-Fit-Protection-Nightime-Grinding/dp/B002WTCK4Q', 'dentek-guard.jpg', 1),
+    ('Dr. Tungs Tongue Cleaner', 'dr-tungs-tongue-cleaner', 'Stainless steel tongue scraper for removing bacteria and freshening breath.', 5, 'https://www.amazon.com/DR-TUNGS-Tongue-Cleaner-Count/dp/B000ZM7MMW', 'tongue-scraper.jpg', 1);
+
+-- Insert product categories mapping to article categories with relevance weight
+INSERT INTO ARTICLE_PRODUCT_CATEGORY_MAPPING (article_category_id, product_category_id, relevance_score) VALUES
+(1, 1, 10), -- Daily Oral Care -> Toothbrushes (perfect match)
+(1, 2, 10), -- Daily Oral Care -> Toothpastes (perfect match)
+(1, 3, 8),  -- Daily Oral Care -> Interdental Care (very relevant)
+(1, 4, 6),  -- Daily Oral Care -> Oral Rinses (moderately relevant)
+
+(2, 2, 9),  -- Common Dental Concerns -> Toothpastes (highly relevant)
+(2, 4, 7),  -- Common Dental Concerns -> Oral Rinses (good relevance)
+(2, 5, 5),  -- Common Dental Concerns -> Specialty Products (moderate)
+
+(3, 1, 8),  -- Oral Health Across Ages -> Toothbrushes (very relevant)
+(3, 2, 9),  -- Oral Health Across Ages -> Toothpastes (highly relevant)
+(3, 3, 6),  -- Oral Health Across Ages -> Interdental Care (moderate)
+
+(4, 1, 6),  -- Dental Science -> Toothbrushes (moderate)
+(4, 2, 7),  -- Dental Science -> Toothpastes (good)
+(4, 5, 4);  -- Dental Science -> Specialty Products (low but relevant)
