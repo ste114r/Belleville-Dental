@@ -1,4 +1,5 @@
 <?php
+session_name('admin_session');
 session_start();
 include('includes/config.php');
 error_reporting(0);
@@ -54,7 +55,7 @@ if (strlen($_SESSION['login']) == 0) {
                                 <strong><?php echo htmlentities($msg); ?></strong>
                             </div>
                         <?php } ?>
-                         <?php if ($delmsg) { ?>
+                        <?php if ($delmsg) { ?>
                             <div class="alert alert-danger" role="alert">
                                 <strong><?php echo htmlentities($delmsg); ?></strong>
                             </div>

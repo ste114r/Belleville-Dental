@@ -1,4 +1,5 @@
 <?php
+session_name('admin_session');
 session_start();
 include('includes/config.php');
 error_reporting(0);

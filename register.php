@@ -1,5 +1,5 @@
 <?php
-// [file name]: register.php
+session_name('client_session');
 session_start();
 include('includes/config.php');
 

@@ -1,5 +1,5 @@
 <?php
-// [file name]: logout.php
+session_name('client_session');
 session_start();
 include("includes/config.php");
 $_SESSION['login'] = "";

@@ -38,7 +38,6 @@
                     <ul class="list-unstyled">
                         <li><a href="add-post.php">Add Articles</a></li>
                         <li><a href="manage-posts.php">Manage Articles</a></li>
-                        <!-- <li><a href="trash-posts.php">Trash Articles</a></li> -->
                     </ul>
                 </li>
                 <li class="has_sub">
