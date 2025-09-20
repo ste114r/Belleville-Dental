@@ -20,50 +20,40 @@ if (isset($_POST['submit_feedback'])) {
         if ($rating >= 1 && $rating <= 5) {
             $form_had_input = true;
             // Check if the user has already rated this product
-            $stmt_check_rating = mysqli_prepare($con, "SELECT rating_id FROM PRODUCT_RATINGS WHERE user_id = ? AND product_id = ?");
-            mysqli_stmt_bind_param($stmt_check_rating, "ii", $user_id, $product_id);
-            mysqli_stmt_execute($stmt_check_rating);
-            mysqli_stmt_store_result($stmt_check_rating);
+            $check_rating_query = mysqli_query($con, "SELECT rating_id FROM PRODUCT_RATINGS WHERE user_id = '$user_id' AND product_id = '$product_id'");
 
-            if (mysqli_stmt_num_rows($stmt_check_rating) == 0) {
+            if (mysqli_num_rows($check_rating_query) == 0) {
                 // Insert the new rating
-                $stmt_rate = mysqli_prepare($con, "INSERT INTO PRODUCT_RATINGS (product_id, user_id, rating) VALUES (?, ?, ?)");
-                mysqli_stmt_bind_param($stmt_rate, "iii", $product_id, $user_id, $rating);
-                if (mysqli_stmt_execute($stmt_rate)) {
+                $insert_rating_query = mysqli_query($con, "INSERT INTO PRODUCT_RATINGS (product_id, user_id, rating) VALUES ('$product_id', '$user_id', '$rating')");
+                if ($insert_rating_query) {
                     $alert_messages[] = "Your rating has been submitted successfully.";
                 } else {
                     $alert_messages[] = "Error: Could not submit your rating.";
                 }
-                mysqli_stmt_close($stmt_rate);
             } else {
                 $alert_messages[] = "You have already rated this product.";
             }
-            mysqli_stmt_close($stmt_check_rating);
         }
 
         // Handle Comment Submission
         if (!empty($comment)) {
             $form_had_input = true;
             // Check if user has already commented
-            $stmt_check = mysqli_prepare($con, "SELECT comment_id FROM PRODUCT_COMMENTS WHERE user_id = ? AND product_id = ?");
-            mysqli_stmt_bind_param($stmt_check, "ii", $user_id, $product_id);
-            mysqli_stmt_execute($stmt_check);
-            mysqli_stmt_store_result($stmt_check);
-
-            if (mysqli_stmt_num_rows($stmt_check) == 0) {
+            $check_comment_query = mysqli_query($con, "SELECT comment_id FROM PRODUCT_COMMENTS WHERE user_id = '$user_id' AND product_id = '$product_id'");
+            
+            if (mysqli_num_rows($check_comment_query) == 0) {
+                // IMPORTANT: Sanitize comment before inserting to prevent SQL injection
+                $safe_comment = mysqli_real_escape_string($con, $comment);
                 // Insert the new comment
-                $stmt_insert = mysqli_prepare($con, "INSERT INTO PRODUCT_COMMENTS (product_id, user_id, comment, status) VALUES (?, ?, ?, 'pending')");
-                mysqli_stmt_bind_param($stmt_insert, "iis", $product_id, $user_id, $comment);
-                if (mysqli_stmt_execute($stmt_insert)) {
+                $insert_comment_query = mysqli_query($con, "INSERT INTO PRODUCT_COMMENTS (product_id, user_id, comment, status) VALUES ('$product_id', '$user_id', '$safe_comment', 'pending')");
+                if ($insert_comment_query) {
                     $alert_messages[] = "Your comment has been submitted and is awaiting approval.";
                 } else {
                     $alert_messages[] = "Error: Could not submit your comment.";
                 }
-                mysqli_stmt_close($stmt_insert);
             } else {
                 $alert_messages[] = "You have already submitted a comment for this product.";
             }
-            mysqli_stmt_close($stmt_check);
         }
         
         // If the form was submitted but contained no actual data
@@ -603,35 +593,22 @@ $productid = intval($_GET['pid']);
         <div class="row" style="margin-top: 4%;">
             <div class="col-md-9">
                 <?php
-                // 2. Use a prepared statement for security
-                $stmt = mysqli_prepare($con, "SELECT p.name as ProductName,
-                                                    p.description as ProductDescription,
-                                                    p.image_url as ProductImage,
-                                                    p.buy_url as BuyUrl,
-                                                    pc.name as CategoryName,
-                                                    p.pcategory_id -- Fetch category ID for related products query
-                                                FROM PRODUCTS p
-                                                JOIN PRODUCT_CATEGORIES pc ON p.pcategory_id = pc.pcategory_id
-                                                WHERE p.product_id = ? AND p.is_active = 1");
-                mysqli_stmt_bind_param($stmt, "i", $productid);
-                mysqli_stmt_execute($stmt);
-                $query = mysqli_stmt_get_result($stmt);
+                // 2. Use a standard query
+                $product_query_str = "SELECT p.name as ProductName,
+                                            p.description as ProductDescription,
+                                            p.image_url as ProductImage,
+                                            p.buy_url as BuyUrl,
+                                            pc.name as CategoryName,
+                                            p.pcategory_id -- Fetch category ID for related products query
+                                        FROM PRODUCTS p
+                                        JOIN PRODUCT_CATEGORIES pc ON p.pcategory_id = pc.pcategory_id
+                                        WHERE p.product_id = '$productid' AND p.is_active = 1";
+                $query = mysqli_query($con, $product_query_str);
 
                 $rowcount = mysqli_num_rows($query);
                 if ($rowcount == 0) {
                     echo "<h3>Product not found or is no longer available.</h3>";
                 } else {
-                    // Get Average Rating
-                    // $rating_stmt = mysqli_prepare($con, "SELECT COUNT(rating_id) as rating_count, AVG(rating) as avg_rating FROM PRODUCT_RATINGS WHERE product_id = ?");
-                    // mysqli_stmt_bind_param($rating_stmt, "i", $productid);
-                    // mysqli_stmt_execute($rating_stmt);
-                    // $rating_result = mysqli_stmt_get_result($rating_stmt);
-                    // $rating_data = mysqli_fetch_assoc($rating_result);
-                    // $avg_rating = round($rating_data['avg_rating'] ?? 0, 1);
-                    // $rating_count = $rating_data['rating_count'] ?? 0;
-                    // mysqli_stmt_close($rating_stmt);
-
-                    // Store category ID for the next query
                     $category_id_for_related = 0;
                     $currenturl = "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
@@ -692,15 +669,13 @@ $productid = intval($_GET['pid']);
                                 <h4 class="section-title text-center">Ratings & Comments</h4>
 
                                 <?php
-                                $comment_stmt = mysqli_prepare($con, "SELECT u.username, pc.comment, pc.created_at, pr.rating 
-                                                                        FROM PRODUCT_COMMENTS pc
-                                                                        JOIN USERS u ON pc.user_id = u.user_id
-                                                                        LEFT JOIN PRODUCT_RATINGS pr ON pc.user_id = pr.user_id AND pc.product_id = pr.product_id
-                                                                        WHERE pc.product_id = ? AND pc.status = 'approved'
-                                                                        ORDER BY pc.created_at DESC");
-                                mysqli_stmt_bind_param($comment_stmt, "i", $productid);
-                                mysqli_stmt_execute($comment_stmt);
-                                $comment_query = mysqli_stmt_get_result($comment_stmt);
+                                $comment_query_str = "SELECT u.username, pc.comment, pc.created_at, pr.rating 
+                                                        FROM PRODUCT_COMMENTS pc
+                                                        JOIN USERS u ON pc.user_id = u.user_id
+                                                        LEFT JOIN PRODUCT_RATINGS pr ON pc.user_id = pr.user_id AND pc.product_id = pr.product_id
+                                                        WHERE pc.product_id = '$productid' AND pc.status = 'approved'
+                                                        ORDER BY pc.created_at DESC";
+                                $comment_query = mysqli_query($con, $comment_query_str);
                                 $comment_count = mysqli_num_rows($comment_query);
 
                                 if ($comment_count > 0) {
@@ -737,19 +712,13 @@ $productid = intval($_GET['pid']);
                                         $user_id_check = $_SESSION['user_id'];
 
                                         // Check if this user has already commented
-                                        $check_comment_stmt = mysqli_prepare($con, "SELECT comment_id FROM PRODUCT_COMMENTS WHERE user_id = ? AND product_id = ?");
-                                        mysqli_stmt_bind_param($check_comment_stmt, "ii", $user_id_check, $productid);
-                                        mysqli_stmt_execute($check_comment_stmt);
-                                        $has_commented = mysqli_stmt_get_result($check_comment_stmt)->num_rows > 0;
-                                        mysqli_stmt_close($check_comment_stmt);
+                                        $has_commented_query = mysqli_query($con, "SELECT comment_id FROM PRODUCT_COMMENTS WHERE user_id = '$user_id_check' AND product_id = '$productid'");
+                                        $has_commented = mysqli_num_rows($has_commented_query) > 0;
                                         
                                         // Check for this user's existing rating
-                                        $check_rating_stmt = mysqli_prepare($con, "SELECT rating FROM PRODUCT_RATINGS WHERE user_id = ? AND product_id = ?");
-                                        mysqli_stmt_bind_param($check_rating_stmt, "ii", $user_id_check, $productid);
-                                        mysqli_stmt_execute($check_rating_stmt);
-                                        $user_rating_result = mysqli_stmt_get_result($check_rating_stmt);
-                                        $user_rating = mysqli_fetch_assoc($user_rating_result)['rating'] ?? 0;
-                                        mysqli_stmt_close($check_rating_stmt);
+                                        $user_rating_query = mysqli_query($con, "SELECT rating FROM PRODUCT_RATINGS WHERE user_id = '$user_id_check' AND product_id = '$productid'");
+                                        $user_rating_result = mysqli_fetch_assoc($user_rating_query);
+                                        $user_rating = $user_rating_result['rating'] ?? 0;
                                     ?>
                                         <form name="feedback" method="post">
                                             <input type="hidden" name="product_id" value="<?php echo $productid; ?>" />
@@ -796,13 +765,11 @@ $productid = intval($_GET['pid']);
                                 <div class="row">
                                     <?php
                                     if ($category_id_for_related > 0) {
-                                        $related_stmt = mysqli_prepare($con, "SELECT product_id, name, description, image_url
-                                                                                FROM PRODUCTS
-                                                                                WHERE pcategory_id = ? AND product_id != ? AND is_active = 1
-                                                                                ORDER BY RAND() LIMIT 3");
-                                        mysqli_stmt_bind_param($related_stmt, "ii", $category_id_for_related, $productid);
-                                        mysqli_stmt_execute($related_stmt);
-                                        $related_query = mysqli_stmt_get_result($related_stmt);
+                                        $related_query_str = "SELECT product_id, name, description, image_url
+                                                                FROM PRODUCTS
+                                                                WHERE pcategory_id = '$category_id_for_related' AND product_id != '$productid' AND is_active = 1
+                                                                ORDER BY RAND() LIMIT 3";
+                                        $related_query = mysqli_query($con, $related_query_str);
 
                                         if (mysqli_num_rows($related_query) > 0) {
                                             while ($related_row = mysqli_fetch_array($related_query)) {
@@ -812,7 +779,7 @@ $productid = intval($_GET['pid']);
                                                         <img class="card-img-top" src="images/productimages/<?php echo htmlentities($related_row['image_url']); ?>" alt="<?php echo htmlentities($related_row['name']); ?>">
                                                         <div class="card-body">
                                                             <h5 class="card-title"><?php echo htmlentities($related_row['name']); ?></h5>
-                                                            <p class="card-text"><?php echo strip_tags(substr($related_row['description'], 0, 100)); ?>...</p>
+
                                                             <a href="product-details.php?pid=<?php echo htmlentities($related_row['product_id']); ?>" class="btn btn-outline-primary">View Details</a>
                                                         </div>
                                                     </div>

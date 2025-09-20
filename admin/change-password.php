@@ -7,37 +7,44 @@ if (strlen($_SESSION['login']) == 0) {
     header('location:index.php');
 } else {
     if (isset($_POST['submit'])) {
-        $password = $_POST['password'];
+        $current_password = $_POST['password'];
+        $new_password = $_POST['newpassword'];
+        $confirm_password = $_POST['confirmpassword'];
         $adminid = $_SESSION['login'];
-        $newpassword = $_POST['newpassword'];
 
         date_default_timezone_set('Asia/Hanoi'); // change according timezone
         $currentTime = date('d-m-Y h:i:s A', time());
-        
+
         // Fixed query to use correct column name
         $sql = mysqli_query($con, "SELECT password_hash FROM USERS WHERE username='$adminid' OR email='$adminid'");
         $user = mysqli_fetch_array($sql);
-        
-        if ($user > 0) {
+
+        if ($user) {
             $dbpassword = $user['password_hash'];
 
-            // Since you're not using password hashing yet, use direct comparison
-            if ($password === $dbpassword) {
-                // Fixed variable name to avoid overwriting $con connection
-                $updateQuery = mysqli_query($con, "UPDATE USERS SET password_hash='$newpassword', updated_at='$currentTime' WHERE username='$adminid' OR email='$adminid'");
-                if($updateQuery) {
-                    $msg = "Password Changed Successfully !!";
+            if (password_verify($current_password, $dbpassword)) {
+                if ($new_password === $confirm_password) {
+                    $hashed_new_password = password_hash($new_password, PASSWORD_DEFAULT);
+                    $updateQuery = mysqli_query($con, "UPDATE USERS SET password_hash='$hashed_new_password', updated_at='$currentTime' WHERE username='$adminid' OR email='$adminid'");
+
+                    if ($updateQuery) {
+                        $msg = "Password Changed Successfully!";
+                    } else {
+                        $error = "Error updating password. Please try again.";
+                    }
                 } else {
-                    $error = "Error updating password. Please try again.";
+                    $error = "New Password and Confirm Password do not match!";
                 }
             } else {
-                $error = "Old Password does not match !!";
+                $error = "Current Password is incorrect!";
             }
         } else {
-            $error = "User not found !!";
+            $error = "Admin user not found!";
         }
+
+
     }
-?>
+    ?>
 
     <?php include('includes/topheader.php'); ?>
     <!-- Top Bar End -->
@@ -99,49 +106,51 @@ if (strlen($_SESSION['login']) == 0) {
                     <div class="row">
                         <div class="col-sm-6">
                             <!---Success Message--->
-                            <?php if (isset($msg)) { ?>
-                                <div class="alert alert-success" role="alert">
-                                    <strong>Well done!</strong> <?php echo htmlentities($msg); ?>
-                                </div>
-                            <?php } ?>
-
-                            <!---Error Message--->
-                            <?php if (isset($error)) { ?>
-                                <div class="alert alert-danger" role="alert">
-                                    <strong>Oh snap!</strong> <?php echo htmlentities($error); ?>
-                                </div>
-                            <?php } ?>
+                        <?php if (isset($msg)) { ?>
+                        <div class="alert alert-success" role="alert">
+                            <strong>Well done!</strong>
+                            <?php echo htmlentities($msg); ?>
                         </div>
+                        <?php } ?>
+
+                        <!---Error Message--->
+                        <?php if (isset($error)) { ?>
+                        <div class="alert alert-danger" role="alert">
+                            <strong>Oh snap!</strong>
+                            <?php echo htmlentities($error); ?>
+                        </div>
+                        <?php } ?>
+                    </div>
+                </div>
+
+                <form class="row" name="chngpwd" method="post" onSubmit="return valid();">
+
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Current Password</label>
+                        <input type="password" class="form-control" value="" name="password" required>
                     </div>
 
-                    <form class="row" name="chngpwd" method="post" onSubmit="return valid();">
+                    <div class="form-group col-md-6">
+                        <label class="control-label">New Password</label>
+                        <input type="password" class="form-control" value="" name="newpassword" required>
+                    </div>
 
-                        <div class="form-group col-md-6">
-                            <label class="control-label">Current Password</label>
-                            <input type="password" class="form-control" value="" name="password" required>
-                        </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Confirm Password</label>
+                        <input type="password" class="form-control" value="" name="confirmpassword" required>
+                    </div>
 
-                        <div class="form-group col-md-6">
-                            <label class="control-label">New Password</label>
-                            <input type="password" class="form-control" value="" name="newpassword" required>
-                        </div>
+                    <div class="form-group col-md-12">
+                        <button type="submit" class="btn btn-custom waves-effect waves-light btn-md" name="submit">
+                            Submit
+                        </button>
+                    </div>
 
-                        <div class="form-group col-md-6">
-                            <label class="control-label">Confirm Password</label>
-                            <input type="password" class="form-control" value="" name="confirmpassword" required>
-                        </div>
-
-                        <div class="form-group col-md-12">
-                            <button type="submit" class="btn btn-custom waves-effect waves-light btn-md" name="submit">
-                                Submit
-                            </button>
-                        </div>
-
-                    </form>
-                </div>
+                </form>
             </div>
         </div>
-        <!-- end row -->
+    </div>
+    <!-- end row -->
 
     </div> <!-- container -->
 

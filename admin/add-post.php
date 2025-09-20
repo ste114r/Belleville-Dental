@@ -140,25 +140,29 @@ if (strlen($_SESSION['login']) == 0) {
                     <div class="col-sm-12">
                         <div class="card-box">
                             <h4 class="m-b-30 m-t-0 header-title"><b>Article Details</b></h4>
+                            <p>Recommended Font: Merriweather</p>
                             <textarea class="summernote" name="postdescription" required></textarea>
+                                <!-- <textarea id="editor" name="postdescription" required style="height: 240px;"></textarea> -->
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="card-box">
-                            <h4 class="m-b-30 m-t-0 header-title"><b>Featured Image</b></h4>
-                            <input type="file" class="form-control" id="postimage" name="postimage" required>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="card-box">
+                                <h4 class="m-b-30 m-t-0 header-title"><b>Featured Image</b></h4>
+                                <p>Article image should be in horizontal for best display.</p>
+                                <input type="file" class="form-control" id="postimage" name="postimage" required>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <button type="submit" name="submit"
-                    class="btn btn-custom waves-effect waves-light btn-md">Submit</button>
-                <button type="button" class="btn btn-danger waves-effect waves-light">Discard</button>
-            </form>
+                    <button type="submit" name="submit"
+                        class="btn btn-custom waves-effect waves-light btn-md">Submit</button>
+                    <button type="button" class="btn btn-danger waves-effect waves-light">Discard</button>
+                </form>
+            </div>
+            <!-- container -->
         </div>
-        <!-- container -->
-        </div>
+        <!-- <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> -->
         <!-- content -->
         <?php include('includes/footer.php'); ?>
     <?php }

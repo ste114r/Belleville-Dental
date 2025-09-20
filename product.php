@@ -302,35 +302,25 @@ include('includes/config.php');
                     $no_of_records_per_page = 9;
                     $offset = ($pageno - 1) * $no_of_records_per_page;
 
-                    // Using prepared statements for security
-                    $params = [];
-                    $types = '';
-
+                    // Build the WHERE clause directly with variables
                     $whereClause = "WHERE p.is_active = 1";
                     if ($catid > 0) {
-                        $whereClause .= " AND p.pcategory_id = ?";
-                        $params[] = $catid;
-                        $types .= 'i';
+                        $whereClause .= " AND p.pcategory_id = $catid";
                     }
 
                     if (!empty($searchQuery)) {
-                        $whereClause .= " AND p.name LIKE ?";
-                        $params[] = "%" . $searchQuery . "%";
-                        $types .= 's';
+                        // Sanitize search query to prevent SQL injection issues, even without prepared statements
+                        $safeSearchQuery = mysqli_real_escape_string($con, $searchQuery);
+                        $whereClause .= " AND p.name LIKE '%$safeSearchQuery%'";
                     }
 
-                    // Total pages calculation
+                    // Total pages calculation using standard query
                     $total_pages_sql = "SELECT COUNT(*) FROM PRODUCTS p $whereClause";
-                    $stmt_total = mysqli_prepare($con, $total_pages_sql);
-                    if ($catid > 0 || !empty($searchQuery)) {
-                        mysqli_stmt_bind_param($stmt_total, $types, ...$params);
-                    }
-                    mysqli_stmt_execute($stmt_total);
-                    $result = mysqli_stmt_get_result($stmt_total);
+                    $result = mysqli_query($con, $total_pages_sql);
                     $total_rows = mysqli_fetch_array($result)[0];
                     $total_pages = ceil($total_rows / $no_of_records_per_page);
 
-                    // Product fetching query
+                    // Product fetching query using standard query
                     $product_query_sql = "
                         SELECT 
                             p.product_id AS pid,
@@ -342,22 +332,13 @@ include('includes/config.php');
                             ON pc.pcategory_id = p.pcategory_id
                         $whereClause
                         ORDER BY p.product_id DESC
-                        LIMIT ?, ?
+                        LIMIT $offset, $no_of_records_per_page
                     ";
-                    $stmt_products = mysqli_prepare($con, $product_query_sql);
-
-                    // Add limit and offset to params
-                    $params[] = $offset;
-                    $params[] = $no_of_records_per_page;
-                    $types .= 'ii';
-
-                    mysqli_stmt_bind_param($stmt_products, $types, ...$params);
-                    mysqli_stmt_execute($stmt_products);
-                    $product_query = mysqli_stmt_get_result($stmt_products);
+                    $product_query = mysqli_query($con, $product_query_sql);
 
                     $postcount = mysqli_num_rows($product_query);
                     if ($postcount == 0) {
-                        echo "<div class='col-12'><p class='text-center fs-5 mt-4'>No products found in this category.</p></div>";
+                        echo "<div class='col-12'><p class='text-center fs-5 mt-4'>No products found matching your criteria.</p></div>";
                     } else {
                         while ($row = mysqli_fetch_array($product_query)) {
                             ?>

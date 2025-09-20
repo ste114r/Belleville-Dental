@@ -7,16 +7,18 @@ include('includes/config.php');
 if (isset($_POST['submit'])) {
     $username = $_POST['username'];
     $email = $_POST['email'];
-    // $password = md5($_POST['newpassword']);
-    $password = ($_POST['newpassword']);
-    $query = mysqli_query($con, "select user_id from USERS where email='$email' and username='$username' ");
+    $password = $_POST['newpassword'];
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+    $query = mysqli_query($con, "SELECT user_id FROM USERS WHERE email='$email' AND username='$username'");
 
     $ret = mysqli_num_rows($query);
     if ($ret > 0) {
-        $query1 = mysqli_query($con, "update USERS set password_hash='$password'  where email='$email' and username='$username' ");
+        $query1 = mysqli_query($con, "UPDATE USERS SET password_hash='$hashed_password' WHERE email='$email' AND username='$username'");
+        
         if ($query1) {
             echo "<script>alert('Password successfully changed');</script>";
-            echo "<script type='text/javascript'> document.location = 'index.php'; </script>";
+            header('Location: index.php');
         }
     } else {
         echo "<script>alert('Invalid Details. Please try again.');</script>";
@@ -71,7 +73,8 @@ if (isset($_POST['submit'])) {
                             <div class="text-center account-logo-box">
                                 <h2 class="text-uppercase">
                                     <a href="index.php" class="text-success">
-                                        <span><img src="assets/images/Belleville Dental logo transparent.png" alt="" height="56"></span>
+                                        <span><img src="assets/images/Belleville Dental logo transparent.png" alt=""
+                                                height="56"></span>
                                     </a>
                                 </h2>
                                 <!--<h4 class="text-uppercase font-bold m-b-0">Sign In</h4>-->
@@ -81,29 +84,34 @@ if (isset($_POST['submit'])) {
 
                                     <div class="form-group ">
                                         <div class="col-xs-12">
-                                            <input class="form-control" type="text" required="" name="username" placeholder="Username" autocomplete="off">
+                                            <input class="form-control" type="text" required="" name="username"
+                                                placeholder="Username" autocomplete="off">
                                         </div>
                                     </div>
                                     <div class="form-group ">
                                         <div class="col-xs-12">
-                                            <input class="form-control" type="text" required="" name="email" placeholder="Email" autocomplete="off">
+                                            <input class="form-control" type="text" required="" name="email"
+                                                placeholder="Email" autocomplete="off">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-xs-12">
-                                            <input type="password" class="form-control" id="userpassword" name="confirmpassword" placeholder="Confirm Password">
+                                            <input type="password" class="form-control" id="userpassword"
+                                                name="confirmpassword" placeholder="Confirm Password">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-xs-12">
-                                            <input type="password" class="form-control" id="userpassword" name="newpassword" placeholder="New Password">
+                                            <input type="password" class="form-control" id="userpassword"
+                                                name="newpassword" placeholder="New Password">
                                         </div>
                                     </div>
 
 
                                     <div class="form-group account-btn text-center m-t-10">
                                         <div class="col-xs-12">
-                                            <button class="btn w-md btn-bordered btn-danger waves-effect waves-light" type="submit" name="submit">Reset</button>
+                                            <button class="btn w-md btn-bordered btn-danger waves-effect waves-light"
+                                                type="submit" name="submit">Reset</button>
                                         </div>
                                     </div>
 

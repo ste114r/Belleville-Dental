@@ -66,7 +66,9 @@
             height: 240, // set editor height
             minHeight: null, // set minimum height of editor
             maxHeight: null, // set maximum height of editor
-            focus: false // set focus to editable area after initializing summernote
+            focus: false, // set focus to editable area after initializing summernote
+            fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Helvetica', 'Impact', 'Tahoma', 'Times New Roman', 'Verdana', 'Merriweather'],
+            fontNamesIgnoreCheck: ['Merriweather']
         });
         // Select2
         $(".select2").select2();

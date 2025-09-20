@@ -3,17 +3,23 @@ session_name('client_session');
 session_start();
 include('includes/config.php');
 
+
 if (isset($_POST['login'])) {
     $uname = $_POST['username'];
     $password = $_POST['password'];
 
-    $sql = mysqli_query($con, "SELECT user_id, username, password_hash, email, role, status FROM USERS WHERE (username = '$uname' OR email = '$uname') AND password_hash = '$password' AND role = 'client' AND status = 'active' ");
+    // Get user record first (without password in WHERE clause)
+    $sql = mysqli_query($con, "SELECT user_id, username, password_hash, email, role, status FROM USERS WHERE (username = '$uname' OR email = '$uname') AND role = 'client' AND status = 'active'");
     $user = mysqli_fetch_array($sql);
 
-    if ($user) {
+    // Use password_verify to check the password against the hash
+    if ($user && password_verify($password, $user['password_hash'])) {
+        // Set session variables to the logged in user
         $_SESSION['login'] = $_POST['username'];
         $_SESSION['user_id'] = $user['user_id'];
-        echo "<script type='text/javascript'> document.location = 'index.php'; </script>";
+
+        header('Location: login.php');
+        exit();
     } else {
         echo "<script>alert('Invalid username or password');</script>";
     }

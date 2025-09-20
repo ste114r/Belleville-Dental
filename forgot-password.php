@@ -17,12 +17,15 @@ if (isset($_POST['submit'])) {
         $query = mysqli_query($con, "SELECT user_id FROM USERS WHERE email='$email' AND username='$username'");
         $ret = mysqli_num_rows($query);
         
-        if ($ret > 0) {
+        if ($ret) {
             // Update password
-            $query1 = mysqli_query($con, "UPDATE USERS SET password_hash='$password' WHERE email='$email' AND username='$username'");
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            $query1 = mysqli_query($con, "UPDATE USERS SET password_hash='$hashed_password' WHERE email='$email' AND username='$username'");
+
             if ($query1) {
                 echo "<script>alert('Password successfully changed');</script>";
-                echo "<script type='text/javascript'> document.location = 'login.php'; </script>";
+                header('Location: login.php'); // Server side
+                exit();
             } else {
                 echo "<script>alert('Something went wrong. Please try again.');</script>";
             }

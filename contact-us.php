@@ -13,17 +13,21 @@ if (isset($_POST['submit'])) {
     $subject = $_POST['subject'];
     $message = $_POST['message'];
 
-    // Prepare an insert statement to prevent SQL injection
-    $stmt = mysqli_prepare($con, "INSERT INTO FEEDBACK(name, email, subject, message) VALUES(?, ?, ?, ?)");
-    mysqli_stmt_bind_param($stmt, "ssss", $name, $email, $subject, $message);
+    // Escape special characters in the input strings to prevent SQL syntax errors
+    $name_safe = mysqli_real_escape_string($con, $name);
+    $email_safe = mysqli_real_escape_string($con, $email);
+    $subject_safe = mysqli_real_escape_string($con, $subject);
+    $message_safe = mysqli_real_escape_string($con, $message);
 
-    // Execute the statement and set feedback message
-    if (mysqli_stmt_execute($stmt)) {
+    // Construct the manual SQL query
+    $sql = "INSERT INTO FEEDBACK(name, email, subject, message) VALUES('$name_safe', '$email_safe', '$subject_safe', '$message_safe')";
+
+    // Execute the query and set feedback message
+    if (mysqli_query($con, $sql)) {
         $msg = "Your message has been sent successfully! We will get back to you shortly.";
     } else {
         $error = "Something went wrong. Please try again.";
     }
-    mysqli_stmt_close($stmt);
 }
 ?>
 <!DOCTYPE html>
@@ -264,15 +268,15 @@ if (isset($_POST['submit'])) {
                 <h3 class="text-primary mb-3 section-title">Send Us a Message</h3>
                 <div class="contact-form">
                     
-                    <?php if ($msg) { ?>
-                        <div class="alert alert-success" role="alert">
-                            <strong>Success!</strong> <?php echo htmlentities($msg); ?>
-                        </div>
-                    <?php } ?>
-                    <?php if ($error) { ?>
-                        <div class="alert alert-danger" role="alert">
-                            <strong>Error!</strong> <?php echo htmlentities($error); ?>
-                        </div>
+                    <?php if (!empty($msg) || !empty($error)) { ?>
+                        <script>
+                            <?php if (!empty($msg)) { ?>
+                                alert('<?php echo addslashes($msg); ?>');
+                            <?php } ?>
+                            <?php if (!empty($error)) { ?>
+                                alert('<?php echo addslashes($error); ?>');
+                            <?php } ?>
+                        </script>
                     <?php } ?>
 
                     <form name="feedback" method="post" action="">

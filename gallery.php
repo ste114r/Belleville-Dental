@@ -148,10 +148,8 @@ include('includes/config.php');
             $total_rows = mysqli_fetch_array($result)[0];
             $total_pages = ceil($total_rows / $no_of_records_per_page);
 
-            $stmt = mysqli_prepare($con, "SELECT article_id, title, cover_image_url FROM ARTICLES WHERE is_active = 1 AND cover_image_url IS NOT NULL ORDER BY created_at DESC LIMIT ?, ?");
-            mysqli_stmt_bind_param($stmt, "ii", $offset, $no_of_records_per_page);
-            mysqli_stmt_execute($stmt);
-            $query = mysqli_stmt_get_result($stmt);
+            $query_string = "SELECT article_id, title, cover_image_url FROM ARTICLES WHERE is_active = 1 AND cover_image_url IS NOT NULL ORDER BY created_at DESC LIMIT $offset, $no_of_records_per_page";
+            $query = mysqli_query($con, $query_string);
 
             if (mysqli_num_rows($query) == 0) {
                 echo "<div class='col-12'><div class='no-results'><p class='mb-0'>No images found in the gallery yet.</p></div></div>";
@@ -175,7 +173,6 @@ include('includes/config.php');
             <?php 
                 }
             } 
-            mysqli_stmt_close($stmt);
             ?>
         </div>
 

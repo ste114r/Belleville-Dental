@@ -121,6 +121,7 @@ if (strlen($_SESSION['login']) == 0) {
                     <div class="col-xs-12">
                         <div class="card-box">
                             <h4 class="m-b-30 m-t-0 header-title"><b>Product Image</b></h4>
+                            <p>Product image should be in horizontal for best display.</p>
                             <input type="file" class="form-control" id="productimage" name="productimage" required>
                         </div>
                     </div>

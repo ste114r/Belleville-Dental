@@ -8,13 +8,15 @@ if (isset($_POST['login'])) {
     // $password = md5($_POST['password']);
     $password = $_POST['password'];
 
-    $sql = mysqli_query($con, "SELECT user_id, username, password_hash, email, role, status FROM USERS WHERE (username = '$uname' OR email = '$uname') AND password_hash = '$password' AND role = 'admin' AND status = 'active' ");
+    $sql = mysqli_query($con, "SELECT user_id, username, password_hash, email, role, status FROM USERS WHERE (username = '$uname' OR email = '$uname') AND role = 'admin' AND status = 'active' ");
     $user = mysqli_fetch_array($sql);
 
-    if ($user) {
+    if ($user && password_verify($password, $user['password_hash'])) {
         $_SESSION['login'] = $user['username'];
         $_SESSION['userid'] = $user['user_id'];
-        echo "<script type='text/javascript'> document.location = 'dashboard.php'; </script>";
+
+        header('Location: dashboard.php');
+        exit();
     } else {
         echo "<script>alert('Invalid username or password');</script>";
     }

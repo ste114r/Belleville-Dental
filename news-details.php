@@ -14,25 +14,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_favorite'])) {
         $article_id = intval($_POST['article_id']);
 
         // Check if the user has already favorited this article
-        $fav_check_stmt = mysqli_prepare($con, "SELECT favorite_id FROM USER_FAVORITE_ARTICLES WHERE user_id = ? AND article_id = ?");
-        mysqli_stmt_bind_param($fav_check_stmt, "ii", $user_id, $article_id);
-        mysqli_stmt_execute($fav_check_stmt);
-        $fav_result = mysqli_stmt_get_result($fav_check_stmt);
+        $fav_check_sql = "SELECT favorite_id FROM USER_FAVORITE_ARTICLES WHERE user_id = $user_id AND article_id = $article_id";
+        $fav_result = mysqli_query($con, $fav_check_sql);
 
         if (mysqli_num_rows($fav_result) > 0) {
             // If it's already a favorite, remove it (DELETE)
-            $unfav_stmt = mysqli_prepare($con, "DELETE FROM USER_FAVORITE_ARTICLES WHERE user_id = ? AND article_id = ?");
-            mysqli_stmt_bind_param($unfav_stmt, "ii", $user_id, $article_id);
-            mysqli_stmt_execute($unfav_stmt);
-            mysqli_stmt_close($unfav_stmt);
+            $unfav_sql = "DELETE FROM USER_FAVORITE_ARTICLES WHERE user_id = $user_id AND article_id = $article_id";
+            mysqli_query($con, $unfav_sql);
         } else {
             // If it's not a favorite, add it (INSERT)
-            $fav_stmt = mysqli_prepare($con, "INSERT INTO USER_FAVORITE_ARTICLES (user_id, article_id) VALUES (?, ?)");
-            mysqli_stmt_bind_param($fav_stmt, "ii", $user_id, $article_id);
-            mysqli_stmt_execute($fav_stmt);
-            mysqli_stmt_close($fav_stmt);
+            $fav_sql = "INSERT INTO USER_FAVORITE_ARTICLES (user_id, article_id) VALUES ($user_id, $article_id)";
+            mysqli_query($con, $fav_sql);
         }
-        mysqli_stmt_close($fav_check_stmt);
 
         // Redirect to the same page to prevent form resubmission on refresh
         header("Location: news-details.php?nid=" . $article_id);
@@ -274,7 +267,7 @@ if ($result->num_rows > 0) {
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
-        .product-image {
+        .product-card .card-img-top {
             height: 200px;
             object-fit: cover;
         }
@@ -395,7 +388,7 @@ if ($result->num_rows > 0) {
 
         .favorite-btn i,
         .favorite-btn-disabled i {
-            margin-right: 6px;
+            margin-right: 0px;
         }
 
         /* --- END: NEW FAVORITE BUTTON STYLES --- */
@@ -477,12 +470,9 @@ if ($result->num_rows > 0) {
                             $article_id = $pid;
 
                             // Check favorite status to determine the button's appearance
-                            $is_favorited_stmt = mysqli_prepare($con, "SELECT favorite_id FROM USER_FAVORITE_ARTICLES WHERE user_id = ? AND article_id = ?");
-                            mysqli_stmt_bind_param($is_favorited_stmt, "ii", $user_id, $article_id);
-                            mysqli_stmt_execute($is_favorited_stmt);
-                            $is_favorited_result = mysqli_stmt_get_result($is_favorited_stmt);
+                            $is_favorited_sql = "SELECT favorite_id FROM USER_FAVORITE_ARTICLES WHERE user_id = $user_id AND article_id = $article_id";
+                            $is_favorited_result = mysqli_query($con, $is_favorited_sql);
                             $is_favorited = mysqli_num_rows($is_favorited_result) > 0;
-                            mysqli_stmt_close($is_favorited_stmt);
                             ?>
                             <form method="post" class="favorite-form">
                                 <input type="hidden" name="article_id" value="<?php echo $pid; ?>">
@@ -500,8 +490,8 @@ if ($result->num_rows > 0) {
                             <form class="favorite-form">
                                 <a href="login.php" class="favorite-btn-disabled"
                                     title="You must be logged in to favorite articles">
-                                    <i class="far fa-heart"></i> Login to Favorite
-                                </a>
+                                    <i class="far fa-heart"></i> 
+                                    </a>
                             </form>
                         <?php endif; ?>
                     </div>
@@ -522,7 +512,6 @@ if ($result->num_rows > 0) {
                         <div class="row">
                             <?php
                             // Prepare the query to fetch recommended products based on the current article's category.
-                            // This version uses standard spaces to prevent SQL syntax errors.
                             $recommendation_query_sql = "
                                 SELECT DISTINCT
                                     p.product_id,
@@ -535,45 +524,33 @@ if ($result->num_rows > 0) {
                                     ON p.pcategory_id = m.product_category_id
                                 JOIN ARTICLES a
                                     ON a.category_id = m.article_category_id
-                                WHERE a.article_id = ?
+                                WHERE a.article_id = $pid
                                 AND p.is_active = 1
                                 ORDER BY m.relevance_score DESC, RAND()
                                 LIMIT 3
                             ";
 
-                            $stmt = mysqli_prepare($con, $recommendation_query_sql);
+                            $recommendation_query = mysqli_query($con, $recommendation_query_sql);
 
-                            // Check if the prepare statement was successful before binding parameters
-                            if ($stmt) {
-                                mysqli_stmt_bind_param($stmt, "i", $pid); // $pid is the current article ID
-                                mysqli_stmt_execute($stmt);
-                                $recommendation_query = mysqli_stmt_get_result($stmt);
-
-                                if (mysqli_num_rows($recommendation_query) > 0) {
-                                    while ($rec_row = mysqli_fetch_array($recommendation_query)) {
-                                        ?>
-                                        <div class="col-md-4">
-                                            <div class="card product-card">
-                                                <img src="images/productimages/<?php echo htmlentities($rec_row['image_url']); ?>"
-                                                    class="card-img-top" alt="<?php echo htmlentities($rec_row['name']); ?>">
-                                                <div class="card-body">
-                                                    <h5 class="card-title"><?php echo htmlentities($rec_row['name']); ?></h5>
-                                                    <p class="card-text">
-                                                        <?php echo strip_tags(substr($rec_row['description'], 0, 80)); ?>...</p>
-                                                    <a href="product-details.php?pid=<?php echo htmlentities($rec_row['product_id']); ?>"
-                                                        class="btn btn-outline-primary">View Details</a>
-                                                </div>
+                            if ($recommendation_query && mysqli_num_rows($recommendation_query) > 0) {
+                                while ($rec_row = mysqli_fetch_array($recommendation_query)) {
+                                    ?>
+                                    <div class="col-md-4">
+                                        <div class="card product-card">
+                                            <img src="images/productimages/<?php echo htmlentities($rec_row['image_url']); ?>"
+                                                class="card-img-top" alt="<?php echo htmlentities($rec_row['name']); ?>">
+                                            <div class="card-body">
+                                                <h5 class="card-title"><?php echo htmlentities($rec_row['name']); ?></h5>
+                                                
+                                                <a href="product-details.php?pid=<?php echo htmlentities($rec_row['product_id']); ?>"
+                                                    class="btn btn-outline-primary">View Details</a>
                                             </div>
                                         </div>
-                                        <?php
-                                    }
-                                } else {
-                                    echo "<div class='col-12'><p>No recommended products found for this article.</p></div>";
+                                    </div>
+                                    <?php
                                 }
-                                mysqli_stmt_close($stmt);
                             } else {
-                                // Optional: Output an error if the query preparation failed for debugging
-                                echo "<div class='col-12'><p>Error: Could not prepare the product recommendation query.</p></div>";
+                                echo "<div class='col-12'><p>No recommended products found for this article.</p></div>";
                             }
                             ?>
                         </div>

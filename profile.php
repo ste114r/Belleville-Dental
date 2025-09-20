@@ -17,7 +17,7 @@ $user_id = $_SESSION['user_id'];
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit-no">
     <meta name="description" content="User profile page to view comments and ratings.">
     <meta name="author" content="">
     <link rel="shortcut icon" href="images/Belleville Dental logo transparent.png" type="image/x-icon">
@@ -178,11 +178,9 @@ $user_id = $_SESSION['user_id'];
             <div class="col-lg-6">
                 <h2 class="section-heading">Comments</h2>
                 <?php
-                // 3. Fetch all comments for the current user using a prepared statement.
-                $stmt_comments = mysqli_prepare($con, "SELECT pc.comment, pc.created_at, pc.status, p.name as ProductName, p.product_id FROM PRODUCT_COMMENTS pc JOIN PRODUCTS p ON pc.product_id = p.product_id WHERE pc.user_id = ? ORDER BY pc.created_at DESC");
-                mysqli_stmt_bind_param($stmt_comments, "i", $user_id);
-                mysqli_stmt_execute($stmt_comments);
-                $comments_result = mysqli_stmt_get_result($stmt_comments);
+                // 3. Fetch all comments for the current user using a standard query.
+                $comments_query = "SELECT pc.comment, pc.created_at, pc.status, p.name as ProductName, p.product_id FROM PRODUCT_COMMENTS pc JOIN PRODUCTS p ON pc.product_id = p.product_id WHERE pc.user_id = '$user_id' ORDER BY pc.created_at DESC";
+                $comments_result = mysqli_query($con, $comments_query);
                 $comment_count = mysqli_num_rows($comments_result);
 
                 if ($comment_count > 0) {
@@ -208,18 +206,15 @@ $user_id = $_SESSION['user_id'];
                 } else {
                     echo "<div class='no-feedback'><p class='mb-0'>You haven't submitted any comments yet.</p></div>";
                 }
-                mysqli_stmt_close($stmt_comments);
                 ?>
             </div>
 
             <div class="col-lg-6">
                 <h2 class="section-heading">Product Ratings</h2>
                 <?php
-                // 4. Fetch all ratings for the current user using a prepared statement.
-                $stmt_ratings = mysqli_prepare($con, "SELECT pr.rating, pr.created_at, p.name as ProductName, p.product_id, p.image_url FROM PRODUCT_RATINGS pr JOIN PRODUCTS p ON pr.product_id = p.product_id WHERE pr.user_id = ? ORDER BY pr.created_at DESC");
-                mysqli_stmt_bind_param($stmt_ratings, "i", $user_id);
-                mysqli_stmt_execute($stmt_ratings);
-                $ratings_result = mysqli_stmt_get_result($stmt_ratings);
+                // 4. Fetch all ratings for the current user using a standard query.
+                $ratings_query = "SELECT pr.rating, pr.created_at, p.name as ProductName, p.product_id, p.image_url FROM PRODUCT_RATINGS pr JOIN PRODUCTS p ON pr.product_id = p.product_id WHERE pr.user_id = '$user_id' ORDER BY pr.created_at DESC";
+                $ratings_result = mysqli_query($con, $ratings_query);
                 $rating_count = mysqli_num_rows($ratings_result);
 
                 if ($rating_count > 0) {
@@ -227,8 +222,6 @@ $user_id = $_SESSION['user_id'];
                         ?>
                         <div class="feedback-card">
                             <div class="card-body rating-card-body">
-                                <!-- <img src="admin/productimages/<?php echo htmlentities($row['image_url']); ?>"
-                                    alt="<?php echo htmlentities($row['ProductName']); ?>" class="rating-product-image"> -->
                                 <div class="rating-details w-100">
                                     <div class="d-flex justify-content-between align-items-start">
                                         <h5><a
@@ -252,7 +245,6 @@ $user_id = $_SESSION['user_id'];
                 } else {
                     echo "<div class='no-feedback'><p class='mb-0'>You haven't rated any products yet.</p></div>";
                 }
-                mysqli_stmt_close($stmt_ratings);
                 ?>
             </div>
         </div>
@@ -262,10 +254,8 @@ $user_id = $_SESSION['user_id'];
                 <h2 class="section-heading">Favorited Articles</h2>
                 <?php
                 // 5. Fetch all favorited articles for the current user.
-                $stmt_favorites = mysqli_prepare($con, "SELECT a.article_id, a.title, ufa.created_at FROM USER_FAVORITE_ARTICLES ufa JOIN ARTICLES a ON ufa.article_id = a.article_id WHERE ufa.user_id = ? ORDER BY ufa.created_at DESC");
-                mysqli_stmt_bind_param($stmt_favorites, "i", $user_id);
-                mysqli_stmt_execute($stmt_favorites);
-                $favorites_result = mysqli_stmt_get_result($stmt_favorites);
+                $favorites_query = "SELECT a.article_id, a.title, ufa.created_at FROM USER_FAVORITE_ARTICLES ufa JOIN ARTICLES a ON ufa.article_id = a.article_id WHERE ufa.user_id = '$user_id' ORDER BY ufa.created_at DESC";
+                $favorites_result = mysqli_query($con, $favorites_query);
                 $favorite_count = mysqli_num_rows($favorites_result);
 
                 if ($favorite_count > 0) {
@@ -287,7 +277,6 @@ $user_id = $_SESSION['user_id'];
                 } else {
                     echo "<div class='no-feedback'><p class='mb-0'>You haven't added any articles to your favorites yet.</p></div>";
                 }
-                mysqli_stmt_close($stmt_favorites);
                 ?>
             </div>
         </div>
